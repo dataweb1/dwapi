@@ -1,0 +1,170 @@
+<html>
+<head>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+
+    <link rel="stylesheet" href="css/product.css?v=6" />
+</head>
+<body onload="start();">
+
+<div class="container-fluid">
+    <h2 class="primary-heading">Producten overzicht</h2>
+
+    <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" onclick="toonProductPopup('insert');" data-target="#product_modal">
+        Product toevoegen
+    </button>
+
+
+    <section id="filter_section">
+        <div>
+            <label>Naam</label>
+            <input class="form-control" id="filter_naam" type="text" />
+        </div>
+        <div>
+            <label>Omschrijving</label>
+            <input class="form-control" id="filter_omschrijving" type="text" />
+        </div>
+        <div>
+            <label>Prijs</label>
+            <div style="display: flex">
+            <span style="margin-top: 5px; margin-right: 5px">>=</span> <input class="form-control" id="filter_prijs" type="text" />
+            </div>
+        </div>
+        <div>
+            <button onclick="doFilter()" class=" btn-indigo btn btn-md" >filter</button>
+        </div>
+    </section>
+
+    <section id="sort_section">
+        <div>
+            <label>Sorteer</label>
+            <select class="browser-default custom-select" id="sort_select" onchange="doSort()">
+                <option>naam</option>
+                <option>omschrijving</option>
+                <option>prijs</option>
+            </select>
+        </div>
+    </section>
+
+    <hr />
+
+    <section id="producten_table_section">
+        <div>
+            <table class="table-responsive table-striped table-bordered table-sm" id="producten_table">
+                <thead>
+                    <tr>
+                        <th class="th-sm" scope="col">Naam</th>
+                        <th class="th-sm" scope="col">Categorie</th>
+                        <th class="th-sm" scope="col">Omschrijving</th>
+                        <th class="th-sm" scope="col">Prijs</th>
+                        <th class="th-sm" scope="col">Beeld</th>
+                        <th class="th-sm" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="delete_modal"
+     aria-hidden="true">
+    <input type="hidden" id="delete_id" />
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-left">
+                <h4 class="modal-title w-100 font-weight-bold">Product verwijderen</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <p>Wenst u dit product te verwijderen?</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-right">
+                <button onclick="doDelete();" class="btn btn-sm btn-indigo">Ja <i class="fas fa-paper-plane-o ml-1"></i></button>
+                <button onclick="$('#delete_modal').modal('hide');" class="btn btn-sm btn-indigo">Neen <i class="fas fa-paper-plane-o ml-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="product_modal" tabindex="-1" role="dialog" aria-labelledby="product_modal"
+     aria-hidden="true">
+    <input type="hidden" id="product_id" />
+    <input type="hidden" id="product_actie" />
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header text-left">
+                <h4 class="modal-title w-100 font-weight-bold" id="product_modal_titel"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body mx-3">
+                <div class="mb-5">
+                    <label for="product_naam">Naam</label>
+                    <input type="text" id="product_naam" class="form-control">
+                </div>
+                <div class="mb-5">
+                    <div class="form-group">
+                        <label for="product_omschrijving">Omschrijving</label>
+                        <textarea class="form-control rounded-0" id="product_omschrijving" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label data-error="wrong" data-success="right" for="product_prijs">Prijs</label>
+                    <div class="input-group flex-nowrap">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">&euro;</span>
+                        </div>
+                        <input type="text" class="form-control" id="product_prijs" placeholder="prijs" aria-label="prijs">
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label data-error="wrong" data-success="right" for="product_categorie">Categorie</label>
+                    <select id="product_categorie" class="browser-default custom-select">
+                        <option>Product categorie 1</option>
+                    </select>
+
+                </div>
+                <div class="mb-5">
+                    <label data-error="wrong" data-success="right" for="product_beeld">Beeld</label>
+                    <div class="custom-file">
+                        <input type="hidden" id="product_beeld_origineel" />
+                        <input type="file" class="custom-file-input" id="product_beeld" aria-describedby="update_beeld">
+                        <label class="custom-file-label" id="product_beeld_label" for="product_beeld">Kies (nieuw) beeld</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer d-flex" style="justify-content: flex-start">
+                <button onclick="doProductActie();" class="btn btn-sm btn-indigo">Bewaren <i class="fas fa-paper-plane-o ml-1"></i></button>
+                <button onclick="$('#product_modal').modal('hide');" class="btn btn-sm btn-indigo">Annuleren <i class="fas fa-paper-plane-o ml-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="js/product.js?x=157"></script>
+</body>
+</html>
