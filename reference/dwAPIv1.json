@@ -1,0 +1,589 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "dwAPI (v1)",
+    "version": "1.0",
+    "description": "<h3>Introduction</h3>\n<p>\ndwAPI is a REST API that gives access to a MySQL database from any client via AJAX, cURL, ... .\n<p>\n<p>\nVia specific endpoints you can do CRUD actions (<strong>C</strong>reate, <strong>R</strong>ead, <strong>U</strong>pdate and <strong>D</strong>elete) on any table. The API can work with any table structure.</p>\n\n<p>A simple user management to prevent anonymous creating, updating and deleting is included.</p>\n<h3>Get started</h3>\n<p>\nFirst of all you have to <strong>request your project key</strong> that is required for every API request. You can request your project key by sending an email to <a href=\"mailto:dwapi@data-web.be\">dwapi@data-web.be</a>.</p>\n<p>In your email include the credentials to your MySQL database (server, database name, login and password) that you want to access via dwAPI.</p><p>Make sure that external connections are allowed. If that is not the case, contact your hosting company.</p>\n<h3>Item flow</h3>\n<p>Via specific endpoints you can do CRUD actions (Create, Read, Update and Delete) on any table. The API can work with any table structure.</p>\n<h4>Reading items</h4>\n<ul><li>For reading an item (or items) use the <code>/item/read</code> endpoint.</li>\n<li>For reading a single item use the <code>/item/single_read</code> endpoint.</li></ul>\n<p>For reading items from a database table <strong>a valid JWT token</strong> is <strong>optional</strong> (see \"User flow\").<p>\n<h4>Create, Update, Delete item</h4>\n<ul><li>For creating an item in a table use the endpoint <code>/item/insert</code>.</li>\n<li>For updating an item (or items) use the <code>/item/update</code> endpoint.</li>\n<li>For updating a single item use the <code>/item/single_update</code> endpoint.</li>\n<li>For deleting an item (or items) use the <code>/item/delete</code> endpoint.</li></ul>\n<p>To protect the database from updating, deleting and creating <strong>a valid JWT token</strong> is <strong>required</strong>  (see \"User flow\").</p>\n\n<p>\n<img src=\"https://api.data-web.be/assets/images/dwAPI_item_flow.jpg\" />\n</p>\n<p>\nA CRUD request on an <code>/item</code> endpoint with a valid JWT token in the authorization header automaticaly returns a new (extended) token that can be used in the next CRUD request.</p>\n<h3>User flow</h3>\n<p>\nThe API contains a simple user management to prevent anonymous creating, updating and deleting.</p>\n\n<ul>\n<li>For registering a user use the <code>/user/register</code> endpoint a user can be registered.</li>\n<li>For logging in a user use the  <code>/user/login</code> endpoint: a JWT token is created and sent back to the client</li>\n<li>For checking if a token is still valid use the <code>/user/validate_token</code> endpoint.</li>\n<li>For logging out a user use the <code>/user/logout</code>: the JWT token becomes invalid.</li>\n</ul>\n\n<p><br>Some CRUD actions on <code>/item</code> endpoints require a valid JWT token (see \"Item flow\"). </p>\n<p>A JWT token expires 60 minutes after the creation time.<p>\n<p>\n<img src=\"https://api.data-web.be/assets/images/dwAPI_user_flow_v1.jpg\" />\n</p>\n<p>\nTo make use of the \"User flow\" a <code>user</code> table in your project database is <strong>required</strong>. Create the table with this SQL statements:\n</p>\n<p>\n<code>\nCREATE TABLE `user` (<br>\n  `user_id` int(11) NOT NULL,<br>\n  `email` varchar(255) NOT NULL,<br>\n  `password` varchar(255) NOT NULL,<br>\n  `force_login` tinyint(11) NOT NULL DEFAULT '0'<br>\n  `active` tinyint(11) NOT NULL DEFAULT '1'<br>\n) ENGINE=InnoDB DEFAULT CHARSET=latin1;<br><br>\nALTER TABLE `user`<br>\n  ADD PRIMARY KEY (`user_id`);<br><br>\nALTER TABLE `user`<br>\n  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;<br>\n</code>\n</p>\n",
+    "contact": {
+      "name": "Bert Jansen",
+      "url": "https://www.data-web.be",
+      "email": "dwapi@data-web.be"
+    }
+  },
+  "host": "api.data-web.be",
+  "schemes": [
+    "https"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "multipart/form-data",
+    "text/plain",
+    "application/x-www-form-urlencoded"
+  ],
+  "paths": {
+    "/item/read": {
+      "get": {
+        "summary": "Get items",
+        "tags": [
+          "item"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "get-item-read",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "description": "If no filter is available then all items will be returned.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
+            "type": "array"
+          },
+          {
+            "type": "array",
+            "in": "query",
+            "name": "property",
+            "description": "If you want to limit the fields that are being outputed.\n\nExample: \\[{\"entity\": \"product\", \"field\": \"naam\"}\\]"
+          },
+          {
+            "type": "array",
+            "in": "query",
+            "name": "sort",
+            "description": "If you want to sort the items give one or more fieldname and the direction (ASC of DESC).\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>direction</i>\"\\],...\\]\n\nExample: \\[\\[\"name\", \"ASC\"\\]\\]"
+          },
+          {
+            "type": "array",
+            "in": "query",
+            "name": "relation",
+            "description": "If you want to include referencing items.\n\nExample: \\[{\"pri_entity\": \"product\", \"pri_key\": \"id\", \"sec_entity\": \"product_image\", \"sec_key\": \"product_id\"}\\]"
+          },
+          {
+            "type": "object",
+            "in": "query",
+            "name": "paging",
+            "description": "If you want to receive a subset of the data based on page and items_per_page.\n\nSyntax: {\"page\": <i>page_number</i>, \"items_per_page\": <i>items_per_page</i>}\n\nExample: {\"page\": 2, \"items_per_page\": 10}"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>\n"
+          }
+        ],
+        "description": "Get items of an entity"
+      }
+    },
+    "/item/single_read": {
+      "parameters": [],
+      "get": {
+        "summary": "Get a single item",
+        "tags": [
+          "item"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            },
+            "examples": {}
+          }
+        },
+        "operationId": "get-item-single-read",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "description": "",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "in": "query",
+            "name": "id",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>"
+          },
+          {
+            "type": "array",
+            "in": "query",
+            "name": "relation",
+            "description": "If you want to include referencing items.\n\nExample: \\[{\"pri_entity\": \"product\", \"pri_key\": \"id\", \"sec_entity\": \"product_image\", \"sec_key\": \"product_id\"}\\]"
+          },
+          {
+            "type": "array",
+            "in": "query",
+            "name": "property",
+            "description": "If you want to limit the fields that are being outputed.\n\nExample: \\[{\"entity\": \"product\", \"field\": \"naam\"}\\]"
+          }
+        ],
+        "description": "Get a single item of an entity by ID"
+      }
+    },
+    "/item/create": {
+      "post": {
+        "summary": "Create item",
+        "operationId": "post-item-create",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {},
+            "examples": {},
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "OK"
+                },
+                "result": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "example": "true",
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "success",
+                    "id"
+                  ]
+                }
+              },
+              "required": [
+                "status"
+              ]
+            }
+          }
+        },
+        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "object",
+            "name": "values",
+            "required": true,
+            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "in": "query",
+            "name": "token_required",
+            "description": "By default a token is required for creating. You can override it here."
+          }
+        ],
+        "tags": [
+          "item"
+        ]
+      },
+      "parameters": []
+    },
+    "/item/update": {
+      "put": {
+        "summary": "Update item",
+        "operationId": "put-item-update",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "success"
+              ]
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update an item of an entity\n\nTo set the \"filter\" and \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "object",
+            "name": "values",
+            "required": true,
+            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+          },
+          {
+            "in": "formData",
+            "type": "array",
+            "name": "filter",
+            "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "in": "query",
+            "name": "token_required",
+            "description": "By default a token is required for updating. You can override it here."
+          }
+        ],
+        "tags": [
+          "item"
+        ]
+      }
+    },
+    "/item/delete": {
+      "delete": {
+        "summary": "Delete item",
+        "operationId": "delete-item-delete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "success"
+              ]
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "array",
+            "name": "filter",
+            "description": "The filter to apply the delete on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer <i>jwt_token</i>"
+          }
+        ],
+        "tags": [
+          "item"
+        ],
+        "description": "To test the \"filter\" parameter use \"body\" > \"x-www-form-urlencoded\""
+      }
+    },
+    "/item/single_update": {
+      "put": {
+        "summary": "Update single item",
+        "tags": [
+          "item"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        },
+        "operationId": "put-item-single_update",
+        "description": "Updat a single item of an entity by ID\n\nTo set the \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "type": "integer",
+            "in": "query",
+            "name": "id",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "object",
+            "name": "values",
+            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          },
+          {
+            "type": "boolean",
+            "in": "query",
+            "name": "token_required",
+            "description": "By default a token is required for updating. You can override it here."
+          }
+        ]
+      }
+    },
+    "/user/register": {
+      "post": {
+        "summary": "Register user",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "post-user-register",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "object",
+            "name": "values"
+          }
+        ],
+        "description": ""
+      }
+    },
+    "/user/login": {
+      "post": {
+        "summary": "Login user",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "post-user-login",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "email",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "password",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/user/validate_token": {
+      "parameters": [],
+      "get": {
+        "summary": "Validate token",
+        "operationId": "get-user-validate_token",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          }
+        ],
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/extend_token": {
+      "get": {
+        "summary": "Extend token",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "get-user-extend_token",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          }
+        ]
+      }
+    },
+    "/user/logout": {
+      "get": {
+        "summary": "Logout user",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "get-user-logout",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {},
+  "securityDefinitions": {},
+  "tags": [
+    {
+      "name": "item"
+    },
+    {
+      "name": "user"
+    }
+  ],
+  "basePath": "/v1"
+}
