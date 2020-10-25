@@ -305,6 +305,11 @@
             "in": "query",
             "name": "token_required",
             "description": "By default a token is required for updating. You can override it here."
+          },
+          {
+            "in": "query",
+            "name": "mail",
+            "description": "{\"enabled\": true}"
           }
         ],
         "tags": [
@@ -435,6 +440,11 @@
             "in": "query",
             "name": "token_required",
             "description": "By default a token is required for updating. You can override it here."
+          },
+          {
+            "in": "query",
+            "name": "mail",
+            "description": "{\"enabled\": true}"
           }
         ]
       }
