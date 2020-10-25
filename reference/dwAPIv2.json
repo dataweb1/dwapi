@@ -199,6 +199,12 @@
             "required": true
           },
           {
+            "in": "query",
+            "name": "mail",
+            "type": "object",
+            "description": "{\"enabled\": true}"
+          },
+          {
             "type": "boolean",
             "in": "query",
             "name": "entity",
