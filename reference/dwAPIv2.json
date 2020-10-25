@@ -309,6 +309,7 @@
           {
             "in": "query",
             "name": "mail",
+            "type": "object",
             "description": "{\"enabled\": true}"
           }
         ],
@@ -444,6 +445,7 @@
           {
             "in": "query",
             "name": "mail",
+            "type": "object",
             "description": "{\"enabled\": true}"
           }
         ]
