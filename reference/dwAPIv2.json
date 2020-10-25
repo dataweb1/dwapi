@@ -205,7 +205,7 @@
             "description": "{\"enabled\": true}"
           },
           {
-            "type": "boolean",
+            "type": "sstring",
             "in": "query",
             "name": "entity",
             "required": true
