@@ -1,9 +1,7 @@
 <?php
 namespace dwApi\query\mysql;
 use dwApi\api\ErrorException;
-use dwApi\api\Helper;
 use dwApi\storage\Mysql as StorageMysql;
-use Hashids\Hashids;
 use dwApi\api\Request;
 
 
@@ -63,37 +61,11 @@ class ItemRepository extends Mysql {
 
       $fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-
-      $item = [];
-      if ($fetched_item) {
-        foreach ($fetched_item as $fetched_item_field => $fetched_item_value) {
-          if ($fetched_item_field == $this->entity_type->getPrimaryKey()) {
-            $hashids = new Hashids('dwApi', 50);
-            $item[$this->entity_type->getPrimaryKey()."_hash"] = $hashids->encode($fetched_item_value);
-          }
-
-          if (Helper::isJson($fetched_item_value)) {
-            $item[$fetched_item_field] = json_decode($fetched_item_value, true);
-          } else {
-            $item[$fetched_item_field] = $fetched_item_value;
-          }
-        }
-
-        if ($this->relation != NULL && is_array($this->relation)) {
-          foreach ($this->relation as $r) {
-            if ($r["pri_entity"] == $this->entity_type->key) {
-              $item[$r["sec_entity"]]["items"] = $this->getRelationEntityItems($r["sec_entity"], $r["sec_key"], $item[$r["pri_key"]]);
-              $item[$r["sec_entity"]]["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $r["sec_entity"];
-            }
-          }
-        }
-      }
+      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->key);;
+      $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key;
 
       $this->debug["query"] = $sqlQuery;
 
-      $this->result = array(
-        "item" => $item,
-        "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key);
 
 
       return true;
@@ -137,31 +109,7 @@ class ItemRepository extends Mysql {
     /* process result */
     $items = [];
     while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-
-      $item = [];
-      foreach ($fetched_item as $fetched_item_field => $fetched_item_value) {
-        if ($fetched_item_field == $this->entity_type->getPrimaryKey()) {
-          $hashids = new Hashids('dwApi', 50);
-          $item[$this->entity_type->getPrimaryKey()."_hash"] = $hashids->encode($fetched_item_value);
-        }
-
-        if (Helper::isJson($fetched_item_value)) {
-          $item[$fetched_item_field] = json_decode($fetched_item_value, true);
-        } else {
-          $item[$fetched_item_field] = $fetched_item_value;
-        }
-      }
-
-      if ($this->relation != NULL && is_array($this->relation)) {
-        foreach ($this->relation as $r) {
-          if ($r["pri_entity"] == $this->entity_type->key) {
-            $item[$r["sec_entity"]]["items"] = $this->getRelationEntityItems($r["sec_entity"], $r["sec_key"], $item[$r["pri_key"]]);
-            $item[$r["sec_entity"]]["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $r["sec_entity"];
-          }
-        }
-      }
-
-      $items[] = $item;
+      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->key);
     }
 
     $this->result = array(
@@ -214,6 +162,7 @@ class ItemRepository extends Mysql {
       $this->filter = [[$this->entity_type->getPrimaryKey(), "=", $this->id]];
       $this->update();
 
+
       return true;
     }
 
@@ -238,6 +187,7 @@ class ItemRepository extends Mysql {
     if ($stmt->execute()) {
       $this->debug["query"] = $sqlQuery;
       $this->result["affected_items"] = $stmt->rowCount();
+
       return true;
     } else {
       return false;

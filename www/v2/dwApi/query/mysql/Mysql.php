@@ -126,21 +126,25 @@ abstract class Mysql{
    * @return array
    * @throws Exception
    */
-  public static function prepareSetters($values)
+  public static function prepareSetters($values = NULL)
   {
     $binds = [];
     $setters = "";
-    foreach ($values as $field => $value) {
-      if ($setters != "") {
-        $setters .= ", ";
-      }
-      $setters .= $field . " = :" . $field;
-      if (isset($values[$field])) {
-        $binds[":" . $field] = $value;
-      } else {
-        $binds[":" . $field] = "";
+    if ($values != NULL) {
+
+      foreach ($values as $field => $value) {
+        if ($setters != "") {
+          $setters .= ", ";
+        }
+        $setters .= $field . " = :" . $field;
+        if (isset($values[$field])) {
+          $binds[":" . $field] = $value;
+        } else {
+          $binds[":" . $field] = "";
+        }
       }
     }
+
     return [$setters, $binds];
   }
 
@@ -161,17 +165,17 @@ abstract class Mysql{
   }
 
   /**
-   * @param $sec_entity
-   * @param $sec_key
-   * @param $key_value
+   * @param $relation_entity_key
+   * @param $relation_key
+   * @param $relation_value
    * @return array
    */
-  public function getRelationEntityItems($sec_entity, $sec_key, $key_value)
+  public function getRelationEntityItems($relation_entity_key, $relation_key, $relation_value)
   {
-    $sqlQuery = "SELECT * FROM `" . $sec_entity . "` WHERE `" . $sec_key . "` = :sec_key";
+    $sqlQuery = "SELECT * FROM `" . $relation_entity_key . "` WHERE `" . $relation_key . "` = :relation_key";
     $stmt = $this->storage->prepare($sqlQuery);
 
-    $stmt->bindValue(":sec_key", $key_value);
+    $stmt->bindValue(":relation_key", $relation_value);
 
     $stmt->execute();
 
@@ -179,33 +183,51 @@ abstract class Mysql{
     /* process result */
     while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
-      unset($fetched_item[$sec_key]);
-
-      $item = [];
-      foreach ($fetched_item as $fetched_item_field => $fetched_item_value) {
-        if ($fetched_item_field == $this->entity_type->getPrimaryKey()) {
-          $hashids = new Hashids('dwApi', 50);
-          $item[$this->entity_type->getPrimaryKey()."_hash"] = $hashids->encode($fetched_item_value);
-        }
-
-        if (Helper::isJson($fetched_item_value)) {
-          $item[$fetched_item_field] = json_decode($fetched_item_value, true);
-        } else {
-          $item[$fetched_item_field] = $fetched_item_value;
-        }
-      }
-
-      foreach ($this->relation as $r) {
-        if ($r["pri_entity"] == $sec_entity) {
-          $item[$r["sec_entity"]]["items"] = $this->getRelationEntityItems($r["sec_entity"], $r["sec_key"], $item[$r["pri_key"]]);
-          $item[$r["sec_entity"]]["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->api->request->project . "/" . $r["sec_entity"];
-        }
-      }
-
-      $items[] = $item;
+      $items[] = $this->processFetchedItem($fetched_item, $relation_entity_key);
     }
 
     return $items;
+  }
+
+
+  /**
+   * Process item properties and
+   * @param $fetched_item
+   * @param $fetched_item_entity_type
+   * @return array
+   */
+  function processFetchedItem($fetched_item, $fetched_item_entity_type) {
+    $item = [];
+    foreach ($fetched_item as $fetched_item_field => $fetched_item_value) {
+      if ($fetched_item_field == $this->entity_type->getPrimaryKey()) {
+        $hashids = new Hashids('dwApi', 50);
+        $item[$this->entity_type->getPrimaryKey()."_hash"] = $hashids->encode($fetched_item_value);
+      }
+
+      if (Helper::isJson($fetched_item_value)) {
+        $item[$fetched_item_field] = json_decode($fetched_item_value, true);
+      } else {
+        $item[$fetched_item_field] = $fetched_item_value;
+      }
+    }
+
+    if ($this->relation != NULL && is_array($this->relation)) {
+      foreach ($this->relation as $r) {
+        if ($r["pri_entity"] == $fetched_item_entity_type) {
+          $relation_items = $this->getRelationEntityItems($r["sec_entity"], $r["sec_key"], $item[$r["pri_key"]]);
+          if (is_array($item[$r["sec_entity"]]["items"])) {
+            if (count($relation_items) > 0) {
+              $item[$r["sec_entity"]]["items"][] = $relation_items;
+            }
+          } else {
+            $item[$r["sec_entity"]]["items"] = $relation_items;
+          }
+          $item[$r["sec_entity"]]["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->api->request->project . "/" . $r["sec_entity"];
+        }
+      }
+    }
+
+    return $item;
   }
 
 
