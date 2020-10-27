@@ -1,0 +1,5 @@
+{% if status.success == true %}
+{{ config.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=true&error_code=&hash={{ parameters.get.hash }}
+{% else %}
+{{ config.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.get.hash }}
+{% endif %}

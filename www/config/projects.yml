@@ -1,0 +1,104 @@
+LluG3gwZKPzC:
+  db_credentials:
+    host: ID130696_api.db.webhosting.be
+    dbname: ID130696_api
+    username: ID130696_api
+    password: blEY3tZ1Txhb
+  site:
+    name: dwAPI test site
+    url: https://www.data-web.be/hallo
+    owner_email: dwapi@data-web.be
+    owner_name: dwAPI
+CFNIOuwTJGyR:
+  db_credentials:
+    host: ID130696_vsacan.db.webhosting.be
+    dbname: ID130696_vsacan
+    username: ID130696_vsacan
+    password: vsacan01
+G07zZh0rxK8w:
+  db_credentials:
+    host: ID130696_vsabill.db.webhosting.be
+    dbname: ID130696_vsabill
+    username: ID130696_vsabill
+    password: vsabill01
+zUSxof7q0Bkg:
+  db_credentials:
+    host: ID130696_vsacaglar.db.webhosting.be
+    dbname: ID130696_vsacaglar
+    username: ID130696_vsacaglar
+    password: vsacaglar01
+4N9TfujyfeXB:
+  db_credentials:
+    host: ID130696_vsahaluk.db.webhosting.be
+    dbname: ID130696_vsahaluk
+    username: ID130696_vsahaluk
+    password: vsahaluk01
+LuH0fivVclyp:
+  db_credentials:
+    host: ID130696_vsasandhya.db.webhosting.be
+    dbname: ID130696_vsasandhya
+    username: ID130696_vsasandhya
+    password: vsasandhya01
+YDHbiB1H6VXZ:
+  db_credentials:
+    host: ID130696_vsavida.db.webhosting.be
+    dbname: ID130696_vsavida
+    username: ID130696_vsavida
+    password: vsavida01
+yHdCirs044LG:
+  db_credentials:
+    host: ID130696_vsaharika.db.webhosting.be
+    dbname: ID130696_vsaharika
+    username: ID130696_vsaharika
+    password: vsaharika01
+T4yXvlESkOl5:
+  db_credentials:
+    host: ID130696_vsaangel.db.webhosting.be
+    dbname: ID130696_vsaangel
+    username: ID130696_vsaangel
+    password: vsaangel01
+QNyG0s83pm3i:
+  db_credentials:
+    host: ID130696_vsasamuel.db.webhosting.be
+    dbname: ID130696_vsasamuel
+    username: ID130696_vsasamuel
+    password: vsasamuel01
+4mRZpujKYAOh:
+  db_credentials:
+    host: ID130696_vsabarsam.db.webhosting.be
+    dbname: ID130696_vsabarsam
+    username: ID130696_vsabarsam
+    password: vsabarsam01
+f5gh33fXxAbc:
+  db_credentials:
+    host: ID130696_vsafrituur.db.webhosting.be
+    dbname: ID130696_vsafrituur
+    username: ID130696_vsafrituur
+    password: vsafrituur01
+  site:
+    name: Frituur Webshop
+    url: https://vdab.data-web.be/frituur
+    owner_email: frituur@frituurwebshop.be
+    owner_name: Friturist
+f5gh8JhjAXBd:
+  db_credentials:
+    host: ID130696_vsakleding.db.webhosting.be
+    dbname: ID130696_vsakleding
+    username: ID130696_vsakleding
+    password: vsakleding01
+  site:
+    name: Obelisk Fashion
+    url: https://vdab.data-web.be/kleding
+    owner_email: cangeylan@outlook.com
+    owner_name: Can en co.
+fjgub4eD3ddg:
+  db_credentials:
+    host: ID130696_vsabroodjes.db.webhosting.be
+    dbname: ID130696_vsabroodjes
+    username: ID130696_vsabroodjes
+    password: vsabroodjes01
+  site:
+    name: HBH Broodjeszaak
+    url: https://vdab.data-web.be/broodjes
+    owner_email: hbk@hbkbroodjeszaak.be
+    owner_name: HB & H

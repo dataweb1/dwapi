@@ -1,0 +1,47 @@
+/*label {
+  font-weight: bold;
+  display: block;
+}
+*/
+div {
+  /*margin-bottom: 15px;*/
+}
+
+th {
+  text-align: left!important;
+}
+
+#sort_section,
+#filter_section {
+  display: flex;
+}
+
+
+#sort_section > div,
+#filter_section > div {
+  display: flex;
+  flex-direction: column;
+padding: 10px;
+position: relative;
+}
+
+#producten_table_section > div {
+  padding: 10px;
+}
+
+#producten_table img {
+  width: 150px;
+}
+#filter_section button {
+  position: absolute;
+  bottom: 4px;
+}
+
+td .btn {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.custom-file-label::after {
+  content: "Bladeren";
+}
