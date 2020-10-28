@@ -9,8 +9,8 @@ include_once 'class/ApiMail.php';
 include_once 'class/item.php';
 include_once 'class/user.php';
 
-require __DIR__."/../../vendor/autoload.php";
-
+require __DIR__."/../../../vendor/autoload.php";
+ 
 class Api {
   public $project;
   public $logged_in_user_id = NULL;
