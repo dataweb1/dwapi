@@ -1,0 +1,31 @@
+# Use root/example user/password credentials
+version: '3.8'
+
+services:
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www/
+      - ./www:/var/www/html/
+    extra_hosts:
+      - "dwapi.local:127.0.0.1"
+    hostname: dwapi.local
+    domainname: local
+
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
