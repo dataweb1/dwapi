@@ -10,7 +10,7 @@
       "email": "dwapi@data-web.be"
     }
   },
-  "host": "dwapi.local",
+  "host": "127.0.0.1",
   "schemes": [
     "http"
   ],
