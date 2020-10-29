@@ -1,9 +1,0 @@
-<IfModule mod_rewrite.c>
-RewriteEngine On
-
-RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteRule ^([a-z0-9_\-]+)/?$ index.php?endpoint=$1&action=$2 [NC,L,QSA]
-RewriteRule ^([a-z0-9_\-]+)/([a-z0-9_\-]+)/?$ index.php?endpoint=$1&action=$2 [NC,L,QSA]
-RewriteRule ^([a-z0-9_\-]+)/([a-z0-9_\-]+)/([a-z0-9_\-]+)/?$ index.php?endpoint=$1&action=$2&hash=$3 [NC,L,QSA]
-
-</IfModule>
