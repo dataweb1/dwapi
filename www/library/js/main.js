@@ -7,9 +7,9 @@ class dwapi {
 
     control_inputs(project,){
         var submittable= true
-        var inputs=  $('input:required')//custom attributes
+        var properties=  $('input:required[dw_property]')
 
-        for (const element of inputs) {
+        for (const element of properties) {
             
             const value = element.value
 
@@ -20,9 +20,18 @@ class dwapi {
         }
 
         if(submittable){
-            const email= $('input:required[type="email"]')[0].value;
-            const password = $('input:required[type="password"]')[0].value;
-            new LoginAjax(project,email,password).run()
+
+            var data ={}
+            for (let i = 0; i < properties.length; i++) {
+                const element = properties[i];
+                const keys = element.getAttribute('dw_property')
+                const values = element.value
+
+                data[`${keys}`] = values
+            }
+           // var formData = new FormData()
+            //formData.set('email',data)
+            new LoginAjax(project,data).run()
         }
     }
 }

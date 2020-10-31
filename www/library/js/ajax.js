@@ -1,14 +1,10 @@
 export default class LoginAjax{ /// use inheritance for ajax calls
-    constructor(project,email,password){
-        this.async = true,
-        this.crossDomain = true,
+    constructor(project,data){
+     
         this.url = `https://dwapi.dev/v2/user/login?project=${project}`
         this.method= 'POST',
         this.headers ={},
-        this.processData = false,
-        this.data = {
-            "email":`${email}`, "password":`${password}`
-        }
+        this.data = data  
     }
     
     run(){
