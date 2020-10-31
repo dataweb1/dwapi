@@ -19,7 +19,7 @@
     <div id="welcome" style="display:grid; place-items:center; height: 100vh;">
         <div class="card" style="width: 500px">
             <div style="display: unset;">
-                <form class="px-4 py-3"  dw_entity='user' dw_endpoint='thistable'>
+                <form class="px-4 py-3"  dw_form='login' >
                     <h3 style="text-align: center; margin-bottom: 23px; margin-top: 18px; color: #00bfff; font-size: 37px;">
                     Meld je aan
                     </h3>
@@ -50,35 +50,49 @@
                 </a>
             </div>
         </div>
+        <div class="card" style="width: 500px">
+            <div style="display: unset;">
+                <form class="px-4 py-3"  dw_form='register' dw_endpoint='thistable'>
+                    <h3 style="text-align: center; margin-bottom: 23px; margin-top: 18px; color: #00bfff; font-size: 37px;">
+                        Register
+                    </h3>
+                    <div class="form-group">
+                        <label for="email" style="color: rgb(48, 48, 48);">Email</label>
+                        <input type="email" class="form-control" placeholder="email@voorbeeld.com"  dw_property='email' required>
+                    </div>
+                    <div class="form-group">    
+                        <label for="wachtwoord" style="color: rgb(48, 48, 48);">Wachtwoord</label>
+                        <input type="password" class="form-control"  placeholder="wachtwoord"  dw_property='password' required>
+                    </div>
+                    <div class="form-group">    
+                        <label for="voornaam" style="color: rgb(48, 48, 48);">voornaam</label>
+                        <input type="text" class="form-control"  placeholder="voornaam"  dw_property='voornaam' required>
+                    </div>
+                    <div class="form-group">    
+                        <label for="familienaam" style="color: rgb(48, 48, 48);">familienaam</label>
+                        <input type="text" class="form-control"  placeholder="familienaam"  dw_property='familienaam' required>
+                    </div>
+                    <div class="form-group">
+                        <div id="invalid_login" class="invalid-feedback"></div>
+                    </div>
+                </form>
+                
+                <div class="dropdown-divider">
+         
+                </div>
+                <button id="register_button" class="btn btn-primary" style="background-color: deepskyblue; width: 90.5%; text-transform: none; color: white; border-color: deepskyblue; margin-left: 25px; margin-bottom: 3px; margin-top: -15px; box-shadow: none;">
+                    register
+                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
+                        <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                    </svg>
+                </button>
+                 <a class="dropdown-item mb-3" href="#" style="color: deepskyblue;">
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="modal fade" id="registreren" tabindex="-1" aria-labelledby="register_label" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="register_label" style="font-size: 20px; color: deepskyblue; margin-left: 9px;">EEN ACCOUNT AANMAKEN</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-                <form class="px-4 py-3" style="margin: -15px; margin-bottom: 0;">
-                    <div class="form-group">
-                        <label for="nieuwe_email" style="color: rgb(0, 119, 255);">Email</label>
-                        <input type="email" class="form-control" id="nieuwe_email" placeholder="email@voorbeeld.com">
-                    </div>
-                    <div class="form-group">
-                        <label for="nieuw_wachtwoord"style="color: rgb(0, 119, 255);">Wachtwoord</label>
-                        <input type="password" class="form-control" id="nieuw_wachtwoord" placeholder="wachtwoord">
-                    </div>
-                    <button class="btn btn-secondary" data-dismiss="modal" onclick="registreren()" style="background-color: deepskyblue; color: white; border-color: deepskyblue; margin-top: 12px; margin-bottom: 12px;">
-                        REGISTREREN
-                    </button>           
-                </form>
-            </div>
-        </div>
-        </div>
-    </div>
     <script type='module' defer src='main.js'></script>
 </body>
 

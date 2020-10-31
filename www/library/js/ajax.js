@@ -1,13 +1,10 @@
-export default class LoginAjax{ /// use inheritance for ajax calls
-    constructor(project,data){
-     
-        this.url = `https://dwapi.dev/v2/user/login?project=${project}`
+export default class AjaxPost{
+    constructor(){
         this.method= 'POST',
-        this.headers ={},
-        this.data = data  
+        this.headers ={}
     }
     
-    run(){
+    run(){  
         console.log(this)
         
         $.ajax(this)
@@ -17,5 +14,21 @@ export default class LoginAjax{ /// use inheritance for ajax calls
         .fail(function(fail_response){
             console.log(fail_response)
         })
+    }
+}
+
+export  class Login extends AjaxPost{
+    constructor(project,data){
+        super()
+        this.url=`https://dwapi.dev/v2/user/login?project=${project}`,
+        this.data = data
+    }
+}
+
+export class Register extends AjaxPost{
+    constructor(project,formData){
+        super()
+        this.url=`https://dwapi.dev/v2/user/register?project=${project}`,
+        this.data = formData
     }
 }

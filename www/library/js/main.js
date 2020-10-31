@@ -1,13 +1,13 @@
 import Validation from './validator.js'
 import Html from './output.js'
-import LoginAjax from './ajax.js'
+import {Login,Register} from './ajax.js'
 
 class dwapi {
     constructor(){} 
 
-    control_inputs(project,){
+    control_inputs(table,form,project){
         var submittable= true
-        var properties=  $('input:required[dw_property]')
+        var properties=  $(`[dw_form*=${form}] input:required[dw_property]`)
 
         for (const element of properties) {
             
@@ -29,15 +29,33 @@ class dwapi {
 
                 data[`${keys}`] = values
             }
-           // var formData = new FormData()
-            //formData.set('email',data)
-            new LoginAjax(project,data).run()
+
+            if(form=='login')
+            {
+                new Login(project,data).run()
+            }
+            else if (form=='register')
+            {
+                let values = data
+                let formData ={values}
+                new Register(project,formData).run()
+            }
+            else
+            {
+                new Create().create(table,form,project,data)
+            }
         }
     }
 }
 
-function submit(){
-    new dwapi().control_inputs('f5gh8JhjAXBd')
+function submit_login(){
+    new dwapi().control_inputs('user','login','f5gh8JhjAXBd')
 }
-document.querySelector('#inloggen_knop').addEventListener('click', submit)
 
+
+function submit_register(){
+    new dwapi().control_inputs('user','register','f5gh8JhjAXBd')
+}
+document.querySelector('#inloggen_knop').addEventListener('click', submit_login)
+
+document.querySelector('#register_button').addEventListener('click', submit_register)
