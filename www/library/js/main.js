@@ -5,7 +5,7 @@ import {Login,Register} from './ajax.js'
 class dwapi {
     constructor(){} 
 
-    control_inputs(table,form,project){
+    control_inputs(form,table,project){
         var submittable= true
         var properties=  $(`[dw_form*=${form}] input:required[dw_property]`)
 
@@ -48,14 +48,23 @@ class dwapi {
     }
 }
 
-function submit_login(){
-    new dwapi().control_inputs('user','login','f5gh8JhjAXBd')
+
+
+var submits = document.querySelectorAll('[dw_submit]')
+
+if(submits.length==0){
+    console.log('you must add dw_submit attribute to your submit button')
+}else{
+    submits.forEach(button => {
+        var parameters = button.getAttribute('dw_submit').split(' ')
+
+        button.addEventListener('click',function(){
+            submit(parameters[0],parameters[1],parameters[2])
+        })
+    });
 }
 
-
-function submit_register(){
-    new dwapi().control_inputs('user','register','f5gh8JhjAXBd')
+function submit(p1,p2,p3){
+    new dwapi().control_inputs(p1,p2,p3)
 }
-document.querySelector('#inloggen_knop').addEventListener('click', submit_login)
 
-document.querySelector('#register_button').addEventListener('click', submit_register)
