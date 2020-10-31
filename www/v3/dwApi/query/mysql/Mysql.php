@@ -198,12 +198,16 @@ abstract class Mysql{
    */
   function processFetchedItem($fetched_item, $fetched_item_entity_type) {
     $item = [];
+    //process fields to item
     foreach ($fetched_item as $fetched_item_field => $fetched_item_value) {
+
+      //add hashed version if of the primary key
       if ($fetched_item_field == $this->entity_type->getPrimaryKey()) {
         $hashids = new Hashids('dwApi', 50);
         $item[$this->entity_type->getPrimaryKey()."_hash"] = $hashids->encode($fetched_item_value);
       }
 
+      //add value to item, if JSON add as array
       if (Helper::isJson($fetched_item_value)) {
         $item[$fetched_item_field] = json_decode($fetched_item_value, true);
       } else {
@@ -211,6 +215,7 @@ abstract class Mysql{
       }
     }
 
+    //process relations to item if set
     if ($this->relation != NULL && is_array($this->relation)) {
       foreach ($this->relation as $r) {
         if ($r["pri_entity"] == $fetched_item_entity_type) {

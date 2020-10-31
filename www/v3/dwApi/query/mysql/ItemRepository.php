@@ -28,17 +28,15 @@ class ItemRepository extends Mysql {
 
   /**
    * ItemRepository constructor.
-   * @param $endpoint
    * @param string $entity_type
    * @throws ErrorException
    */
-  public function __construct($endpoint, $entity_type = "") {
+  public function __construct($entity_type = "") {
     $this->storage = StorageMysql::load();
 
     $this->request = Request::getInstance();
 
     $this->entity_type = new EntityType();
-    if ($entity_type == "") { $entity_type = $endpoint; }
     $this->entity_type->load($entity_type);
   }
 

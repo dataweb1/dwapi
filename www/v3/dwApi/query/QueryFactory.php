@@ -16,6 +16,9 @@ class QueryFactory {
   public static function create($endpoint, $entity_type = "") {
 
     $query_class_name = "dwApi\\query\\mysql\\".ucfirst($endpoint)."Repository";
-    return new $query_class_name($endpoint, $entity_type);
+    if ($entity_type == "") {
+      $entity_type = $endpoint;
+    }
+    return new $query_class_name($entity_type);
   }
 }
