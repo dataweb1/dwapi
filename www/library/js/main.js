@@ -2,7 +2,7 @@ class Validation {
     constructor(){}
 
     is_empty(value){
-        if (value !== '' && value !== null && typeof value !== 'undefined') {
+        if (value == '' || value == null || typeof value == 'undefined') {
             return true
         }
         return false
@@ -16,18 +16,16 @@ class Controller {
     control_inputs(){
         var submittable= true
 
-        var inputs=  $('input,textarea,select').filter('required')
+        var inputs=  $('input:required')
 
-        inputs.forEach(element => {
+        for (const element of inputs) {
             const value = element.value
-            console.log(value)
-            
             if(new Validation().is_empty(value)){
                 new Html().add_class(element)
                 submittable =false
             }
-        });
-
+        }
+    
         if(submittable){
             new Ajax().run()
         }
@@ -39,7 +37,7 @@ class Controller {
 class Html {
     constructor(){}
     add_class(element){
-        element.classList.add('was-validated')
+        element.classList.add('invalid')
     }
 }
 
@@ -47,8 +45,11 @@ class Ajax{
     constructor(){}
 
     run(){
-
+        console.log('works')
     }
 }
 
-document.getElementById('inloggen_knop').addEventListener('click',new Controller().control_inputs())
+
+function x(){
+    new Controller().control_inputs()
+}
