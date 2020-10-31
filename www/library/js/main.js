@@ -1,55 +1,34 @@
-class Validation {
-    constructor(){}
+import Validation from './validator.js'
+import Html from './output.js'
+import LoginAjax from './ajax.js'
 
-    is_empty(value){
-        if (value == '' || value == null || typeof value == 'undefined') {
-            return true
-        }
-        return false
-    }
-}
-
-
-class Controller {
+class dwapi {
     constructor(){} 
 
-    control_inputs(){
+    control_inputs(project,){
         var submittable= true
-
-        var inputs=  $('input:required')
+        var inputs=  $('input:required')//custom attributes
 
         for (const element of inputs) {
+            
             const value = element.value
+
             if(new Validation().is_empty(value)){
                 new Html().add_class(element)
                 submittable =false
             }
         }
-    
+
         if(submittable){
-            new Ajax().run()
+            const email= $('input:required[type="email"]')[0].value;
+            const password = $('input:required[type="password"]')[0].value;
+            new LoginAjax(project,email,password).run()
         }
     }
 }
 
-
-
-class Html {
-    constructor(){}
-    add_class(element){
-        element.classList.add('invalid')
-    }
+function submit(){
+    new dwapi().control_inputs('f5gh8JhjAXBd')
 }
+document.querySelector('#inloggen_knop').addEventListener('click', submit)
 
-class Ajax{
-    constructor(){}
-
-    run(){
-        console.log('works')
-    }
-}
-
-
-function x(){
-    new Controller().control_inputs()
-}
