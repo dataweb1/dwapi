@@ -7,7 +7,7 @@ class dwapi {
 
     control_inputs(form,table,project){
         var submittable= true
-        var properties=  $(`[dw_form*=${form}] input:required[dw_property]`)
+        var properties=  $(`[dw_form*=${form}] input:required[dw_property], textarea:required[dw_property]`)
 
         for (const element of properties) {
             
@@ -42,6 +42,8 @@ class dwapi {
             }
             else
             {
+                let values = data
+                let formData ={values}
                 new Create().create(table,form,project,data)
             }
         }
@@ -64,7 +66,7 @@ if(submits.length==0){
     });
 }
 
-function submit(p1,p2,p3){
-    new dwapi().control_inputs(p1,p2,p3)
+function submit(form,table,project){
+    new dwapi().control_inputs(form,table,project)
 }
 

@@ -32,3 +32,11 @@ export class Register extends AjaxPost{
         this.data = formData
     }
 }
+
+export class Create extends AjaxPost {
+    constructor(table,project,formData){
+        super()
+        this.url=`https://dwapi.dev/v2/${table}/create?project=${project}`,
+        this.data = formData
+    }
+}

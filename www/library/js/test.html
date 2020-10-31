@@ -52,7 +52,7 @@
         </div>
         <div class="card" style="width: 500px">
             <div style="display: unset;">
-                <form class="px-4 py-3"  dw_form='register' dw_endpoint='thistable'>
+                <form class="px-4 py-3"  dw_form='register'>
                     <h3 style="text-align: center; margin-bottom: 23px; margin-top: 18px; color: #00bfff; font-size: 37px;">
                         Register
                     </h3>
@@ -86,6 +86,16 @@
                 </button>
                  <a class="dropdown-item mb-3" href="#" style="color: deepskyblue;">
                 </a>
+            </div>
+
+            <div>
+                Contact Form
+                <div dw_form='contact'>
+                    <input type="text" dw_property='Naam' placeholder="naam" required>
+                    <input type="text" dw_property='Email' placeholder="email" required>
+                    <textarea type="text" dw_property='bericht' placeholder="bericht"required ></textarea>
+                    <button dw_submit='contact create f5gh8JhjAXBd'>submit contact form</button>
+                </div>
             </div>
         </div>
     </div>
