@@ -1,9 +1,5 @@
-export default class AjaxPost{
-    constructor(){
-        this.method= 'POST',
-        this.headers ={}
-    }
-    
+export default class Ajax {
+
     run(){  
         console.log(this)
         
@@ -15,6 +11,18 @@ export default class AjaxPost{
             console.log(failResponse)
         })
     }
+
+}
+
+
+
+export class AjaxPost extends Ajax{
+    constructor(){
+        super()
+        this.method= 'POST',
+        this.headers ={}
+    }
+    
 }
 
 export  class User extends AjaxPost{
@@ -25,8 +33,6 @@ export  class User extends AjaxPost{
     }
     
 }
-
-
 
 export class Item extends AjaxPost {
     constructor(endpoint,request,project,formData){
