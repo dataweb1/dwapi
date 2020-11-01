@@ -1,6 +1,6 @@
 export default class Html {
     constructor(){}
-    add_class(element){
+    addClass(element){
         element.classList.add('is-invalid')
     }
 }

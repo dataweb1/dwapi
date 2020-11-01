@@ -14,32 +14,30 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </head>
 <html>
-    <body class="login_pagina" style="background-color: rgb(41, 41, 41);">
+    <body class="login_pagina" style="background-color: rgb(41, 41, 41);" dwProject='f5gh8JhjAXBd'>
       
     <div id="welcome" style="display:grid; place-items:center; height: 100vh;">
         <div class="card" style="width: 500px">
             <div style="display: unset;">
-                <form class="px-4 py-3"  dw_form='login' >
+                <form class="px-4 py-3"  dwForm='login' >
                     <h3 style="text-align: center; margin-bottom: 23px; margin-top: 18px; color: #00bfff; font-size: 37px;">
                     Meld je aan
                     </h3>
                     <div class="form-group">
                         <label id="email_text" for="email" style="color: rgb(48, 48, 48);">Email</label>
-                        <input type="email" class="form-control" id="emailx" placeholder="email@voorbeeld.com"  dw_property='email' required>
+                        <input type="email" class="form-control" id="emailx" placeholder="email@voorbeeld.com"  dwProperty='email' required>
                     </div>
                     <div class="form-group">    
                         <label for="wachtwoord" style="color: rgb(48, 48, 48);">Wachtwoord</label>
-                        <input type="password" class="form-control" id="wachtwoord" placeholder="wachtwoord"  dw_property='password' required>
+                        <input type="password" class="form-control" id="wachtwoord" placeholder="wachtwoord"  dwProperty='password' required>
                     </div>
-                    <div class="form-group">
-                        <div id="invalid_login" class="invalid-feedback"></div>
-                    </div>
+
                 </form>
                 
                 <div class="dropdown-divider">
          
                 </div>
-                <button id="inloggen_knop" dw_submit='login user f5gh8JhjAXBd' class="btn btn-primary" style="background-color: deepskyblue; width: 90.5%; text-transform: none; color: white; border-color: deepskyblue; margin-left: 25px; margin-bottom: 3px; margin-top: -15px; box-shadow: none;">
+                <button id="inloggen_knop" dwEndpoint='user' dwRequest='login' class="btn btn-primary" style="background-color: deepskyblue; width: 90.5%; text-transform: none; color: white; border-color: deepskyblue; margin-left: 25px; margin-bottom: 3px; margin-top: -15px; box-shadow: none;">
                     Aanmelden
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -52,32 +50,32 @@
         </div>
         <div class="card" style="width: 500px">
             <div style="display: unset;">
-                <form class="px-4 py-3"  dw_form='register'>
+                <form class="px-4 py-3"  dwForm='register'>
                     <h3 style="text-align: center; margin-bottom: 23px; margin-top: 18px; color: #00bfff; font-size: 37px;">
                         Register
                     </h3>
                     <div class="form-group">
                         <label for="email" style="color: rgb(48, 48, 48);">Email</label>
-                        <input type="email" class="form-control" placeholder="email@voorbeeld.com"  dw_property='email' required>
+                        <input type="email" class="form-control" placeholder="email@voorbeeld.com"  dwProperty='email' required>
                     </div>
                     <div class="form-group">    
                         <label for="wachtwoord" style="color: rgb(48, 48, 48);">Wachtwoord</label>
-                        <input type="password" class="form-control"  placeholder="wachtwoord"  dw_property='password' dw_password='min3 max-35 up-1 lo-1 sp-1' required>
+                        <input type="password" class="form-control"  placeholder="wachtwoord"  dwProperty='password' dw_password='  up-1 lo-1 sp-1' required>
                     </div>
                     <div class="form-group">    
                         <label for="voornaam" style="color: rgb(48, 48, 48);">voornaam</label>
-                        <input type="text" class="form-control"  placeholder="voornaam"  dw_property='voornaam' required>
+                        <input type="text" class="form-control"  placeholder="voornaam"  dwProperty='voornaam' required>
                     </div>
                     <div class="form-group">    
                         <label for="familienaam" style="color: rgb(48, 48, 48);">familienaam</label>
-                        <input type="text" class="form-control"  placeholder="familienaam"  dw_property='familienaam' required>
+                        <input type="text" class="form-control"  placeholder="familienaam"  dwProperty='familienaam' required>
                     </div>
                 </form>
                 
                 <div class="dropdown-divider">
          
                 </div>
-                <button id="register_button" dw_submit='register user f5gh8JhjAXBd' class="btn btn-primary" style="background-color: deepskyblue; width: 90.5%; text-transform: none; color: white; border-color: deepskyblue; margin-left: 25px; margin-bottom: 3px; margin-top: -15px; box-shadow: none;">
+                <button id="register_button" dwEndpoint='user' dwRequest='register' class="btn btn-primary" style="background-color: deepskyblue; width: 90.5%; text-transform: none; color: white; border-color: deepskyblue; margin-left: 25px; margin-bottom: 3px; margin-top: -15px; box-shadow: none;">
                     register
                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-box-arrow-in-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z"/>
@@ -90,17 +88,17 @@
 
             <div>
                 Contact Form
-                <div dw_form='contact'>
-                    <input type="text" class="form-control"  dw_property='Naam' placeholder="naam" required>
-                    <input type="text" class="form-control"  dw_property='Email' placeholder="email" required>
-                    <textarea type="text" class="form-control"  dw_property='bericht' placeholder="bericht"required ></textarea>
-                    <button dw_submit='contact create f5gh8JhjAXBd'>submit contact form</button>
+                <div dwForm='contact'>
+                    <input type="text" class="form-control"  dwProperty='Naam' placeholder="naam" required>
+                    <input type="text" class="form-control"  dwProperty='Email' placeholder="email" required>
+                    <textarea type="text" class="form-control"  dwProperty='bericht' placeholder="bericht"required ></textarea>
+                    <button dwRequest='create'>submit contact form</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script type='module' defer src='main.js'></script>
+    <script type='module' defer src='dwapi.js'></script>
 </body>
 
 </html>

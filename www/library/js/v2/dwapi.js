@@ -1,20 +1,19 @@
 import Validation from './validator.js'
 import Html from './output.js'
-import {Login,Register} from './ajax.js'
+import {User,Item} from './ajaxCalls.js'
 
 class dwapi {
-    constructor(){} 
 
-    control_submit(form,table,project){
+    control_submit(request,endpoint,projectKey){
         var submittable= true
-        var properties=  $(`[dw_form*=${form}] input:required[dw_property], [dw_form*=${form}] textarea:required[dw_property]`)
+        var properties=  $(`[dwForm*=${request}] input:required[dwProperty], [dwForm*=${request}] textarea:required[dwProperty]`)
 
         for (const element of properties) {
             
             const value = element.value
 
-            if(new Validation().is_empty(value)){
-                new Html().add_class(element)
+            if(new Validation().isEmpty(value)){
+                new Html().addClass(element)
                 submittable =false
             }
         }
@@ -24,55 +23,60 @@ class dwapi {
             var data ={}
             for (let i = 0; i < properties.length; i++) {
                 const element = properties[i];
-                const keys = element.getAttribute('dw_property')
+                const keys = element.getAttribute('dwProperty')
                 const values = element.value
 
                 data[`${keys}`] = values
             }
 
-            if(form=='login')
-            {
-                new Login(project,data).run()
-            }
-            else if (form=='register')
-            {
+            if(request=='login'){
+                new User(request,projectKey,data).run()
+            } 
+            else if (request=='register'){
                 let values = data
                 let formData ={values}
-                new Register(project,formData).run()
+                new User(request,projectKey,formData).run()
             }
-            else
-            {
+            else{
                 let values = data
                 let formData ={values}
-                new Create().create(table,form,project,data)
+                new Item(request,endpoint,projectKey,formData)
             }
         }
     }
 
-    control_email(){
+    loadApp(){
+                
+        var submit = document.querySelectorAll('[dwRequest]')
+        var project = document.querySelectorAll('[dwProject]')
+        var projectKey;
 
+        if(project.length==0){
+            console.log('your document should have a dwProject attribute')
+        }else{
+            projectKey = project[0].getAttribute('dwProject')
+        }
+
+        if(submit.length==0){
+            console.log('your submit buttons should have dwRequest attributes')
+        }else{
+
+            submit.forEach(button => {
+
+                var endpoint= button.getAttribute('dwEndpoint')
+                var request = button.getAttribute('dwRequest')
+
+                button.addEventListener('click',function(){
+                    new dwapi().control_submit(request,endpoint,projectKey)
+                }) 
+            });
+        }
     }
 }
 
+new dwapi().loadApp()
 
-
-var submits = document.querySelectorAll('[dw_submit]')
-
-if(submits.length==0){
-    console.log('you must add dw_submit attribute to your submit button')
-}else{
-    submits.forEach(button => {
-        let parameters = button.getAttribute('dw_submit').split(' ')
-        let form =parameters[0]
-        let table =parameters[1]
-        let project = parameters[2]
-
-        button.addEventListener('click',function(){
-            new dwapi().control_submit(form,table,project)
-        })
-    });
-}
-
+/* 
 var email_requirements = document.querySelectorAll('[dw_email]')
 var password_requirements = document.querySelectorAll('[dw_password]')
 
@@ -105,8 +109,8 @@ if (password_requirements.length!==0){
         if(params.match(/sp-+\d+/g)!==null){
             specialChar = params.match(/sp-+\d+/g)[0].split('-')[1]
         }   
-        
+
     });
 
     
-}
+} */
