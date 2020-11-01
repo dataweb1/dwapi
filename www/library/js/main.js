@@ -5,7 +5,7 @@ import {Login,Register} from './ajax.js'
 class dwapi {
     constructor(){} 
 
-    control_inputs(form,table,project){
+    control_submit(form,table,project){
         var submittable= true
         var properties=  $(`[dw_form*=${form}] input:required[dw_property], [dw_form*=${form}] textarea:required[dw_property]`)
 
@@ -48,6 +48,10 @@ class dwapi {
             }
         }
     }
+
+    control_email(){
+
+    }
 }
 
 
@@ -58,15 +62,51 @@ if(submits.length==0){
     console.log('you must add dw_submit attribute to your submit button')
 }else{
     submits.forEach(button => {
-        var parameters = button.getAttribute('dw_submit').split(' ')
+        let parameters = button.getAttribute('dw_submit').split(' ')
+        let form =parameters[0]
+        let table =parameters[1]
+        let project = parameters[2]
 
         button.addEventListener('click',function(){
-            submit(parameters[0],parameters[1],parameters[2])
+            new dwapi().control_submit(form,table,project)
         })
     });
 }
 
-function submit(form,table,project){
-    new dwapi().control_inputs(form,table,project) 
-}
+var email_requirements = document.querySelectorAll('[dw_email]')
+var password_requirements = document.querySelectorAll('[dw_password]')
 
+if (password_requirements.length!==0){
+    let minChar=''
+    let maxChar = ''
+    let uppercase = ''
+    let lowercase = ''
+    let specialChar = ''
+
+    password_requirements.forEach(element => {
+        let params = element.getAttribute('dw_password')
+
+        if(params.match(/min-+\d+/g)!==null){
+            minChar = params.match(/min-+\d+/g)[0].split('-')[1]
+        }
+
+        if(params.match(/max-+\d+/g)!==null){
+            maxChar = params.match(/max-+\d+/g)[0].split('-')[1]
+        }
+
+        if(params.match(/up-+\d+/g)!==null){
+            uppercase = params.match(/up-+\d+/g)[0].split('-')[1]
+        }
+
+        if(params.match(/lo-+\d+/g)!==null){
+            lowercase = params.match(/lo-+\d+/g)[0].split('-')[1]
+        }   
+        
+        if(params.match(/sp-+\d+/g)!==null){
+            specialChar = params.match(/sp-+\d+/g)[0].split('-')[1]
+        }   
+        
+    });
+
+    
+}
