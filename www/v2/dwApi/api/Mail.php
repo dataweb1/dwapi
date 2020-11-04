@@ -18,7 +18,7 @@ class Mail{
     $this->request = Request::getInstance();
     $this->response = Response::getInstance();
     $this->mail_parameters = $this->request->getParameters("get", "mail");
-    Config::getInstance();
+    Project::getInstance();
   }
 
   /**

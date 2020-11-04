@@ -4,10 +4,10 @@ use Symfony\Component\Yaml\Yaml;
 
 
 /**
- * Class Config
+ * Class Settings
  * @package dwApi\api
  */
-class Config {
+class Settings {
   public static $API_PATH;
   public $api;
   public $key;
@@ -28,7 +28,7 @@ class Config {
     /**
      * Read projects.yml
      */
-    $projects = Yaml::parse(file_get_contents($_SERVER["DOCUMENT_ROOT"].'/config/projects.yml'));
+    $projects = Yaml::parse(file_get_contents($_SERVER["DOCUMENT_ROOT"].'/settings/projects.yml'));
 
     if (array_key_exists($this->key, $projects)) {
       $this->settings = $projects[$this->key];
@@ -45,7 +45,7 @@ class Config {
   {
     if (self::$instance == null)
     {
-      self::$instance = new Config();
+      self::$instance = new Project();
     }
 
     return self::$instance;

@@ -59,7 +59,7 @@ class Response {
 
     $variables["result"] = $this->result;
 
-    $variables["config"] = Config::getInstance()->settings;
+    $variables["settings"] = Project::getInstance()->settings;
 
     $variables["parameters"] = $this->request->getParameters();
 
