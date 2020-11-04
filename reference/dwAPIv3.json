@@ -633,8 +633,15 @@
       },
       "parameters": []
     },
-    "/user/confirm_password": {
-      "parameters": [],
+    "/user/confirm_password/{hash}": {
+      "parameters": [
+        {
+          "type": "string",
+          "name": "hash",
+          "in": "path",
+          "required": true
+        }
+      ],
       "post": {
         "summary": "Confirm password",
         "tags": [
