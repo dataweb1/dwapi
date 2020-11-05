@@ -43,8 +43,7 @@
           {
             "type": "string",
             "in": "query",
-            "name": "project",
-            "required": true
+            "name": "project"
           },
           {
             "type": "string",
