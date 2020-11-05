@@ -13,14 +13,13 @@ class Mysql
 
   public function __construct()
   {
-    //if ($api->storage == null) {
       $credentials = Project::getInstance()->settings["db_credentials"];
+
       $this->conn = new \PDO("mysql:host=" . $credentials["host"] . ";port=3306;dbname=" . $credentials["dbname"], $credentials["username"], $credentials["password"], [
         \PDO::ATTR_EMULATE_PREPARES => false,
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
       ]);
       $this->conn->exec("set names utf8");
-    //}
   }
 
   // The object is created from within the class itself

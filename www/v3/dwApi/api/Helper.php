@@ -1,6 +1,7 @@
 <?php
 namespace dwApi\api;
 use voku\helper\URLify;
+use Symfony\Component\Yaml\Yaml;
 
 
 /**
@@ -74,5 +75,48 @@ class Helper {
       }
     }
     return $values;
+  }
+
+
+  /**
+   * @param $file_name
+   * @param null $element
+   * @return bool|mixed
+   */
+  public static function readYaml($file_name, $element = NULL) {
+    $yaml_content = Yaml::parse(file_get_contents($file_name));
+
+    if ($element == NULL) {
+      return $yaml_content;
+    }
+    else {
+      if (array_key_exists($element, $yaml_content)) {
+        return $yaml_content[$element];
+      }
+      else {
+        return false;
+      }
+    }
+  }
+
+  /**
+   * @param $file_name
+   * @param null $element
+   * @return bool|mixed
+   */
+  public static function readJson($file_name, $element = NULL) {
+    $json_content = json_decode(file_get_contents($file_name), true);
+
+    if ($element == NULL) {
+      return $json_content;
+    }
+    else {
+      if (array_key_exists($element, $json_content)) {
+        return $json_content[$element];
+      }
+      else {
+        return false;
+      }
+    }
   }
 }
