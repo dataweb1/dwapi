@@ -28,5 +28,6 @@ class ErrorException extends \Exception {
   const DW_ENDPOINT_REQUIRED = 9018;
   const DW_INVALID_METHOD = 9019;
   const DW_INVALID_LINK = 9020;
+  const DW_INVALID_PATH = 9021;
 
 }

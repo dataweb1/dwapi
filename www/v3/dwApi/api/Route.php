@@ -1,5 +1,6 @@
 <?php
 namespace dwApi\api;
+use dwApi\reference\Reference;
 use dwApi\endpoint\Endpoint;
 use dwApi\dwApi;
 use dwApi\api\Token;
@@ -12,23 +13,7 @@ use dwApi\api\Token;
 class Route {
 
   private $request;
-
-  static $action_method_allowed = array(
-    "single_read" => "get",
-    "read" => "get",
-    "create" => "post",
-    "update" => "put",
-    "single_update" => "put",
-    "delete" => "delete",
-    "register" => "post",
-    "reset_password" => "get",
-    "reset_link" => "get",
-    "confirm_password" => "post",
-    "login" => "post",
-    "logout" => "get",
-    "validate_token" => "get",
-    "extend_token" => "get",
-    "activate_link" => "get");
+  private $reference;
 
 
   /**
@@ -37,6 +22,7 @@ class Route {
    */
   public function __construct(Request $request) {
     $this->request = $request;
+    $this->reference = Reference::getInstance();
   }
 
 
@@ -45,10 +31,12 @@ class Route {
    * @throws ErrorException
    */
   public function validRoute() {
-    if (!$this->validProject() ||
+    if (
+      !$this->validReferencePath() ||
+      !$this->validReferenceMethod() ||
       !$this->validEndpoint() ||
       !$this->validAction() ||
-      !$this->validActionWithMethod()) {
+      !$this->validProject()) {
       return false;
     }
 
@@ -59,15 +47,27 @@ class Route {
    * @return bool
    * @throws ErrorException
    */
-  private function validActionWithMethod()
-  {
-    $action_method_allowed = self::$action_method_allowed[$this->request->action];
-
-    if (!$action_method_allowed == $this->request->method) {
-      throw new ErrorException('Method not valid, '.strtoupper($action_method_allowed).' expected.', ErrorException::DW_INVALID_METHOD);
+  public function validReferencePath() {
+    if ($this->reference->pathExits($this->request->path)) {
+      return true;
     }
+    else {
+        throw new ErrorException('Path not valid.', ErrorException::DW_INVALID_PATH);
+      }
+  }
 
-    return true;
+
+  /**
+   * @return bool
+   * @throws ErrorException
+   */
+  public function validReferenceMethod() {
+    if ($this->reference->currentPath()->methodExists($this->request->method)) {
+      return true;
+    }
+    else {
+      throw new ErrorException('Method not valid.', ErrorException::DW_INVALID_METHOD);
+    }
   }
 
 
@@ -133,14 +133,11 @@ class Route {
     $endpoint = $this->request->endpoint;
     $action = $this->request->action;
 
-    // TODO: isTokenRequired via config and NOT via function logic
     if (is_null($token_required)) {
       if ($entity_type == NULL) {
         $entity_type = $endpoint;
       }
       $token_required = $this->isTokenRequired($entity_type, $action);
-      if ($current_token->valid  == false) {
-      }
     }
 
     if ($token_required == true) {
@@ -159,20 +156,19 @@ class Route {
    * @return bool
    */
   private function isTokenRequired($entity_type, $action) {
-    switch ($action) {
-      case "login": case "register": case "activate_link": case "reset_password": case "reset_link": case "confirm_password":
-    return false;
-      break;
-      case "single_read": case "read":
-      if ($entity_type == "user") {
-        return true;
-      }
-      else {
-        return false;
-      }
-      break;
-      default:
-        return true;
+    if (array_key_exists("header_authorization", $this->reference->currentPath()->getRequiredParameters())) {
+      return true;
     }
+    else {
+      switch ($action) {
+        case "single_read":
+        case "read":
+          if ($entity_type == "user") {
+            return true;
+          }
+          break;
+      }
+    }
+    return false;
   }
 }
