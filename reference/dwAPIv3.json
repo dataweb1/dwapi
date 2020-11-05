@@ -535,8 +535,7 @@
             "type": "string",
             "in": "header",
             "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>",
-            "required": true
+            "description": "Bearer <i>jwt_token</i>"
           },
           {
             "type": "string",
