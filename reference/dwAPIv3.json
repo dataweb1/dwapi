@@ -535,7 +535,8 @@
             "type": "string",
             "in": "header",
             "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>"
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
           },
           {
             "type": "string",
@@ -638,7 +639,8 @@
           "type": "string",
           "name": "hash",
           "in": "path",
-          "required": true
+          "required": true,
+          "description": "A hashed version of the user_id."
         }
       ],
       "post": {
@@ -675,13 +677,6 @@
             "name": "email",
             "required": true,
             "description": "The existing email."
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "hash",
-            "required": true,
-            "description": "A hashed version of the user_id."
           }
         ]
       }
