@@ -15,6 +15,9 @@ use dwApi\api\Response;
  */
 class dwApi
 {
+  const API_VERSION = "v3";
+  const API_PATH = "https://dwapi.dev/".self::API_VERSION;
+
   private $request;
   private $route;
   private $current_token;
@@ -29,6 +32,7 @@ class dwApi
   public function __construct() {
     $this->request = Request::getInstance();
     $this->response = Response::getInstance();
+
   }
 
   /**

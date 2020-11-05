@@ -1,6 +1,7 @@
 <?php
 namespace dwApi\api;
 use dwApi\api\ErrorException;
+use dwApi\dwApi;
 
 
 /**
@@ -9,6 +10,7 @@ use dwApi\api\ErrorException;
  */
 class Request
 {
+  public $path;
   public $method;
   public $endpoint;
   public $action;
@@ -23,7 +25,12 @@ class Request
   public $redirect;
   private static $instance = null;
 
+
+  /**
+   * Request constructor.
+   */
   public function __construct() {
+    $this->path = str_replace(dwApi::API_VERSION."/", "", explode('?', $_SERVER["REQUEST_URI"], 2)[0]);
     $this->method = strtolower(getenv('REQUEST_METHOD'));
     $this->endpoint = $this->getParameters("get", "endpoint");
     $this->action = $this->getParameters("get", "action");
