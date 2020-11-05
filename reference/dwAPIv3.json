@@ -86,7 +86,8 @@
             "type": "string",
             "in": "header",
             "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>\n"
+            "description": "Bearer <i>jwt_token</i>\n",
+            "required": true
           }
         ],
         "description": "Get items of an entity"
