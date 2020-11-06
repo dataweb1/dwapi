@@ -92,11 +92,11 @@
       },
       "parameters": []
     },
-    "/item/{user_id_hash}": {
+    "/item/{id_hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "user_id_hash",
+          "name": "id_hash",
           "in": "path",
           "required": true
         }
