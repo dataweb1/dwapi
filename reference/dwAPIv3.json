@@ -23,7 +23,7 @@
     "application/x-www-form-urlencoded"
   ],
   "paths": {
-    "/item/read": {
+    "/item": {
       "get": {
         "summary": "Get items",
         "tags": [
@@ -89,7 +89,8 @@
           }
         ],
         "description": "Get items of an entity"
-      }
+      },
+      "parameters": []
     },
     "/item/single_read": {
       "parameters": [],
