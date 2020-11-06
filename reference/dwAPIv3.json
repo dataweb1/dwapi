@@ -92,8 +92,15 @@
       },
       "parameters": []
     },
-    "/item/single_read": {
-      "parameters": [],
+    "/item/{user_id_hash}": {
+      "parameters": [
+        {
+          "type": "string",
+          "name": "user_id_hash",
+          "in": "path",
+          "required": true
+        }
+      ],
       "get": {
         "summary": "Get a single item",
         "tags": [
@@ -121,12 +128,6 @@
             "type": "string",
             "in": "query",
             "name": "entity",
-            "required": true
-          },
-          {
-            "type": "integer",
-            "in": "query",
-            "name": "id",
             "required": true
           },
           {
