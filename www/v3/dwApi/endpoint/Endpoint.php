@@ -34,8 +34,13 @@ abstract class Endpoint
 
   /**
    * @param $action
+   * @throws ErrorException
    */
   public function doAction($action) {
+    if (!method_exists(get_class($this), $action)) {
+      throw new ErrorException('Action does not (yet) exists.', ErrorException::DW_INVALID_ACTION);
+    }
+
     $this->$action();
   }
 

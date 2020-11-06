@@ -1,6 +1,8 @@
 <?php
 namespace dwApi\api;
 
+use dwApi\dwApi;
+
 /**
  * Class Response
  * @package dwApi\api
@@ -52,13 +54,9 @@ class Response {
         "error_code" => $this->error->getCode(),
         "message" => $this->error->getMessage());
     }
-
     $variables["result"] = $this->result;
-
     $variables["settings"] = Project::getInstance()->settings;
-
     $variables["settings"]["api_path"] = dwApi::API_PATH;
-
     $variables["parameters"] = $this->request->getParameters();
 
     return Helper::maskValue($variables);
