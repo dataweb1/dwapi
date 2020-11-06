@@ -632,14 +632,13 @@
       },
       "parameters": []
     },
-    "/user/confirm_password/{hash}": {
+    "/user/confirm_password/{user_hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "hash",
+          "name": "user_hash",
           "in": "path",
-          "required": true,
-          "description": "A hashed version of the user_id."
+          "required": true
         }
       ],
       "post": {
