@@ -11,14 +11,25 @@ use dwApi\api\Request;
  */
 class Path {
 
+  private $path_parameters;
+  private $query_parameters;
+
   /**
    * Path constructor.
-   * @throws ErrorException
+   * @param $path
+   * @param $method
    */
-  public function __construct($properties) {
-    foreach($properties as $key => $value){
-      $this->{$key} = $value;
+  public function __construct($path, $method) {
+    foreach($path[$method] as $key => $value){
+      if ($key == "parameters") {
+        $this->query_parameters = (array)$value;
+      }
+      else {
+        $this->{$key} = $value;
+      }
     }
+
+    $this->path_parameters = (array)$path["parameters"];
   }
 
 
@@ -26,7 +37,7 @@ class Path {
    * @param $method
    * @return bool
    */
-  public function methodExists($method) {
+  public function validMethod($method) {
     if (isset($this->$method)) {
       return true;
     }
@@ -35,24 +46,28 @@ class Path {
 
 
   /**
+   * @param $parameter
+   * @return bool
+   */
+  public function isParameterRequired($parameter) {
+    if (array_key_exists($parameter, $this->getRequiredParameters())) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * @return array
    */
   public function getRequiredParameters() {
     $required_parameters = [];
 
-    //path parameters
-    if (isset($this->parameters)) {
-      foreach ($this->parameters as $parameter) {
+    $elements = ["path_parameters", "query_parameters"];
+    foreach($elements as $element) {
+      foreach ($this->{$element} as $parameter) {
         if ($parameter["required"] == 1) {
           $required_parameters[strtolower($parameter["in"] . "_" . $parameter["name"])] = $parameter;
         }
-      }
-    }
-
-    //request parameters
-    foreach($this->{Request::getInstance()->method}["parameters"] as $parameter) {
-      if ($parameter["required"]==1) {
-        $required_parameters[strtolower($parameter["in"]."_".$parameter["name"])] = $parameter;
       }
     }
 

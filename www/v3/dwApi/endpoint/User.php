@@ -157,7 +157,7 @@ class User extends Endpoint {
       }
     }
     else {
-      throw new ErrorException('Link invalid.', ErrorException::DW_INVALID_LINK);
+      throw new ErrorException('Temp token invalid.', ErrorException::DW_VALID_TOKEN_REQUIRED);
     }
   }
 
@@ -195,7 +195,7 @@ class User extends Endpoint {
       }
     }
     else {
-      throw new ErrorException('Link invalid.', ErrorException::DW_INVALID_LINK);
+      throw new ErrorException('Temp token invalid.', ErrorException::DW_VALID_TOKEN_REQUIRED);
     }
   }
 

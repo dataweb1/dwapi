@@ -41,7 +41,7 @@ class dwApi
   public function processCall() {
     try {
       $this->route = new Route($this->request);
-      if ($this->route->validRoute()) {
+      if ($this->route->validPath()) {
         $this->current_token = new Token($this->request->project, $this->request->token);
         if ($this->route->tokenValidIfRequired($this->current_token)) {
           if ($this->current_token->valid) {

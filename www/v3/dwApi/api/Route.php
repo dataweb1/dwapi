@@ -30,97 +30,15 @@ class Route {
    * @return bool
    * @throws ErrorException
    */
-  public function validRoute() {
-    if (
-      !$this->validReferencePath() ||
-      !$this->validReferenceMethod() ||
-      !$this->validEndpoint() ||
-      !$this->validAction() ||
-      !$this->validProject()) {
-      return false;
-    }
-
-    return true;
-  }
-
-  /**
-   * @return bool
-   * @throws ErrorException
-   */
-  public function validReferencePath() {
-    if ($this->reference->pathExits($this->request->path)) {
+  public function validPath() {
+    if ($this->reference->currentPath($this->request->path, $this->request->method)) {
       return true;
     }
     else {
-        throw new ErrorException('Path not valid.', ErrorException::DW_INVALID_PATH);
-      }
-  }
-
-
-  /**
-   * @return bool
-   * @throws ErrorException
-   */
-  public function validReferenceMethod() {
-    if ($this->reference->currentPath()->methodExists($this->request->method)) {
-      return true;
-    }
-    else {
-      throw new ErrorException('Method not valid.', ErrorException::DW_INVALID_METHOD);
+      throw new ErrorException('Path/method not valid.', ErrorException::DW_INVALID_PATH);
     }
   }
 
-
-  /**
-   * @return bool
-   */
-  private function validProject() {
-
-    Project::getInstance();
-
-    return true;
-  }
-
-
-  /**
-   * @return bool
-   * @throws ErrorException
-   */
-  private function validEndpoint() {
-    $endpoint = $this->request->endpoint;
-
-    if ($endpoint == "") {
-      throw new ErrorException('Endpoint is required.', ErrorException::DW_ENDPOINT_REQUIRED);
-      return false;
-    }
-
-    $endpoint_class_name = "dwApi\\endpoint\\".ucfirst($endpoint);
-    if (!class_exists($endpoint_class_name)) {
-      throw new ErrorException('Endpoint "'.$endpoint_class_name.'" not valid', ErrorException::DW_INVALID_ENDPOINT);
-    }
-
-    return true;
-  }
-
-  /**
-   * @return bool
-   * @throws ErrorException
-   */
-  private function validAction() {
-    $endpoint = $this->request->endpoint;
-    $action = $this->request->action;
-
-    if ($action == "") {
-      throw new ErrorException('CRUD action is required.', ErrorException::DW_CRUD_ACTION_REQUIRED);
-    }
-
-    $endpoint_class_name = "dwApi\\endpoint\\".ucfirst($endpoint);
-    if (!method_exists($endpoint_class_name, $action)) {
-      throw new ErrorException('Action not valid', ErrorException::DW_INVALID_ACTION);
-    }
-
-    return true;
-  }
 
   /**
    * @param \dwApi\api\Token $current_token
@@ -156,7 +74,7 @@ class Route {
    * @return bool
    */
   private function isTokenRequired($entity_type, $action) {
-    if (array_key_exists("header_authorization", $this->reference->currentPath()->getRequiredParameters())) {
+    if ($this->reference->currentPath()->isParameterRequired("header_authorization")) {
       return true;
     }
     else {
