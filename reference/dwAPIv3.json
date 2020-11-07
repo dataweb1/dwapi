@@ -393,7 +393,7 @@
         "description": "To test the \"filter\" parameter use \"body\" > \"x-www-form-urlencoded\""
       }
     },
-    "/item/single_update": {
+    "/item/{id_hash}}": {
       "put": {
         "summary": "Update single item",
         "tags": [
@@ -456,7 +456,16 @@
             "description": "{\"enabled\": true}"
           }
         ]
-      }
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "id_hash",
+          "in": "path",
+          "required": true,
+          "description": ""
+        }
+      ]
     },
     "/user/register": {
       "post": {
