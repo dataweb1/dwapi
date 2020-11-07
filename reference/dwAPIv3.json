@@ -30,8 +30,8 @@
           "item"
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "schema": {
               "type": "object",
               "properties": {}
@@ -90,7 +90,149 @@
         ],
         "description": "Get items of an entity"
       },
-      "parameters": []
+      "parameters": [],
+      "post": {
+        "summary": "",
+        "operationId": "post-item",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer <i>jwt_token</i>"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "mail",
+            "description": "{\"enabled\": true}\n"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "token_required",
+            "description": "By default a token is required for creating. You can override it here."
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "values",
+            "required": true,
+            "description": "The values to be set\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+          }
+        ],
+        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\""
+      },
+      "put": {
+        "summary": "",
+        "operationId": "put-item",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "Update an item of an entity\n\nTo set the \"filter\" and \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer <i>jwt_token</i>"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "token_required",
+            "description": "By default a token is required for updating. You can override it here."
+          },
+          {
+            "in": "query",
+            "name": "mail",
+            "description": "{\"enabled\": true}"
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "values",
+            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "array",
+            "name": "filter",
+            "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]\n"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "",
+        "operationId": "delete-item",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "description": "To test the \"filter\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "entity",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer <i>jwt_token</i>"
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "filter",
+            "description": "The filter to apply the delete on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
+            "required": true
+          }
+        ]
+      }
     },
     "/item/{id_hash}": {
       "parameters": [
@@ -150,267 +292,23 @@
           }
         ],
         "description": "Get a single item of an entity by ID"
-      }
-    },
-    "/item/create": {
-      "post": {
-        "summary": "Create item",
-        "operationId": "post-item-create",
-        "responses": {
-          "201": {
-            "description": "Created",
-            "headers": {},
-            "examples": {},
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "OK"
-                },
-                "result": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "example": "true",
-                      "type": "boolean"
-                    },
-                    "id": {
-                      "type": "integer"
-                    }
-                  },
-                  "required": [
-                    "success",
-                    "id"
-                  ]
-                }
-              },
-              "required": [
-                "status"
-              ]
-            }
-          }
-        },
-        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
-        "parameters": [
-          {
-            "type": "string",
-            "in": "query",
-            "name": "project",
-            "required": true
-          },
-          {
-            "in": "query",
-            "name": "mail",
-            "type": "object",
-            "description": "{\"enabled\": true}"
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "entity",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "type": "object",
-            "name": "values",
-            "required": true,
-            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
-          },
-          {
-            "type": "string",
-            "in": "header",
-            "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>",
-            "required": true
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "token_required",
-            "description": "By default a token is required for creating. You can override it here."
-          }
-        ],
-        "tags": [
-          "item"
-        ]
       },
-      "parameters": []
-    },
-    "/item/update": {
       "put": {
-        "summary": "Update item",
-        "operationId": "put-item-update",
+        "summary": "",
+        "operationId": "put-item-id_hash",
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "success"
-              ]
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "OK"
           }
         },
-        "description": "Update an item of an entity\n\nTo set the \"filter\" and \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "description": "Update a single item of an entity by ID\n\nTo set the \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
         "parameters": [
-          {
-            "type": "string",
-            "in": "query",
-            "name": "project",
-            "required": true
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "entity",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "type": "object",
-            "name": "values",
-            "required": true,
-            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
-          },
-          {
-            "in": "formData",
-            "type": "array",
-            "name": "filter",
-            "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
-            "required": true
-          },
           {
             "type": "string",
             "in": "header",
             "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>",
-            "required": true
-          },
-          {
-            "type": "boolean",
-            "in": "query",
-            "name": "token_required",
-            "description": "By default a token is required for updating. You can override it here."
-          },
-          {
-            "in": "query",
-            "name": "mail",
-            "type": "object",
-            "description": "{\"enabled\": true}"
-          }
-        ],
-        "tags": [
-          "item"
-        ]
-      }
-    },
-    "/item/delete": {
-      "delete": {
-        "summary": "Delete item",
-        "operationId": "delete-item-delete",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "success": {
-                  "type": "boolean"
-                }
-              },
-              "required": [
-                "success"
-              ]
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string"
-                },
-                "message": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "type": "string",
-            "in": "query",
-            "name": "project",
-            "required": true
-          },
-          {
-            "type": "string",
-            "in": "query",
-            "name": "entity",
-            "required": true
-          },
-          {
-            "in": "formData",
-            "type": "array",
-            "name": "filter",
-            "description": "The filter to apply the delete on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
-            "required": true
-          },
-          {
-            "type": "string",
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
             "description": "Bearer <i>jwt_token</i>"
-          }
-        ],
-        "tags": [
-          "item"
-        ],
-        "description": "To test the \"filter\" parameter use \"body\" > \"x-www-form-urlencoded\""
-      }
-    },
-    "/item/{id_hash}}": {
-      "put": {
-        "summary": "Update single item",
-        "tags": [
-          "item"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          }
-        },
-        "operationId": "put-item-single_update",
-        "description": "Updat a single item of an entity by ID\n\nTo set the \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
-        "parameters": [
+          },
           {
             "type": "string",
             "in": "query",
@@ -424,18 +322,33 @@
             "required": true
           },
           {
-            "type": "integer",
+            "type": "string",
             "in": "query",
-            "name": "id",
-            "required": true
+            "name": "token_required",
+            "description": "By default a token is required for updating. You can override it here."
+          },
+          {
+            "in": "query",
+            "name": "mail",
+            "description": "{\"enabled\": true}"
           },
           {
             "in": "formData",
-            "type": "object",
+            "type": "string",
             "name": "values",
-            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}",
-            "required": true
-          },
+            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+          }
+        ]
+      },
+      "delete": {
+        "summary": "",
+        "operationId": "delete-item-id_hash",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
           {
             "type": "string",
             "in": "header",
@@ -444,28 +357,19 @@
             "required": true
           },
           {
-            "type": "boolean",
+            "type": "string",
             "in": "query",
-            "name": "token_required",
-            "description": "By default a token is required for updating. You can override it here."
+            "name": "project",
+            "required": true
           },
           {
+            "type": "string",
             "in": "query",
-            "name": "mail",
-            "type": "object",
-            "description": "{\"enabled\": true}"
+            "name": "entity",
+            "required": true
           }
         ]
-      },
-      "parameters": [
-        {
-          "type": "string",
-          "name": "id_hash",
-          "in": "path",
-          "required": true,
-          "description": ""
-        }
-      ]
+      }
     },
     "/user/register": {
       "post": {
