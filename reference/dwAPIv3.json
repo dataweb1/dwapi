@@ -138,7 +138,10 @@
             "description": "The values to be set\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
           }
         ],
-        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\""
+        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
+        "tags": [
+          "item"
+        ]
       },
       "put": {
         "summary": "",
@@ -193,6 +196,9 @@
             "name": "filter",
             "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]\n"
           }
+        ],
+        "tags": [
+          "item"
         ]
       },
       "delete": {
@@ -231,6 +237,9 @@
             "description": "The filter to apply the delete on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
             "required": true
           }
+        ],
+        "tags": [
+          "item"
         ]
       }
     },
@@ -338,6 +347,9 @@
             "name": "values",
             "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
           }
+        ],
+        "tags": [
+          "item"
         ]
       },
       "delete": {
@@ -368,6 +380,9 @@
             "name": "entity",
             "required": true
           }
+        ],
+        "tags": [
+          "item"
         ]
       }
     },
