@@ -1,21 +1,23 @@
 <?php
 namespace dwApi\query\mysql;
 use dwApi\api\ErrorException;
-use dwApi\storage\Mysql as StorageMysql;
 use dwApi\api\Request;
+use dwApi\query\InterfaceItemRepository;
+use dwApi\storage\Mysql as StorageMysql;
 
 
 /**
  * Class ItemRepository
  * @package dwApi\query\mysql
  */
-class ItemRepository extends Mysql {
+class ItemRepository extends Mysql implements InterfaceItemRepository {
 
   /* parameters */
   public $values = NULL;
   public $filter = NULL;
   public $property = NULL;
   public $sort = NULL;
+  public $id_hash = NULL;
   public $id = NULL;
   public $paging = NULL;
   public $relation = NULL;
@@ -42,6 +44,7 @@ class ItemRepository extends Mysql {
 
 
   /**
+   * Single read.
    * @return bool
    */
   public function single_read()
@@ -74,6 +77,7 @@ class ItemRepository extends Mysql {
   }
 
   /**
+   * Read.
    * @return bool
    */
   public function read()
@@ -128,6 +132,7 @@ class ItemRepository extends Mysql {
 
 
   /**
+   * Create.
    * @return bool
    */
   public function create()
@@ -152,6 +157,7 @@ class ItemRepository extends Mysql {
 
 
   /**
+   * Single update.
    * @return bool
    */
   public function single_update()
@@ -168,6 +174,7 @@ class ItemRepository extends Mysql {
   }
 
   /**
+   * Update.
    * @return bool
    */
   public function update() {
@@ -195,6 +202,7 @@ class ItemRepository extends Mysql {
 
 
   /**
+   * Delete.
    * @return bool
    */
   public function delete()
@@ -214,5 +222,23 @@ class ItemRepository extends Mysql {
       return false;
     }
 
+  }
+
+
+  /**
+   * Single delete.
+   * @return bool
+   */
+  public function single_delete()
+  {
+    if ($this->id) {
+      $this->filter = [[$this->entity_type->getPrimaryKey(), "=", $this->id]];
+      $this->delete();
+
+
+      return true;
+    }
+
+    return false;
   }
 }

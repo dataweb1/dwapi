@@ -31,7 +31,7 @@ class Route {
    * @throws ErrorException
    */
   public function validPath() {
-    if ($this->reference->currentPath($this->request->path, $this->request->method)) {
+    if ($this->request->current_path) {
       return true;
     }
     else {
@@ -74,7 +74,7 @@ class Route {
    * @return bool
    */
   private function isTokenRequired($entity_type, $action) {
-    if ($this->reference->currentPath()->isParameterRequired("header_authorization")) {
+    if ($this->request->path_definition->isParameterRequired("header_authorization")) {
       return true;
     }
     else {

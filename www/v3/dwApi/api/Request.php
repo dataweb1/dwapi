@@ -2,6 +2,8 @@
 namespace dwApi\api;
 use dwApi\api\ErrorException;
 use dwApi\dwApi;
+use dwApi\reference\PathDefinition;
+use dwApi\reference\Reference;
 
 
 /**
@@ -11,6 +13,11 @@ use dwApi\dwApi;
 class Request
 {
   public $path;
+
+  /**
+   * @var PathDefinition
+   */
+  public $path_definition;
   public $method;
   public $endpoint;
   public $action;
@@ -18,7 +25,7 @@ class Request
   public $entity;
   public $token_required;
   public $hash;
-  public $input = [];
+  public $parameters = [];
   public $debug = false;
   public $token;
   public $mail;
@@ -32,8 +39,6 @@ class Request
   public function __construct() {
     $this->path = str_replace(dwApi::API_VERSION."/", "", explode('?', $_SERVER["REQUEST_URI"], 2)[0]);
     $this->method = strtolower(getenv('REQUEST_METHOD'));
-    $this->endpoint = $this->getParameters("get", "endpoint");
-    $this->action = $this->getParameters("get", "action");
     $this->project = $this->getParameters("get", "project");
     $this->entity = $this->getParameters("get", "entity");
     $this->token_required = $this->getParameters("get", "token_required");
@@ -42,6 +47,24 @@ class Request
     $this->redirect = $this->getParameters("get", "redirect");
     $this->mail = $this->getParameters("get", "mail");
     $this->token = $this->getBearerToken();
+  }
+
+  /**
+   * @return bool
+   * @throws \dwApi\api\ErrorException
+   */
+  public function initPath() {
+    if ($this->path_definition = Reference::getInstance()->getPathDefinition($this->path, $this->method)) {
+      $this->endpoint = $this->path_definition->getBasePathElement(0);
+      $this->action = $this->path_definition->getBasePathElement(1);
+      if ($this->action == "") {
+        $this->action = $this->method;
+      }
+      return true;
+    }
+    else {
+      throw new ErrorException('Path/method not valid.', ErrorException::DW_INVALID_PATH);
+    }
   }
 
   // The object is created from within the class itself
@@ -185,25 +208,32 @@ class Request
    * @return array
    */
   private function processParameters($items) {
-    $input = [];
+    $parameters = [];
     if (is_array($items)) {
       foreach ($items as $key => $item) {
         if (Helper::isJson($item)) {
-          $input[$key] = json_decode($item, true);
-          /*
-          if ($input[$key] == true) {
-            $input[$key] = "true";
-          }
-          if ($input[$key] == false) {
-            $input[$key] = "false";
-          }
-          */
+          $parameters[$key] = json_decode($item, true);
         } else {
-          $input[$key] = $item;
+          $parameters[$key] = $item;
         }
       }
     }
-    return $input;
+    return $parameters;
+  }
+
+  /**
+   *
+   */
+  private function processPathParameters() {
+    $parameters = [];
+    $path_elements = explode("/", $this->path);
+    array_shift($path_elements);
+
+    foreach ($this->path_definition->getPathParameters() as $parameter) {
+      $parameters[$parameter["name"]] = $path_elements[$parameter["key"]];
+    }
+
+    return $parameters;
   }
 
   /**
@@ -228,40 +258,44 @@ class Request
   public function getParameters($type = NULL, $key = NULL) {
 
     if ($type != NULL) {
-      if (!isset($this->input[$type])) {
+      if (!isset($this->parameters[$type])) {
         if ($type == "get" && $_GET) {
-          $this->input[$type] = $this->processParameters($_GET);
+          $this->parameters["get"] = $this->processParameters($_GET);
         }
         if ($type == "post" && $_POST) {
-          $this->input[$type] = $this->processParameters($_POST);
+          $this->parameters["post"] = $this->processParameters($_POST);
         }
         if ($type == "delete") {
           parse_str(file_get_contents('php://input'), $_DELETE);
-          $this->input[$type] = $this->processParameters($_DELETE);
+          $this->parameters["delete"] = $this->processParameters($_DELETE);
         }
         if ($type == "put") {
           //parse_str(file_get_contents('php://input'), $_PUT);
           $this->_parsePut();//_parsePut
-          $this->input[$type] = $this->processParameters($GLOBALS['_PUT']);
+          $this->parameters["put"] = $this->processParameters($GLOBALS['_PUT']);
         }
         if ($type == "files" && $_FILES) {
-          $this->input[$type] = $_FILES;
+          $this->parameters["files"] = $_FILES;
+        }
+
+        if ($type == "path") {
+          $this->parameters["path"] = $this->processPathParameters();
         }
       }
     }
 
     if ($type == NULL) {
-      return $this->input;
+      return $this->parameters;
     }
 
     if ($key == NULL) {
-      if (isset($this->input[$type]) && is_array($this->input[$type])) {
-        return $this->input[$type];
+      if (isset($this->parameters[$type]) && is_array($this->parameters[$type])) {
+        return $this->parameters[$type];
       }
     }
 
-    if (isset($this->input[$type][$key])) {
-      return $this->input[$type][$key];
+    if (isset($this->parameters[$type][$key])) {
+      return $this->parameters[$type][$key];
     }
     else {
       return NULL;

@@ -1,6 +1,10 @@
 <?php
 namespace dwApi\query;
 
+use dwApi\endpoint\Item;
+use dwApi\query\mysql\ItemRepository;
+use dwApi\query\mysql\UserRepository;
+
 /**
  * Class QueryFactory
  * @package dwApi\query
@@ -11,10 +15,9 @@ class QueryFactory {
    *
    * @param $endpoint
    * @param $entity_type
-   * @return mixed
+   * @return InterfaceItemRepository|InterfaceUserRepository
    */
   public static function create($endpoint, $entity_type = "") {
-
     $query_class_name = "dwApi\\query\\mysql\\".ucfirst($endpoint)."Repository";
     if ($entity_type == "") {
       $entity_type = $endpoint;

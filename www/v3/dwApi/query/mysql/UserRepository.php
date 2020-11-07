@@ -2,11 +2,13 @@
 namespace dwApi\query\mysql;
 
 
+use dwApi\query\InterfaceUserRepository;
+
 /**
  * Class UserRepository
  * @package dwApi\query\mysql
  */
-class UserRepository extends ItemRepository
+class UserRepository extends ItemRepository implements InterfaceUserRepository
 {
   /* parameters */
   public $password;
@@ -45,6 +47,7 @@ class UserRepository extends ItemRepository
 
 
   /**
+   * @param $user_id
    * @return bool
    */
   public function logout($user_id) {
