@@ -74,19 +74,22 @@ class Route {
    * @return bool
    */
   private function isTokenRequired($entity_type, $action) {
+
     if ($this->request->path_definition->isParameterRequired("header_authorization")) {
       return true;
     }
     else {
+      /*
       switch ($action) {
-        case "single_read":
-        case "read":
+        case "get":
           if ($entity_type == "user") {
             return true;
           }
           break;
       }
+      */
+      return false;
     }
-    return false;
+
   }
 }

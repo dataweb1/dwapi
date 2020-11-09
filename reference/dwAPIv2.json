@@ -475,7 +475,7 @@
           {
             "type": "object",
             "in": "query",
-            "name": "redirect_after_activate_link",
+            "name": "redirect_after_activate",
             "description": "{\"enabled\": true/false, \"redirect_url\": url}"
           },
           {
