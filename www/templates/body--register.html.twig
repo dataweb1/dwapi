@@ -3,6 +3,6 @@
 You are a registered user at "{{ settings.site.name }}" with e-mail {{ parameters.post.values.email }}.
 </p>
 <p>
-{% set redirect = {"redirect": parameters.get.redirect_after_activate_link} %}
-Activate your profile via {{ settings.api_path }}/user/activate_link/{{ result.item.user_id_hash }}?project={{ parameters.get.project }}&{{ redirect|url_encode }}
+{% set redirect = {"redirect": parameters.get.redirect_after_activate} %}
+Activate your profile via {{ settings.api_path }}/user/activate_link/{{ result.item.hash }}?project={{ parameters.get.project }}&{{ redirect|url_encode }}
 </p>

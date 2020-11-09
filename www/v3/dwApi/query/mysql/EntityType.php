@@ -1,7 +1,7 @@
 <?php
 namespace dwApi\query\mysql;
 use dwApi\api\ErrorException;
-use dwApi\storage\Mysql as StorageMysql;
+use dwApi\storage\Mysql;
 
 
 /**
@@ -18,7 +18,7 @@ class EntityType {
    */
   public function __construct()
   {
-    $this->storage = StorageMysql::load();
+    $this->storage = Mysql::load();
   }
 
   /**
@@ -71,7 +71,7 @@ class EntityType {
 
 
   /**
-   * @param $entity_key
+   * @param $entity_type
    * @return bool
    */
   public function entityTypeExists($entity_type) {

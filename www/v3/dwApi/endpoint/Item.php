@@ -1,9 +1,9 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
-use dwApi\query\InterfaceItemRepository;
+use dwApi\query\QueryInterface;
 use dwApi\query\InterfaceUserRepository;
-use dwApi\query\mysql\ItemRepository;
+use dwApi\query\mysql\Query;
 use Hashids\Hashids;
 
 /**
@@ -18,10 +18,10 @@ class Item extends Endpoint {
    */
   public function get() {
 
-    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
-    if (!is_null($this->query->id_hash)) {
+    $this->query->hash = $this->request->getParameters("path", "hash");
+    if (!is_null($this->query->hash)) {
       $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->id_hash)[0];
+      $this->query->id = $hashids->decode($this->query->hash)[0];
 
       $this->query->property = $this->request->getParameters("get", "property");
       $this->query->relation = $this->request->getParameters("get", "relation");
@@ -62,10 +62,10 @@ class Item extends Endpoint {
    */
   public function put() {
 
-    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
-    if (!is_null($this->query->id_hash)) {
+    $this->query->hash = $this->request->getParameters("path", "hash");
+    if (!is_null($this->query->hash)) {
       $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->id_hash)[0];
+      $this->query->id = $hashids->decode($this->query->hash)[0];
 
       $this->query->values = $this->request->getParameters("put", "values");
 
@@ -122,10 +122,13 @@ class Item extends Endpoint {
           $this->response->debug = $this->query->getDebug();
           return;
         }
+        else {
+          $this->response->result = array("id" => NULL);
+        }
       }
     }
 
-    $this->response->result = array("id" => NULL);
+
   }
 
 
@@ -134,10 +137,10 @@ class Item extends Endpoint {
    * @throws ErrorException
    */
   public function delete() {
-    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
-    if (!is_null($this->query->id_hash)) {
+    $this->query->hash = $this->request->getParameters("path", "hash");
+    if (!is_null($this->query->hash)) {
       $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->id_hash)[0];
+      $this->query->id = $hashids->decode($this->query->hash)[0];
 
       if (!$this->query->single_delete()) {
         $this->response->http_response_code = 400;

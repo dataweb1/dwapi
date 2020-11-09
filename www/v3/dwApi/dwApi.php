@@ -1,6 +1,7 @@
 <?php
 namespace dwApi;
 use dwApi\api\Mail;
+use dwApi\api\Project;
 use dwApi\api\Request;
 use dwApi\api\Token;
 use dwApi\api\Route;
@@ -16,9 +17,11 @@ use dwApi\api\Response;
 class dwApi
 {
   const API_VERSION = "v3";
-  const API_PATH = "https://dwapi.dev/".self::API_VERSION;
+  //const API_PATH = "https://dwapi.dev/".self::API_VERSION;
+  const API_PATH = "http://dwapi.local/".self::API_VERSION;
 
   private $request;
+  private $project;
   private $route;
   private $current_token;
   private $endpoint;
@@ -30,8 +33,7 @@ class dwApi
    * Api constructor.
    */
   public function __construct() {
-    $this->request = Request::getInstance();
-    $this->response = Response::getInstance();
+
   }
 
   /**
@@ -39,6 +41,10 @@ class dwApi
    */
   public function processCall() {
     try {
+      $this->request = Request::getInstance();
+      $this->response = Response::getInstance();
+      $this->project = Project::getInstance();
+
       if ($this->request->initPath()) {
         $this->route = new Route($this->request);
         //if ($this->route->validPath()) {
@@ -54,11 +60,12 @@ class dwApi
           $this->endpoint = EndpointFactory::create($this);
 
           /* create Query repository instance according to the endpoint parameter in the Request */
-          $this->endpoint->query = QueryFactory::create($this->request->endpoint, $this->request->entity);
+          $this->endpoint->query = QueryFactory::create($this->request->entity);
           $this->endpoint->run();
         }
         //}
       }
+
 
 
       if (!is_null($this->request->mail) && $this->request->mail["enabled"] == true) {

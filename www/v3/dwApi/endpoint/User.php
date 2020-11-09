@@ -33,15 +33,25 @@ class User extends Endpoint {
     $this->query->password = $this->request->getParameters("post", "password");
 
     if ($this->checkRequiredValues(array("email" => $this->query->email, "password" => $this->query->password))) {
-      if ($this->query->login()) {
-        $id = $this->query->getResult("items")[0][$this->query->getEntityType()->getPrimaryKey()];
-        $this->current_token->create($id);
-        $this->logged_in_user = QueryFactory::create("user");
-        $this->logged_in_user->id = $id;
-        $this->logged_in_user->single_read();
+      if ($this->emailPasswordExists()) {
+        if ($this->query->getResult("items")[0]["active"] == 1) {
+          $this->query->values = ["force_login" => 0];
+          $this->query->filter = [["user_id", "=", $this->query->getResult("items")[0][$this->query->entity_type->getPrimaryKey()]]];
+          $this->query->update();
 
-        $this->response->result = $this->logged_in_user->getResult();
-        $this->response->result["token"] = $this->current_token->token;
+          $id = $this->query->getResult("items")[0][$this->query->getEntityType()->getPrimaryKey()];
+          $this->current_token->create($id);
+          $this->logged_in_user = QueryFactory::create("user");
+          $this->logged_in_user->id = $id;
+          $this->logged_in_user->single_read();
+
+          $this->response->result = $this->logged_in_user->getResult();
+          $this->response->result["token"] = $this->current_token->token;
+        }
+        else {
+          $this->response->http_response_code = 400;
+          throw new ErrorException('Active user with this e-mail/password not found.',  ErrorException::DW_USER_NOT_FOUND);
+        }
       }
       else {
         $this->response->http_response_code = 400;
@@ -57,10 +67,11 @@ class User extends Endpoint {
    * Logout user.
    */
   public function logout() {
-    $success = $this->query->logout($this->logged_in_user->id);
-    if ($success == true) {
-      $this->logged_in_user = NULL;
-    }
+    $this->query->values = ["force_login" => 1];
+    $this->query->filter = [["user_id", "=", $this->logged_in_user->id]];
+    $this->query->update();
+
+    $this->logged_in_user = NULL;
   }
 
 
@@ -111,7 +122,7 @@ class User extends Endpoint {
     $this->query->filter = [["email", "=", $email]];
     if ($this->query->read()) {
 
-      if ($this->query->getResult("item_count") > 0) {
+      if ($this->query->getResult("item_count") == 1) {
         $this->query->setResult("item", $this->query->getResult("items")[0]);
         $this->query->id = $this->query->getResult("items")[0]["user_id"];
         $this->query->values = array("active" => 0, "force_login" => 1);
@@ -122,7 +133,7 @@ class User extends Endpoint {
           $token = $temp_token->create(0, 1);
 
           //$this->response->result = $this->query->getResult();
-          $this->response->result["hash"] = $this->query->getResult("items")[0]["user_id_hash"];
+          $this->response->result["hash"] = $this->query->getResult("items")[0]["hash"];
           $this->response->result["temp_token"] = $token;
 
           if (!isset($this->request->mail["enabled"])) {
@@ -140,11 +151,11 @@ class User extends Endpoint {
 
 
   /**
-   * Reset pasword link clicked.
+   * Reset password link clicked.
    * @return bool
    * @throws ErrorException
    */
-  public function reset_link() {
+  public function reset_password_link() {
     // override redirect "enabled" to true if not given in parameter
     if (!isset($this->request->redirect["enabled"])) {
       $this->request->redirect["enabled"] = true;
@@ -191,7 +202,14 @@ class User extends Endpoint {
 
         if ($this->checkRequiredValues($array_to_check)) {
           $this->query->values = array("email" => $email, "password" => $new_password, "active" => 1, "force_login" => 1);
-          if ($this->query->reset_password()) {
+          if ($this->emailExists($this->query->values["email"])) {
+            $this->query->filter = [["email", "=", $this->query->values["email"]]];
+
+            //email in filter = not updating
+            unset($this->query->values["email"]);
+            $this->query->values["password"] = md5($this->query->values["password"]);
+            $this->query->update();
+
             $this->response->result = $this->query->getResult();
             return true;
           }
@@ -222,7 +240,10 @@ class User extends Endpoint {
       "password" => $this->query->values["password"]);
 
     if ($this->checkRequiredValues($array_to_check)) {
-      if ($this->query->register()) {
+
+      if (!$this->emailExists($this->query->values["email"])) {
+        $this->query->values["password"] = md5($this->query->values["password"]);
+        $this->query->create();
 
         $this->response->result = $this->query->getResult();
         $this->response->debug = $this->query->getDebug();
@@ -266,6 +287,38 @@ class User extends Endpoint {
     }
     $this->response->http_response_code = 401;
     throw new ErrorException('Valid token is required.', ErrorException::DW_VALID_TOKEN_REQUIRED);
+  }
+
+
+
+  /**
+   * @return bool
+   */
+  private function emailPasswordExists() {
+    $this->query->filter = [["email", "=", $this->query->email],["password", "=", md5($this->query->password)]];
+    $this->query->read();
+    if ($this->query->getResult("item_count") > 0){
+      return true;
+    }
+
+    return false;
+  }
+
+
+
+  /**
+   * @param $email
+   * @return bool
+   */
+  private function emailExists($email) {
+    $this->query->filter = [["email", "=", $email]];
+    $this->query->read();
+    if (count($this->query->getResult("items")) > 0) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
 }

@@ -4,8 +4,9 @@ use dwApi\api\ErrorException;
 use dwApi\api\Request;
 use dwApi\api\Response;
 use dwApi\dwApi;
-use dwApi\query\mysql\ItemRepository;
+use dwApi\query\mysql\Query;
 use dwApi\query\mysql\UserRepository;
+use dwApi\query\QueryInterface;
 
 
 /**
@@ -20,7 +21,7 @@ abstract class Endpoint
   protected $current_token;
 
   /**
-   * @var ItemRepository|UserRepository;
+   * @var QueryInterface;
    */
   public $query;
 
