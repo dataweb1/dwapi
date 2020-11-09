@@ -32,7 +32,6 @@ class dwApi
   public function __construct() {
     $this->request = Request::getInstance();
     $this->response = Response::getInstance();
-
   }
 
   /**
@@ -40,8 +39,9 @@ class dwApi
    */
   public function processCall() {
     try {
-      $this->route = new Route($this->request);
-      if ($this->route->validPath()) {
+      if ($this->request->initPath()) {
+        $this->route = new Route($this->request);
+        //if ($this->route->validPath()) {
         $this->current_token = new Token($this->request->project, $this->request->token);
         if ($this->route->tokenValidIfRequired($this->current_token)) {
           if ($this->current_token->valid) {
@@ -51,13 +51,15 @@ class dwApi
           }
 
           /* create Endpoint instance according to the endpoint parameter in the Request */
-          $this->endpoint = EndpointFactory::create($this, $this->request->endpoint);
+          $this->endpoint = EndpointFactory::create($this);
 
           /* create Query repository instance according to the endpoint parameter in the Request */
           $this->endpoint->query = QueryFactory::create($this->request->endpoint, $this->request->entity);
-          $this->endpoint->doAction($this->request->action);
+          $this->endpoint->run();
         }
+        //}
       }
+
 
       if (!is_null($this->request->mail) && $this->request->mail["enabled"] == true) {
         $mail = new Mail();

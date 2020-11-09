@@ -1,6 +1,9 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
+use dwApi\query\InterfaceItemRepository;
+use dwApi\query\InterfaceUserRepository;
+use dwApi\query\mysql\ItemRepository;
 use Hashids\Hashids;
 
 /**
@@ -10,92 +13,100 @@ use Hashids\Hashids;
 class Item extends Endpoint {
 
   /**
-   * Do single_read on $query based on $property, $relation, $id and $hash parameter.
+   * Read item.
    * @throws ErrorException
    */
-  public function single_read() {
-    $this->query->property = $this->request->getParameters("get", "property");
-    $this->query->relation = $this->request->getParameters("get", "relation");
-    $this->query->id = $this->request->getParameters("get", "id");
-    $this->query->hash = $this->request->getParameters("get", "hash");
+  public function get() {
 
-    if (!is_null($this->query->hash)) {
+    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
+    if (!is_null($this->query->id_hash)) {
       $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->hash)[0];
-    }
+      $this->query->id = $hashids->decode($this->query->id_hash)[0];
 
-    if ($this->query->single_read()) {
-      $this->response->result = $this->query->getResult();
-      $this->response->result["token"] = $this->current_token->extend_token();
+      $this->query->property = $this->request->getParameters("get", "property");
+      $this->query->relation = $this->request->getParameters("get", "relation");
 
-      $this->response->debug = $this->query->getDebug();
-    }
-    else {
-      $this->response->http_response_code = 400;
-      throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
-    }
-  }
-
-  /**
-   * Do read on $query based on $filter, $property, $sort, $paging and $relation parameter.
-   * @throws ErrorException
-   */
-  public function read() {
-    $this->query->filter = $this->request->getParameters("get", "filter");
-    $this->query->property = $this->request->getParameters("get", "property");
-    $this->query->sort = $this->request->getParameters("get", "sort");
-    $this->query->paging = $this->request->getParameters("get", "paging");
-    $this->query->relation = $this->request->getParameters("get", "relation");
-
-    if ($this->isParameterSyntaxCorrect("filter", $this->query->filter, false)) {
-      $this->sanitizeParameterArray($this->query->filter, true);
-      if ($this->isParameterSyntaxCorrect("sort", $this->query->sort, false)) {
-        $this->sanitizeParameterArray($this->query->sort, true);
+      if (!$this->query->single_read()) {
+        $this->response->http_response_code = 400;
+        throw new ErrorException('Item not found', ErrorException::DW_ID_REQUIRED);
       }
     }
+    else {
+      $this->query->filter = $this->request->getParameters("get", "filter");
+      $this->query->paging = $this->request->getParameters("get", "paging");
+      $this->query->sort = $this->request->getParameters("get", "sort");
 
-    if ($this->query->read()) {
-      $this->response->result = $this->query->getResult();
-      $this->response->result["token"] = $this->current_token->extend_token();
+      if ($this->isParameterSyntaxCorrect("filter", $this->query->filter, false)) {
+        $this->sanitizeParameterArray($this->query->filter, true);
+        if ($this->isParameterSyntaxCorrect("sort", $this->query->sort, false)) {
+          $this->sanitizeParameterArray($this->query->sort, true);
+        }
+      }
 
-      $this->response->debug = $this->query->getDebug();
+      $this->query->property = $this->request->getParameters("get", "property");
+      $this->query->relation = $this->request->getParameters("get", "relation");
+
+      $this->query->read();
     }
+
+    $this->response->result = $this->query->getResult();
+    $this->response->result["token"] = $this->current_token->extend_token();
+
+    $this->response->debug = $this->query->getDebug();
   }
 
 
   /**
-   * Do update on $query based on $values and $filter parameter.
+   * Put item.
    * @throws ErrorException
    */
-  public function update() {
-    $this->query->values = $this->request->getParameters("put", "values");
-    $this->query->filter = $this->request->getParameters("put", "filter");
+  public function put() {
 
-    $this->request->processFiles($this->query->values);
+    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
+    if (!is_null($this->query->id_hash)) {
+      $hashids = new Hashids('dwApi', 50);
+      $this->query->id = $hashids->decode($this->query->id_hash)[0];
 
-    if ($this->isParameterSyntaxCorrect("value", $this->query->values) &&
-      $this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
+      $this->query->values = $this->request->getParameters("put", "values");
 
-      $this->sanitizeParameterArray($this->query->values, false);
-      $this->sanitizeParameterArray($this->query->filter, true);
+      $this->request->processFiles($this->query->values);
 
-      if ($this->checkRequiredValues($this->query->values)) {
-        if ($this->query->update()) {
-          $this->response->result = $this->query->getResult();
-          $this->response->result["token"] = $this->current_token->extend_token();
+      if (!$this->query->single_update()) {
+        $this->response->http_response_code = 400;
+        throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
+      }
 
-          $this->debug = $this->query->getDebug();
-          return;
+    }
+    else {
+      $this->query->values = $this->request->getParameters("put", "values");
+      $this->query->filter = $this->request->getParameters("put", "filter");
+
+      $this->request->processFiles($this->query->values);
+
+      if ($this->isParameterSyntaxCorrect("value", $this->query->values) &&
+        $this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
+
+        $this->sanitizeParameterArray($this->query->values, false);
+        $this->sanitizeParameterArray($this->query->filter, true);
+
+        if ($this->checkRequiredValues($this->query->values)) {
+          $this->query->update();
         }
       }
     }
+
+    $this->response->result = $this->query->getResult();
+    $this->response->result["token"] = $this->current_token->extend_token();
+
+    $this->response->debug = $this->query->getDebug();
   }
 
+
   /**
-   * Do create on $query based on $values parameter.
+   * Post item.
    * @throws ErrorException
    */
-  public function create()
+  public function post()
   {
     $this->query->values = $this->request->getParameters("post", "values");
     $this->request->processFiles($this->query->values);
@@ -119,55 +130,32 @@ class Item extends Endpoint {
 
 
   /**
-   * Do single update on $query based on $values, $id and $hash parameter.
-   * @throws ErrorException
-   */
-  public function single_update() {
-    $this->query->values = $this->request->getParameters("put", "values");
-
-    $this->request->processFiles($this->query->values);
-
-    $this->query->id = $this->request->getParameters("get", "id");
-    $this->query->hash = $this->request->getParameters("get", "hash");
-
-    if ($this->query->hash != "") {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->hash)[0];
-    }
-
-
-    if ($this->query->single_update()) {
-      $this->response->result = $this->query->getResult();
-      $this->response->result["token"] = $this->current_token->extend_token();
-
-      $this->response->debug = $this->query->getDebug();
-      return;
-    }
-    else {
-      $this->response->http_response_code = 400;
-      throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
-    }
-  }
-
-
-  /**
-   * Do delete on $query basis on $filter parameter.
+   * Delete item.
    * @throws ErrorException
    */
   public function delete() {
-    $this->query->filter = $this->request->getParameters("delete", "filter");
+    $this->query->id_hash = $this->request->getParameters("path", "id_hash");
+    if (!is_null($this->query->id_hash)) {
+      $hashids = new Hashids('dwApi', 50);
+      $this->query->id = $hashids->decode($this->query->id_hash)[0];
 
-    if ($this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
-      $this->sanitizeParameterArray($this->query->filter, true);
-      if ($this->query->delete()) {
-
-        $this->response->result = $this->query->getResult();
-        $this->response->result["token"] = $this->current_token->extend_token();
-
-        $this->response->debug = $this->query->getDebug();
+      if (!$this->query->single_delete()) {
+        $this->response->http_response_code = 400;
+        throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
       }
     }
+    else {
+      $this->query->filter = $this->request->getParameters("delete", "filter");
+
+      if ($this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
+        $this->sanitizeParameterArray($this->query->filter, true);
+        $this->query->delete();
+      }
+    }
+
+    $this->response->result = $this->query->getResult();
+    $this->response->result["token"] = $this->current_token->extend_token();
+
+    $this->response->debug = $this->query->getDebug();
   }
-
-
 }

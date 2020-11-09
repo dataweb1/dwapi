@@ -3,6 +3,8 @@ namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
 use dwApi\api\Request;
 use dwApi\api\Token;
+use dwApi\dwApi;
+use dwApi\query\InterfaceUserRepository;
 use dwApi\query\QueryFactory;
 use Hashids\Hashids;
 
@@ -13,9 +15,17 @@ use Hashids\Hashids;
  */
 class User extends Endpoint {
 
+  protected $logged_in_user;
+
+  public function __construct(dwApi $api)
+  {
+    parent::__construct($api);
+
+    $this->logged_in_user = $api->getLoggedInUser();
+  }
 
   /**
-   * Do login on $query based on $email and $password parameter.
+   * Login user.
    * @throws ErrorException
    */
   public function login() {
@@ -44,12 +54,12 @@ class User extends Endpoint {
 
 
   /**
-   * Logout on $query based on $logged_in_user id.
+   * Logout user.
    */
   public function logout() {
-    $success = $this->query->logout($this->api->logged_in_user->id);
+    $success = $this->query->logout($this->logged_in_user->id);
     if ($success == true) {
-      $this->api->logged_in_user = NULL;
+      $this->logged_in_user = NULL;
     }
   }
 
@@ -92,8 +102,7 @@ class User extends Endpoint {
 
 
   /**
-   * Deactivate/logout user.
-   * Prepare for sending reset password mail.
+   * Send reset password mail.
    * @return bool
    * @throws ErrorException
    */
@@ -131,7 +140,7 @@ class User extends Endpoint {
 
 
   /**
-   * Reset link clicked.
+   * Reset pasword link clicked.
    * @return bool
    * @throws ErrorException
    */
@@ -163,10 +172,11 @@ class User extends Endpoint {
 
 
   /**
-   * Reset password with $new_password parameter
+   * Confirm new password.
+   * @return bool
+   * @throws ErrorException
    */
   public function confirm_password() {
-
     $token = $this->request->getParameters("get", "temp_token");
     $temp_token = new Token($this->request->project, $token);
     if ($temp_token->validate_token()) {
@@ -201,8 +211,7 @@ class User extends Endpoint {
 
 
   /**
-   * Register on $query based on $email, $password and custom parameters.
-   * Prepare for sending activation email.
+   * Register user, send activation mail.
    * @throws ErrorException
    */
   public function register() {
@@ -229,7 +238,7 @@ class User extends Endpoint {
   }
 
   /**
-   * Validate $current_token.
+   * Validate token.
    * @return bool
    * @throws ErrorException
    */
@@ -245,7 +254,7 @@ class User extends Endpoint {
   }
 
   /**
-   * Extend $current_token.
+   * Extend token.
    * @throws ErrorException
    */
   public function extend_token() {

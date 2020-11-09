@@ -5,20 +5,20 @@ namespace dwApi\reference;
 use dwApi\api\ErrorException;
 use dwApi\dwApi;
 use dwApi\api\Helper;
+use dwApi\reference\PathDefinition;
 
 /**
  * Class Reference
  * @package dwApi\reference
  */
 class Reference {
-  //private $paths = [];
-  private $current_path;
   private $reference;
   private static $instance = NULL;
 
 
   /**
    * Reference constructor.
+   * @throws ErrorException
    */
   public function __construct()
   {
@@ -31,31 +31,25 @@ class Reference {
 
 
   /**
-   * @param null $to_find_path
-   * @param null $to_find_method
-   * @return bool|Path
+   * @param null $request_path
+   * @param null $request_method
+   * @return bool|PathDefinition
    */
-  public function currentPath($to_find_path = NULL, $to_find_method = NULL) {
-    if ($to_find_path == NULL) {
-      return $this->current_path;
-    }
+  public function getPathDefinition($request_path = NULL, $request_method = NULL) {
+    foreach($this->reference["paths"] as $spec_path => $path_definition) {
+      $pattern = '#^' . preg_replace('#{[^}]+}#', '[^/]+', $spec_path) . '/?$#';
 
-    foreach($this->reference["paths"] as $path_key => $path) {
-      $pattern = '#^' . preg_replace('#{[^}]+}#', '[^/]+', $path_key) . '/?$#';
+      if (preg_match($pattern, $request_path)) {
 
-      if (preg_match($pattern, $to_find_path)) {
-
-        if (isset($path[$to_find_method])) {
-          $this->current_path = new Path($path, $to_find_method);
-          return $this->current_path;
+        if (isset($path_definition[$request_method])) {
+          return new PathDefinition($spec_path, $path_definition, $request_method);
         }
-        else {
-          return false;
-        }
+
       }
     }
 
     return false;
+
   }
 
 

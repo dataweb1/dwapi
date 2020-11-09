@@ -4,6 +4,8 @@ use dwApi\api\ErrorException;
 use dwApi\api\Request;
 use dwApi\api\Response;
 use dwApi\dwApi;
+use dwApi\query\mysql\ItemRepository;
+use dwApi\query\mysql\UserRepository;
 
 
 /**
@@ -14,29 +16,33 @@ abstract class Endpoint
 {
   protected $request;
   protected $response;
+
   protected $current_token;
-  protected $logged_in_user;
 
+  /**
+   * @var ItemRepository|UserRepository;
+   */
   public $query;
-
 
   /**
    * Endpoint constructor.
    * @param dwApi $api
    */
   public function __construct(dwApi $api) {
-    $this->current_token = $api->getCurrentToken();
-    $this->logged_in_user = $api->getLoggedInUser();
     $this->request = Request::getInstance();
     $this->response = Response::getInstance();
+
+    $this->current_token = $api->getCurrentToken();
   }
 
 
   /**
-   * @param $action
+   * Run.
    * @throws ErrorException
    */
-  public function doAction($action) {
+  public function run() {
+
+    $action = Request::getInstance()->action;
     if (!method_exists(get_class($this), $action)) {
       throw new ErrorException('Action does not (yet) exists.', ErrorException::DW_INVALID_ACTION);
     }
