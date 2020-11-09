@@ -623,7 +623,15 @@
         "summary": "Activate user",
         "responses": {},
         "operationId": "get-user-activate-user_id_hash",
-        "description": ""
+        "description": "",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          }
+        ]
       }
     },
     "/user/reset_password_link/{hash}": {
@@ -638,10 +646,6 @@
             "in": "query",
             "name": "project",
             "required": true
-          },
-          {
-            "type": "string",
-            "in": "query"
           }
         ]
       },
