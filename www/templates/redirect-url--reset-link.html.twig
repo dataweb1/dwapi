@@ -1,5 +1,5 @@
 {% if status.success == true %}
-{{ config.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=true&error_code=&hash={{ parameters.get.hash }}&temp_token={{ parameters.get.temp_token }}
+{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=true&error_code=&hash={{ parameters.get.hash }}&temp_token={{ parameters.get.temp_token }}
 {% else %}
-{{ config.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.get.hash }}&temp_token={{ parameters.get.temp_token }}
+{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.get.hash }}&temp_token={{ parameters.get.temp_token }}
 {% endif %}

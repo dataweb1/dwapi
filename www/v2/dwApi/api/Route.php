@@ -76,7 +76,7 @@ class Route {
    */
   private function validProject() {
 
-    Config::getInstance();
+    Project::getInstance();
 
     return true;
   }

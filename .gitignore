@@ -6,3 +6,6 @@
 .idea/workspace.xml
 .idea/inspectionProfiles/profiles_settings.xml
 /vendor/
+/composer.json
+/composer.lock
+/www/test.php

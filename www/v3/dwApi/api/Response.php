@@ -3,7 +3,6 @@ namespace dwApi\api;
 
 use dwApi\dwApi;
 
-
 /**
  * Class Response
  * @package dwApi\api
@@ -21,7 +20,6 @@ class Response {
 
   /**
    * Response constructor.
-   * @param dwApi $api
    */
   public function __construct() {
     $this->request = Request::getInstance();
@@ -56,11 +54,9 @@ class Response {
         "error_code" => $this->error->getCode(),
         "message" => $this->error->getMessage());
     }
-
     $variables["result"] = $this->result;
-
     $variables["settings"] = Project::getInstance()->settings;
-
+    $variables["settings"]["api_path"] = dwApi::API_PATH;
     $variables["parameters"] = $this->request->getParameters();
 
     return Helper::maskValue($variables);

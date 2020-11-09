@@ -16,7 +16,7 @@ class ApiProject{
     /**
      * Read projects.yml
      */
-    $projects = Yaml::parse(file_get_contents(__DIR__ . '/../../config/projects.yml'));
+    $projects = Yaml::parse(file_get_contents(__DIR__ . '/../../settings/projects.yml'));
 
     if (array_key_exists($project_key, $projects)) {
       $settings = $projects[$project_key];
