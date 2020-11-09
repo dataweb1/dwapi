@@ -43,7 +43,8 @@
           {
             "type": "string",
             "in": "query",
-            "name": "project"
+            "name": "project",
+            "required": true
           },
           {
             "type": "string",
@@ -404,7 +405,7 @@
           {
             "type": "object",
             "in": "query",
-            "name": "redirect_after_activate_link",
+            "name": "redirect_after_activate",
             "description": "{\"enabled\": true/false, \"redirect_url\": url}"
           },
           {
@@ -562,11 +563,11 @@
       },
       "parameters": []
     },
-    "/user/confirm_password/{user_hash}": {
+    "/user/confirm_password/{id_hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "user_hash",
+          "name": "id_hash",
           "in": "path",
           "required": true
         }
@@ -607,6 +608,24 @@
             "description": "The existing email."
           }
         ]
+      }
+    },
+    "/user/activate/{id_hash}": {
+      "parameters": [
+        {
+          "type": "string",
+          "name": "id_hash",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Activate user",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "get-user-activate-user_id_hash"
       }
     }
   },
