@@ -17,8 +17,8 @@ use dwApi\api\Response;
 class dwApi
 {
   const API_VERSION = "v3";
-  //const API_PATH = "https://dwapi.dev/".self::API_VERSION;
-  const API_PATH = "http://dwapi.local/".self::API_VERSION;
+  const API_PATH = "https://dwapi.dev/".self::API_VERSION;
+  //const API_PATH = "http://dwapi.local/".self::API_VERSION;
 
   private $request;
   private $project;
