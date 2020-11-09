@@ -244,11 +244,11 @@
         ]
       }
     },
-    "/item/{id_hash}": {
+    "/item/{hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "id_hash",
+          "name": "hash",
           "in": "path",
           "required": true
         }
