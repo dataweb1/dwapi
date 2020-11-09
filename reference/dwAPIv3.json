@@ -555,7 +555,7 @@
           {
             "type": "object",
             "in": "query",
-            "name": "redirect_after_reset_link",
+            "name": "redirect_after_reset",
             "description": "{\"enabled\": true/false, \"redirect_url\": url}"
           }
         ],
@@ -563,11 +563,11 @@
       },
       "parameters": []
     },
-    "/user/confirm_password/{id_hash}": {
+    "/user/confirm_password/{hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "id_hash",
+          "name": "hash",
           "in": "path",
           "required": true
         }
@@ -610,23 +610,49 @@
         ]
       }
     },
-    "/user/activate/{id_hash}": {
+    "/user/activate_link/{hash}": {
       "parameters": [
         {
           "type": "string",
-          "name": "id_hash",
+          "name": "hash",
           "in": "path",
           "required": true
         }
       ],
       "get": {
         "summary": "Activate user",
-        "tags": [
-          "user"
-        ],
         "responses": {},
-        "operationId": "get-user-activate-user_id_hash"
+        "operationId": "get-user-activate-user_id_hash",
+        "description": ""
       }
+    },
+    "/user/reset_password_link/{hash}": {
+      "get": {
+        "summary": "Reset user",
+        "tags": [],
+        "responses": {},
+        "operationId": "get-user-reset",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "query"
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "type": "string",
+          "name": "hash",
+          "in": "path",
+          "required": true
+        }
+      ]
     }
   },
   "definitions": {},
