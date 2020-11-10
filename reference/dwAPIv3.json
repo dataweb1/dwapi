@@ -446,6 +446,11 @@
             "name": "password",
             "required": true
           }
+        ],
+        "security": [
+          {
+            "email:password": []
+          }
         ]
       }
     },
@@ -660,7 +665,16 @@
     }
   },
   "definitions": {},
-  "securityDefinitions": {},
+  "securityDefinitions": {
+    "Bearer": {
+      "name": "Authorization",
+      "type": "apiKey",
+      "in": "header"
+    },
+    "email:password": {
+      "type": "basic"
+    }
+  },
   "tags": [
     {
       "name": "item"
