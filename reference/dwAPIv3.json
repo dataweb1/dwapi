@@ -449,7 +449,7 @@
         ],
         "security": [
           {
-            "email:password": []
+            "My HTTP Basic": []
           }
         ]
       }
@@ -671,8 +671,9 @@
       "type": "apiKey",
       "in": "header"
     },
-    "email:password": {
-      "type": "basic"
+    "My HTTP Basic": {
+      "type": "basic",
+      "description": ""
     }
   },
   "tags": [
