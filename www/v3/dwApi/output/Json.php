@@ -18,7 +18,7 @@ class Json {
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
       // return only the headers and not the content
       header('Access-Control-Allow-Origin: *');
-      header('Access-Control-Allow-Headers: Authorization, X-Requested-With');
+      header('Access-Control-Allow-Headers: Authorization, X-Requested-With, Content-Type');
       header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
       exit;
     }

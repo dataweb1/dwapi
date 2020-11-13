@@ -1,7 +1,6 @@
 <?php
 namespace dwApi\query;
 use dwApi\api\Request;
-use dwApi\storage\Mysql as StorageMysql;
 
 /**
  * Class QueryFactory
