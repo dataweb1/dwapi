@@ -132,11 +132,31 @@
             "description": "By default a token is required for creating. You can override it here."
           },
           {
-            "in": "formData",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "property 1": {
+                  "type": "string",
+                  "default": "value"
+                },
+                "property 2": {
+                  "type": "string",
+                  "default": "value"
+                },
+                "...": {
+                  "type": "string",
+                  "default": "..."
+                }
+              }
+            }
+          },
+          {
             "type": "string",
-            "name": "values",
-            "required": true,
-            "description": "The values to be set\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+            "in": "header",
+            "name": "Content-Type",
+            "default": "application/json"
           }
         ],
         "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
@@ -185,17 +205,37 @@
             "description": "{\"enabled\": true}"
           },
           {
-            "in": "formData",
-            "type": "string",
-            "name": "values",
-            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}",
-            "required": true
+            "type": "array",
+            "in": "query",
+            "name": "filter",
+            "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]"
           },
           {
-            "in": "formData",
-            "type": "array",
-            "name": "filter",
-            "description": "The filter to apply the update on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]\n"
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "property 1": {
+                  "type": "string",
+                  "default": "value"
+                },
+                "property 2": {
+                  "type": "string",
+                  "default": "value"
+                },
+                "...": {
+                  "type": "string",
+                  "default": "..."
+                }
+              }
+            }
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "default": "application/json"
           }
         ],
         "tags": [
@@ -409,11 +449,26 @@
             "description": "{\"enabled\": true/false, \"redirect_url\": url}"
           },
           {
-            "in": "formData",
-            "type": "object",
-            "name": "values",
-            "description": "The values to be registered: {\"email\": email, \"password\", password, ...}\n\nE-mail and password are required. Extra values can be added according to the user table fields)",
-            "required": true
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "",
+            "default": "application/json"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
           }
         ],
         "description": "The user is registered in the system. A mail with an activation link is send.\n\nWhen the activation link in the mail is clicked the user is redirected to the websites homepage with these parameters:\n- from: \"dwapi_user_activate\"\n- status: \"true\" or \"false\" (depending on the success of the activation)\n- hash: the hashed user_id\n\nThe default behaviour can be overridden by adding the \"redirect_after_reset_link\" parameter."
@@ -435,16 +490,25 @@
             "required": true
           },
           {
-            "in": "formData",
-            "type": "string",
-            "name": "email",
-            "required": true
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              }
+            }
           },
           {
-            "in": "formData",
             "type": "string",
-            "name": "password",
-            "required": true
+            "in": "header",
+            "name": "Content-Type",
+            "default": "application/json"
           }
         ],
         "security": [

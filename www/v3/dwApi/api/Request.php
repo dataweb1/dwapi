@@ -222,6 +222,22 @@ class Request
   }
 
   /**
+   * @param $body
+   * @return array
+   */
+  private function processPostParameters($body) {
+    print_r("ok");
+    print_r($body);
+   if (Helper::isJson($body)) {
+      $parameters = json_decode($body, true);
+    } else {
+      $parameters = $body;
+    }
+
+    return $parameters;
+  }
+
+  /**
    *
    */
   private function processPathParameters() {
@@ -263,7 +279,7 @@ class Request
           $this->parameters["get"] = $this->processParameters($_GET);
         }
         if ($type == "post" && $_POST) {
-          $this->parameters["post"] = $this->processParameters($_POST);
+          $this->parameters["post"] = $this->processPostParameters($_POST);
         }
         if ($type == "delete") {
           parse_str(file_get_contents('php://input'), $_DELETE);
