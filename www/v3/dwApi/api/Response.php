@@ -55,7 +55,7 @@ class Response {
         "message" => $this->error->getMessage());
     }
     $variables["result"] = $this->result;
-    $variables["settings"] = Project::getInstance()->settings;
+    $variables["settings"] = Project::getInstance()->site;
     $variables["settings"]["api_path"] = dwApi::API_PATH;
     $variables["parameters"] = $this->request->getParameters();
 

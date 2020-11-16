@@ -6,7 +6,7 @@ use dwApi\api\Request;
 use dwApi\query\QueryInterface;
 use Hashids\Hashids;
 use dwApi\storage\Mysql;
-use dwApi\query\mysql\EntityType as MysqlEntityType;
+use dwApi\query\mysql\EntityType;
 
 
 /**
@@ -49,7 +49,7 @@ class Query implements QueryInterface {
 
     $this->request = Request::getInstance();
 
-    $this->entity_type = new MysqlEntityType();
+    $this->entity_type = new EntityType();
     $this->entity_type->load($entity_type);
   }
 

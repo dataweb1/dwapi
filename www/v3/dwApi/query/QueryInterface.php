@@ -1,8 +1,6 @@
 <?php
 namespace dwApi\query;
 
-use dwApi\query\mysql\EntityType;
-
 /**
  * Interface InterfaceQueryRepository
  */
@@ -82,7 +80,8 @@ interface QueryInterface {
 
 
   /**
-   * @return EntityType
+   * getEntityType.
+   * @return mixed
    */
   public function getEntityType();
 }

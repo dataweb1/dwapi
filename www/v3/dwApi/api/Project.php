@@ -9,8 +9,10 @@ namespace dwApi\api;
  */
 class Project {
   public $key;
-  public $settings;
-  private $request;
+  public $type;
+  public $credentials;
+  public $site;
+
   private static $instance = null;
 
 
@@ -20,18 +22,20 @@ class Project {
    */
   public function __construct()
   {
-    $this->request = Request::getInstance();
+    $key = Request::getInstance()->project;
 
-    $this->key = $this->request->project;
-    if ($this->key == "") {
+    if ($key == "") {
       throw new ErrorException('Project key is required', ErrorException::DW_PROJECT_REQUIRED);
     }
 
     // read project from project.yml
-    if ($project = Helper::readYaml($_SERVER["DOCUMENT_ROOT"].'/settings/projects.yml', $this->key)) {
-      $this->settings = $project;
+    if ($project = Helper::readYaml($_SERVER["DOCUMENT_ROOT"].'/settings/projects.yml', $key)) {
+      $this->key = $key;
+      $this->type = $project["type"];
+      $this->credentials = $project["credentials"];
+      $this->site = $project["site"];
     } else {
-      throw new ErrorException('Project "' . $this->key . '" not found', ErrorException::DW_PROJECT_NOT_FOUND);
+      throw new ErrorException('Project "' . $key . '" not found', ErrorException::DW_PROJECT_NOT_FOUND);
     }
   }
 
