@@ -6,6 +6,7 @@ use dwApi\api\Request;
 use dwApi\query\QueryInterface;
 use Hashids\Hashids;
 use dwApi\storage\Mysql;
+use dwApi\query\mysql\EntityType;
 
 
 /**
@@ -38,7 +39,6 @@ class Query implements QueryInterface {
   protected $debug;
 
 
-
   /**
    * Query constructor.
    * @param string $entity_type
@@ -60,26 +60,22 @@ class Query implements QueryInterface {
    */
   public function single_read()
   {
-    if ($this->id > 0) {
-      $fields = self::prepareFields($this->property);
+    $fields = self::prepareFields($this->property);
 
-      $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->key . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
-      $binds = array(":id" => $this->id);
+    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->key . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
+    $binds = array(":id" => $this->id);
 
-      $stmt = $this->storage->prepare($sqlQuery);
-      $this->doBinds($binds, $stmt);
+    $stmt = $this->storage->prepare($sqlQuery);
+    $this->doBinds($binds, $stmt);
 
-      $stmt->execute();
+    $stmt->execute();
 
-      $fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC);
+    if ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
       $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->key);;
       $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key;
 
       $this->debug["query"] = $sqlQuery;
-
-
-
       return true;
     }
     else {
@@ -129,6 +125,7 @@ class Query implements QueryInterface {
       "item_count" => $item_count,
       "items" => $items,
       "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key);
+
 
     $this->debug["query"] = $sqlQuery;
 
@@ -193,8 +190,6 @@ class Query implements QueryInterface {
     list($setters, $binds_update) = $this->prepareSetters($this->values);
     $binds = array_merge($binds_where, $binds_update);
     $sqlQuery = "UPDATE `" . $this->entity_type->key . "` SET " . $setters . " WHERE " . $where;
-    //print_r($sqlQuery);
-    //print_r($binds);
     $stmt = $this->storage->prepare($sqlQuery);
 
 
@@ -415,6 +410,7 @@ class Query implements QueryInterface {
   {
     $binds = [];
     $setters = "";
+
     if ($values != NULL) {
 
       foreach ($values as $field => $value) {
@@ -450,14 +446,14 @@ class Query implements QueryInterface {
   }
 
   /**
-   * @param $relation_entity_key
-   * @param $relation_key
+   * getRelationItems
+   * @param $relation
    * @param $relation_value
    * @return array
    */
-  private function getRelationEntityItems($relation_entity_key, $relation_key, $relation_value)
+  private function getRelationItems($relation, $relation_value)
   {
-    $sqlQuery = "SELECT * FROM `" . $relation_entity_key . "` WHERE `" . $relation_key . "` = :relation_key";
+    $sqlQuery = "SELECT * FROM `" . $relation["sec_entity"] . "` WHERE `" . $relation["sec_key"] . "` = :relation_key";
     $stmt = $this->storage->prepare($sqlQuery);
 
     $stmt->bindValue(":relation_key", $relation_value);
@@ -468,7 +464,7 @@ class Query implements QueryInterface {
     /* process result */
     while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
-      $items[] = $this->processFetchedItem($fetched_item, $relation_entity_key);
+      $items[$fetched_item[$relation["sec_key"]]] = $this->processFetchedItem($fetched_item,  $relation["sec_entity"]);
     }
 
     return $items;
@@ -504,7 +500,7 @@ class Query implements QueryInterface {
     if ($this->relation != NULL && is_array($this->relation)) {
       foreach ($this->relation as $r) {
         if ($r["pri_entity"] == $fetched_item_entity_type) {
-          $relation_items = $this->getRelationEntityItems($r["sec_entity"], $r["sec_key"], $item[$r["pri_key"]]);
+          $relation_items = $this->getRelationItems($r, $item[$r["pri_key"]]);
           if (is_array($item[$r["sec_entity"]]["items"])) {
             if (count($relation_items) > 0) {
               $item[$r["sec_entity"]]["items"][] = $relation_items;

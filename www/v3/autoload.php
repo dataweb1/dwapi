@@ -1,7 +1,10 @@
 <?php
 function custom_autoloader($class) {
   if (strpos($class, "dwApi\\") !== false) {
-    include __DIR__ . "/" . str_replace("\\", "/", $class) . '.php';
+    $fileName = __DIR__ . "/" . str_replace("\\", "/", $class) . '.php';
+    if (is_readable($fileName)) {
+      include $fileName;
+    }
   }
 }
 

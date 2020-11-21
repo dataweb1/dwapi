@@ -18,13 +18,13 @@ class Json {
     if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
       // return only the headers and not the content
       header('Access-Control-Allow-Origin: *');
-      header('Access-Control-Allow-Headers: Authorization, X-Requested-With');
+      header('Access-Control-Allow-Headers: Authorization, X-Requested-With, Content-Type, Accept-Language');
       header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
       exit;
     }
 
     header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Accept, Origin, Authorization');
+    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Accept, Origin, Authorization, Accept-Language');
 
     header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
     header("Cache-Control: post-check=0, pre-check=0", false);

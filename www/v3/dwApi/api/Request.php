@@ -221,6 +221,21 @@ class Request
     return $parameters;
   }
 
+
+  /**
+   * @param $body
+   * @return mixed
+   */
+  private function processPostPutParameters($body) {
+    if (Helper::isJson($body)) {
+      $parameters = json_decode($body, true);
+    } else {
+      $parameters = $body;
+    }
+    return $parameters;
+  }
+
+
   /**
    *
    */
@@ -251,19 +266,24 @@ class Request
   }
 
   /**
-   * @param $type
+   * getParameters.
+   * @param null $type
    * @param null $key
-   * @return bool|mixed
+   * @param bool $array_expected
+   * @param bool $multi_array_expected
+   * @param bool $required
+   * @return array|bool|mixed|null
+   * @throws \dwApi\api\ErrorException
    */
-  public function getParameters($type = NULL, $key = NULL) {
-
+  public function getParameters($type = NULL, $key = NULL, $array_expected = false, $multi_array_expected = false, $required = false) {
     if ($type != NULL) {
       if (!isset($this->parameters[$type])) {
         if ($type == "get" && $_GET) {
           $this->parameters["get"] = $this->processParameters($_GET);
         }
-        if ($type == "post" && $_POST) {
-          $this->parameters["post"] = $this->processParameters($_POST);
+        if ($type == "post") {
+          $_POST = file_get_contents('php://input');
+          $this->parameters["post"] = $this->processPostPutParameters($_POST);
         }
         if ($type == "delete") {
           parse_str(file_get_contents('php://input'), $_DELETE);
@@ -272,7 +292,8 @@ class Request
         if ($type == "put") {
           //parse_str(file_get_contents('php://input'), $_PUT);
           $this->_parsePut();//_parsePut
-          $this->parameters["put"] = $this->processParameters($GLOBALS['_PUT']);
+          $GLOBALS["_PUT"] = array_key_first($GLOBALS["_PUT"]);
+          $this->parameters["put"] = $this->processPostPutParameters($GLOBALS['_PUT']);
         }
         if ($type == "files" && $_FILES) {
           $this->parameters["files"] = $_FILES;
@@ -280,6 +301,19 @@ class Request
 
         if ($type == "path") {
           $this->parameters["path"] = $this->processPathParameters();
+        }
+      }
+    }
+
+    if ($array_expected) {
+      if ($key == NULL) {
+        if ($this->isParameterSyntaxCorrect("value", $this->parameters[$type], $required)) {
+          $this->sanitizeParameterArray($this->parameters[$type], $multi_array_expected);
+        }
+      }
+      else {
+        if ($this->isParameterSyntaxCorrect($key, $this->parameters[$type][$key], $required)) {
+          $this->sanitizeParameterArray($this->parameters[$type][$key], $multi_array_expected);
         }
       }
     }
@@ -305,6 +339,7 @@ class Request
   }
 
   /**
+   * processFiles.
    * @param $values
    * @throws ErrorException
    */
@@ -332,5 +367,60 @@ class Request
         }
       }
     }
+  }
+
+
+
+  /**
+   * sanitizeParameterArray.
+   * @param $array
+   * @param $multi_array_expected
+   * @return mixed
+   */
+  public function sanitizeParameterArray(&$array, $multi_array_expected = true) {
+    if (is_array($array) && $multi_array_expected) {
+      /** ["id", "=", "1"] instead of [["id", "=", "1"]] **/
+      if (array_key_exists(0, $array) && !is_array($array[0])) {
+        $a[0] = $array;
+        $array = $a;
+      }
+      else {
+        /** {"field": "id", "operator": "=", "value": "1"} instead of [{"field": "id", "operator": "=", "value": "1"}] **/
+        if (!array_key_exists(0, $array)) {
+          $a[0] = $array;
+          $array = $a;
+        }
+      }
+    }
+  }
+
+
+  /**
+   * @param $verb
+   * @param $parameter
+   * @param bool $required
+   * @return bool
+   * @throws ErrorException
+   */
+  public function isParameterSyntaxCorrect($verb, $parameter, $required = true) {
+    if ($required) {
+      if (!$parameter) {
+        throw new ErrorException(ucfirst($verb) . " is missing. At least one is needed.", ErrorException::DW_SYNTAX_ERROR);
+      }
+      else {
+        if (!is_array($parameter)) {
+          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
+        }
+      }
+    }
+    else {
+      if ($parameter != "") {
+        if (!is_array($parameter)) {
+          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
+        }
+      }
+    }
+
+    return true;
   }
 }

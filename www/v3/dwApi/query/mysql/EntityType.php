@@ -21,7 +21,9 @@ class EntityType {
     $this->storage = Mysql::load();
   }
 
+
   /**
+   * load.
    * @param $entity_type
    * @throws ErrorException
    */
@@ -42,8 +44,10 @@ class EntityType {
 
   }
 
+
   /**
-   *
+   * getProperties.
+   * @return array|null
    */
   public function getProperties() {
     if ($this->properties == NULL) {
@@ -71,6 +75,7 @@ class EntityType {
 
 
   /**
+   * entityTypeExists.
    * @param $entity_type
    * @return bool
    */

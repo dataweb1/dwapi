@@ -59,9 +59,9 @@ class dwApi
           /* create Endpoint instance according to the endpoint parameter in the Request */
           $this->endpoint = EndpointFactory::create($this);
 
-          /* create Query repository instance according to the endpoint parameter in the Request */
+          /* create Query instance according to the endpoint parameter in the Request */
           $this->endpoint->query = QueryFactory::create($this->request->entity);
-          $this->endpoint->run();
+          $this->endpoint->execute($this->request->action);
         }
         //}
       }

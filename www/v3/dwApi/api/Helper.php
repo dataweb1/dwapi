@@ -57,7 +57,6 @@ class Helper {
 
   /**
    * @param $values
-   * @param array $keys
    * @return mixed
    */
   public static function maskValue($values) {
@@ -70,7 +69,7 @@ class Helper {
           $length = strlen($value);
           $first_three_chars = substr($value, 0, 1);
           $last_three_chars = substr($value, $length - 1, 1);
-          $value = $first_three_chars . str_repeat("•", $length - 2) . $last_three_chars;
+          $value = $first_three_chars . str_repeat("•", max($length - 2,0)) . $last_three_chars;
         }
       }
     }
