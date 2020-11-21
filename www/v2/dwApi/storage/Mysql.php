@@ -14,7 +14,7 @@ class Mysql
   public function __construct()
   {
     //if ($api->storage == null) {
-      $credentials = Project::getInstance()->settings["db_credentials"];
+      $credentials = Project::getInstance()->settings["credentials"];
       $this->conn = new \PDO("mysql:host=" . $credentials["host"] . ";port=3306;dbname=" . $credentials["dbname"], $credentials["username"], $credentials["password"], [
         \PDO::ATTR_EMULATE_PREPARES => false,
         \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION

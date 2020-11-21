@@ -7,7 +7,7 @@ use Symfony\Component\Yaml\Yaml;
  * Class Settings
  * @package dwApi\api
  */
-class Settings {
+class Project {
   public static $API_PATH;
   public $api;
   public $key;

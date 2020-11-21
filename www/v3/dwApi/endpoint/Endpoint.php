@@ -5,6 +5,7 @@ use dwApi\api\Request;
 use dwApi\api\Response;
 use dwApi\dwApi;
 use dwApi\query\QueryInterface;
+use Hashids\Hashids;
 
 
 /**
@@ -36,12 +37,11 @@ abstract class Endpoint
 
 
   /**
-   * Run.
+   * execute.
+   * @param $action
    * @throws ErrorException
    */
-  public function run() {
-
-    $action = Request::getInstance()->action;
+  public function execute($action) {
     if (!method_exists(get_class($this), $action)) {
       throw new ErrorException('Action does not (yet) exists.', ErrorException::DW_INVALID_ACTION);
     }
@@ -51,6 +51,7 @@ abstract class Endpoint
 
 
   /**
+   * checkRequiredValues.
    * @param $values
    * @return bool
    * @throws ErrorException
@@ -77,55 +78,14 @@ abstract class Endpoint
     return true;
   }
 
+
   /**
-   * @param $array
-   * @param $multi_array_wanted
+   * getIdFromHash.
+   * @param $hash
    * @return mixed
    */
-  public function sanitizeParameterArray(&$array, $multi_array_wanted) {
-    if (is_array($array) && $multi_array_wanted) {
-      /** ["id", "=", "1"] instead of [["id", "=", "1"]] **/
-      if (array_key_exists(0, $array) && !is_array($array[0])) {
-        $a[0] = $array;
-        $array = $a;
-      }
-      else {
-        /** {"field": "id", "operator": "=", "value": "1"} instead of [{"field": "id", "operator": "=", "value": "1"}] **/
-        if (!array_key_exists(0, $array)) {
-          $a[0] = $array;
-          $array = $a;
-        }
-      }
-    }
-  }
-
-
-  /**
-   * @param $verb
-   * @param $parameter
-   * @param bool $required
-   * @return bool
-   * @throws ErrorException
-   */
-  public function isParameterSyntaxCorrect($verb, $parameter, $required = true) {
-    if ($required) {
-      if (!$parameter) {
-        throw new ErrorException(ucfirst($verb) . " is missing. At least one is needed.", ErrorException::DW_SYNTAX_ERROR);
-      }
-      else {
-        if (!is_array($parameter)) {
-          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
-        }
-      }
-    }
-    else {
-      if ($parameter != "") {
-        if (!is_array($parameter)) {
-          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
-        }
-      }
-    }
-
-    return true;
+  protected function getIdFromHash($hash) {
+    $hashids = new Hashids('dwApi', 50);
+    return $hashids->decode($this->query->hash)[0];
   }
 }

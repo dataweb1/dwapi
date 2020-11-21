@@ -79,9 +79,4 @@ interface QueryInterface {
   public function getDebug();
 
 
-  /**
-   * getEntityType.
-   * @return mixed
-   */
-  public function getEntityType();
 }

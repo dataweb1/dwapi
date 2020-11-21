@@ -1,7 +1,6 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
-use Hashids\Hashids;
 
 /**
  * Class Item
@@ -15,33 +14,18 @@ class Item extends Endpoint {
    */
   public function get() {
 
+    $this->query->property = $this->request->getParameters("get", "property", true, true, false);
+    $this->query->relation = $this->request->getParameters("get", "relation", true, true, false);
     $this->query->hash = $this->request->getParameters("path", "hash");
     if (!is_null($this->query->hash)) {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->hash)[0];
+      $this->query->id = $this->getIdFromHash($this->query->hash);
 
-      $this->query->property = $this->request->getParameters("get", "property");
-      $this->query->relation = $this->request->getParameters("get", "relation");
-
-      if (!$this->query->single_read()) {
-        $this->response->http_response_code = 400;
-        throw new ErrorException('Item not found', ErrorException::DW_ID_REQUIRED);
-      }
+      $this->query->single_read();
     }
     else {
-      $this->query->filter = $this->request->getParameters("get", "filter");
-      $this->query->paging = $this->request->getParameters("get", "paging");
-      $this->query->sort = $this->request->getParameters("get", "sort");
-
-      if ($this->isParameterSyntaxCorrect("filter", $this->query->filter, false)) {
-        $this->sanitizeParameterArray($this->query->filter, true);
-        if ($this->isParameterSyntaxCorrect("sort", $this->query->sort, false)) {
-          $this->sanitizeParameterArray($this->query->sort, true);
-        }
-      }
-
-      $this->query->property = $this->request->getParameters("get", "property");
-      $this->query->relation = $this->request->getParameters("get", "relation");
+      $this->query->filter = $this->request->getParameters("get", "filter", true, true, false);
+      $this->query->paging = $this->request->getParameters("get", "paging", false, false, false);
+      $this->query->sort = $this->request->getParameters("get", "sort", true, true, false);
 
       $this->query->read();
     }
@@ -60,34 +44,26 @@ class Item extends Endpoint {
   public function put() {
 
     $this->query->hash = $this->request->getParameters("path", "hash");
-    $this->query->values = $this->request->getParameters("put");
+    $this->query->values = $this->request->getParameters("put", NULL, true, false, true);
+
+    $this->request->processFiles($this->query->values);
 
     if (!is_null($this->query->hash)) {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->hash)[0];
-      $this->request->processFiles($this->query->values);
+      $this->query->id = $this->getIdFromHash($this->query->hash);
 
-      if (!$this->query->single_update()) {
-        $this->response->http_response_code = 400;
-        throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
+
+      if ($this->checkRequiredValues($this->query->values)) {
+        if (!$this->query->single_update()) {
+          $this->response->http_response_code = 400;
+          throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
+        }
       }
-
     }
     else {
-      $this->query->values = $this->request->getParameters("put");
-      $this->query->filter = $this->request->getParameters("get", "filter");
+      $this->query->filter = $this->request->getParameters("get", "filter", true, true, true);
 
-      $this->request->processFiles($this->query->values);
-
-      if ($this->isParameterSyntaxCorrect("value", $this->query->values) &&
-        $this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
-
-        $this->sanitizeParameterArray($this->query->values, false);
-        $this->sanitizeParameterArray($this->query->filter, true);
-
-        if ($this->checkRequiredValues($this->query->values)) {
-          $this->query->update();
-        }
+      if ($this->checkRequiredValues($this->query->values)) {
+        $this->query->update();
       }
     }
 
@@ -104,27 +80,22 @@ class Item extends Endpoint {
    */
   public function post()
   {
-    $this->query->values = $this->request->getParameters("post");
+    $this->query->values = $this->request->getParameters("post", NULL, true, false, true);
     $this->request->processFiles($this->query->values);
 
-    if ($this->isParameterSyntaxCorrect("value", $this->query->values)) {
-      $this->sanitizeParameterArray($this->query->values, false);
-      if ($this->checkRequiredValues($this->query->values)) {
-        if ($this->query->create()) {
-          $this->response->http_response_code = 201;
-          $this->response->result = $this->query->getResult();
-          $this->response->result["token"] = $this->current_token->extend_token();
+    if ($this->checkRequiredValues($this->query->values)) {
+      if ($this->query->create()) {
+        $this->response->http_response_code = 201;
+        $this->response->result = $this->query->getResult();
+        $this->response->result["token"] = $this->current_token->extend_token();
 
-          $this->response->debug = $this->query->getDebug();
-          return;
-        }
-        else {
-          $this->response->result = array("id" => NULL);
-        }
+        $this->response->debug = $this->query->getDebug();
+        return;
+      }
+      else {
+        $this->response->result = array("id" => NULL);
       }
     }
-
-
   }
 
 
@@ -135,8 +106,7 @@ class Item extends Endpoint {
   public function delete() {
     $this->query->hash = $this->request->getParameters("path", "hash");
     if (!is_null($this->query->hash)) {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->query->hash)[0];
+      $this->query->id = $this->getIdFromHash($this->query->hash);
 
       if (!$this->query->single_delete()) {
         $this->response->http_response_code = 400;
@@ -144,12 +114,8 @@ class Item extends Endpoint {
       }
     }
     else {
-      $this->query->filter = $this->request->getParameters("delete", "filter");
-
-      if ($this->isParameterSyntaxCorrect("filter", $this->query->filter)) {
-        $this->sanitizeParameterArray($this->query->filter, true);
-        $this->query->delete();
-      }
+      $this->query->filter = $this->request->getParameters("delete", "filter", true, false, true);
+      $this->query->delete();
     }
 
     $this->response->result = $this->query->getResult();

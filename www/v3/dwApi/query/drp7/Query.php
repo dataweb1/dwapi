@@ -1,11 +1,11 @@
 <?php
-namespace dwApi\query\mysql;
+namespace dwApi\query\drp7;
 use dwApi\api\ErrorException;
 use dwApi\api\Helper;
 use dwApi\api\Request;
 use dwApi\query\QueryInterface;
+use dwApi\storage\Drp7;
 use Hashids\Hashids;
-use dwApi\storage\Mysql;
 use dwApi\query\mysql\EntityType;
 
 
@@ -17,8 +17,6 @@ class Query implements QueryInterface {
 
   protected $storage;
   protected $request;
-
-  public $entity_type;
 
   /* item parameters */
   public $values = NULL;
@@ -41,16 +39,17 @@ class Query implements QueryInterface {
 
   /**
    * Query constructor.
-   * @param string $entity_type
-   * @throws ErrorException
+   * @param string $entity
    */
-  public function __construct($entity_type = "") {
-    $this->storage = Mysql::load();
+  public function __construct($entity = "") {
+    $this->storage = Drp7::load();
 
     $this->request = Request::getInstance();
 
-    $this->entity_type = new EntityType();
-    $this->entity_type->load($entity_type);
+    $this->storage->setPostValue("api_host", $_SERVER["HTTP_HOST"]);
+    $this->storage->setPostValue("project", $this->request->project);
+    $this->storage->setPostValue("entity", $entity);
+
   }
 
 
@@ -58,82 +57,29 @@ class Query implements QueryInterface {
    * Single read.
    * @return bool
    */
-  public function single_read()
-  {
-    $fields = self::prepareFields($this->property);
+  public function single_read() {
+    $this->storage->setPostValue("id", $this->id);
+    $this->storage->setPostValue("relation", $this->relation);
+    $this->storage->setPostValue("property", $this->property);
 
-    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->key . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
-    $binds = array(":id" => $this->id);
+    $this->result = $this->storage->execute("single_read");
 
-    $stmt = $this->storage->prepare($sqlQuery);
-    $this->doBinds($binds, $stmt);
-
-    $stmt->execute();
-
-    if ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-
-      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->key);;
-      $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key;
-
-      $this->debug["query"] = $sqlQuery;
-      return true;
-    }
-    else {
-      return false;
-    }
+    return true;
   }
+
 
   /**
    * Read.
    * @return bool
    */
-  public function read()
-  {
-    /* build query */
-    $fields = $this->prepareFields($this->property);
+  public function read() {
+    $this->storage->setPostValue("filter", $this->filter);
+    $this->storage->setPostValue("sort", $this->sort);
+    $this->storage->setPostValue("paging", $this->paging);
+    $this->storage->setPostValue("relation", $this->relation);
+    $this->storage->setPostValue("property", $this->property);
 
-    $sqlQuery = "SELECT SQL_CALC_FOUND_ROWS " . $fields . " FROM `" . $this->entity_type->key . "`";
-    list($where, $binds) = $this->prepareWhere($this->filter, $this->entity_type);
-    if ($where != "") {
-      $sqlQuery .= "WHERE " . $where;
-    }
-
-    $orderby = $this->prepareOrderBy($this->sort);
-    if ($orderby != "") {
-      $sqlQuery .= " ORDER BY " . $orderby;
-    }
-
-    $limit = $this->prepareLimit($this->paging);
-    if ($limit != "") {
-      $sqlQuery .= " LIMIT " . $limit;
-    }
-
-    $stmt = $this->storage->prepare($sqlQuery);
-    $this->doBinds($binds, $stmt);
-
-    $stmt->execute();
-
-    $item_count = $this->storage->query('SELECT FOUND_ROWS()')->fetchColumn();
-
-    /* process result */
-    $items = [];
-    while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->key);
-    }
-
-    $this->result = array(
-      "item_count" => $item_count,
-      "items" => $items,
-      "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key);
-
-
-    $this->debug["query"] = $sqlQuery;
-
-    if ($limit != "") {
-      $this->result["paging"]["page"] = intval($this->paging["page"]);
-      $this->result["paging"]["items_per_page"] = intval($this->paging["items_per_page"]);
-      $this->result["paging"]["page_count"] = ceil(intval($item_count) / intval($this->paging["items_per_page"]));
-    }
+    $this->result = $this->storage->execute("read");
 
     return true;
   }
@@ -285,15 +231,6 @@ class Query implements QueryInterface {
 
 
   /**
-   * Get EntityType object.
-   * @return EntityType
-   */
-  public function getEntityType() {
-    return $this->entity_type;
-  }
-
-
-  /**
    * @param null $property
    * @return string
    */
@@ -410,7 +347,6 @@ class Query implements QueryInterface {
   {
     $binds = [];
     $setters = "";
-
     if ($values != NULL) {
 
       foreach ($values as $field => $value) {
