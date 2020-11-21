@@ -221,21 +221,20 @@ class Request
     return $parameters;
   }
 
+
   /**
    * @param $body
-   * @return array
+   * @return mixed
    */
-  private function processPostParameters($body) {
-    print_r("ok");
-    print_r($body);
-   if (Helper::isJson($body)) {
+  private function processPostPutParameters($body) {
+    if (Helper::isJson($body)) {
       $parameters = json_decode($body, true);
     } else {
       $parameters = $body;
     }
-
     return $parameters;
   }
+
 
   /**
    *
@@ -272,14 +271,14 @@ class Request
    * @return bool|mixed
    */
   public function getParameters($type = NULL, $key = NULL) {
-
     if ($type != NULL) {
       if (!isset($this->parameters[$type])) {
         if ($type == "get" && $_GET) {
           $this->parameters["get"] = $this->processParameters($_GET);
         }
-        if ($type == "post" && $_POST) {
-          $this->parameters["post"] = $this->processPostParameters($_POST);
+        if ($type == "post") {
+          $_POST = file_get_contents('php://input');
+          $this->parameters["post"] = $this->processPostPutParameters($_POST);
         }
         if ($type == "delete") {
           parse_str(file_get_contents('php://input'), $_DELETE);
@@ -288,7 +287,8 @@ class Request
         if ($type == "put") {
           //parse_str(file_get_contents('php://input'), $_PUT);
           $this->_parsePut();//_parsePut
-          $this->parameters["put"] = $this->processParameters($GLOBALS['_PUT']);
+          $GLOBALS["_PUT"] = array_key_first($GLOBALS["_PUT"]);
+          $this->parameters["put"] = $this->processPostPutParameters($GLOBALS['_PUT']);
         }
         if ($type == "files" && $_FILES) {
           $this->parameters["files"] = $_FILES;

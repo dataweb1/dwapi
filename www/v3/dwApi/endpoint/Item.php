@@ -1,9 +1,6 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
-use dwApi\query\QueryInterface;
-use dwApi\query\InterfaceUserRepository;
-use dwApi\query\mysql\Query;
 use Hashids\Hashids;
 
 /**
@@ -63,12 +60,11 @@ class Item extends Endpoint {
   public function put() {
 
     $this->query->hash = $this->request->getParameters("path", "hash");
+    $this->query->values = $this->request->getParameters("put");
+
     if (!is_null($this->query->hash)) {
       $hashids = new Hashids('dwApi', 50);
       $this->query->id = $hashids->decode($this->query->hash)[0];
-
-      $this->query->values = $this->request->getParameters("put", "values");
-
       $this->request->processFiles($this->query->values);
 
       if (!$this->query->single_update()) {
@@ -78,8 +74,8 @@ class Item extends Endpoint {
 
     }
     else {
-      $this->query->values = $this->request->getParameters("put", "values");
-      $this->query->filter = $this->request->getParameters("put", "filter");
+      $this->query->values = $this->request->getParameters("put");
+      $this->query->filter = $this->request->getParameters("get", "filter");
 
       $this->request->processFiles($this->query->values);
 
@@ -108,7 +104,7 @@ class Item extends Endpoint {
    */
   public function post()
   {
-    $this->query->values = $this->request->getParameters("post", "values");
+    $this->query->values = $this->request->getParameters("post");
     $this->request->processFiles($this->query->values);
 
     if ($this->isParameterSyntaxCorrect("value", $this->query->values)) {

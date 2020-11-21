@@ -23,7 +23,7 @@ class ErrorException extends \Exception {
   const DW_VALID_TOKEN_REQUIRED = 9013;
   const DW_MAIL_ERROR = 9014;
   const DW_INVALID_ACTION = 9015;
-  const DW_CRUD_ACTION_REQUIRED = 9016;
+  const DW_PROJECT_TYPE_UNKNOWN = 9016;
   const DW_INVALID_ENDPOINT = 9017;
   const DW_ENDPOINT_REQUIRED = 9018;
   const DW_INVALID_METHOD = 9019;

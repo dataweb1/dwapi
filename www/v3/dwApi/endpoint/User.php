@@ -4,7 +4,6 @@ use dwApi\api\ErrorException;
 use dwApi\api\Request;
 use dwApi\api\Token;
 use dwApi\dwApi;
-use dwApi\query\InterfaceUserRepository;
 use dwApi\query\QueryFactory;
 use Hashids\Hashids;
 
@@ -233,7 +232,7 @@ class User extends Endpoint {
    * @throws ErrorException
    */
   public function register() {
-    $this->query->values = $this->request->getParameters("post", "values");
+    $this->query->values = $this->request->getParameters("post");
 
     $array_to_check = array(
       "email" => $this->query->values["email"],
