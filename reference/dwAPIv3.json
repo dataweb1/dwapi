@@ -93,7 +93,7 @@
       },
       "parameters": [],
       "post": {
-        "summary": "",
+        "summary": "Create item",
         "operationId": "post-item",
         "responses": {
           "200": {
@@ -166,7 +166,7 @@
         ]
       },
       "put": {
-        "summary": "",
+        "summary": "Update items",
         "operationId": "put-item",
         "responses": {
           "200": {
@@ -245,7 +245,7 @@
         ]
       },
       "delete": {
-        "summary": "",
+        "summary": "Delete items",
         "operationId": "delete-item",
         "responses": {
           "200": {
@@ -296,7 +296,7 @@
         }
       ],
       "get": {
-        "summary": "Get a single item",
+        "summary": "Get single item",
         "tags": [
           "item"
         ],
@@ -346,7 +346,7 @@
         "description": "Get a single item of an entity by ID"
       },
       "put": {
-        "summary": "",
+        "summary": "Update single item",
         "operationId": "put-item-id_hash",
         "responses": {
           "200": {
@@ -396,7 +396,7 @@
         ]
       },
       "delete": {
-        "summary": "",
+        "summary": "Delete single item",
         "operationId": "delete-item-id_hash",
         "responses": {
           "200": {
