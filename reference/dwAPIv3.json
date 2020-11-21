@@ -156,7 +156,8 @@
             "type": "string",
             "in": "header",
             "name": "Content-Type",
-            "default": "application/json"
+            "default": "application/json",
+            "required": true
           }
         ],
         "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
@@ -235,7 +236,8 @@
             "type": "string",
             "in": "header",
             "name": "Content-Type",
-            "default": "application/json"
+            "default": "application/json",
+            "required": true
           }
         ],
         "tags": [
