@@ -359,7 +359,8 @@
             "type": "string",
             "in": "header",
             "name": "Authorization",
-            "description": "Bearer <i>jwt_token</i>"
+            "description": "Bearer <i>jwt_token</i>",
+            "required": true
           },
           {
             "type": "string",
@@ -385,10 +386,29 @@
             "description": "{\"enabled\": true}"
           },
           {
-            "in": "formData",
             "type": "string",
-            "name": "values",
-            "description": "The values to be updated\n\nExample: {\"naam\": \"Bert\", \"omschrijving\": \"Test\"}"
+            "in": "header",
+            "name": "Content-Type",
+            "required": true,
+            "default": "application/json"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "property_1": {
+                  "type": "string"
+                },
+                "property_2": {
+                  "type": "string"
+                },
+                "...": {
+                  "type": "string"
+                }
+              }
+            }
           }
         ],
         "tags": [
