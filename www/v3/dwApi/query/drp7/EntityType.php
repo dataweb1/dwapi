@@ -1,25 +1,28 @@
 <?php
-namespace dwApi\query\mysql;
+namespace dwApi\query\drp7;
 use dwApi\api\ErrorException;
 use dwApi\query\EntityTypeInterface;
-use dwApi\storage\Mysql;
+use dwApi\storage\Drp7;
 
 
 /**
  * Class EntityType
- * @package dwApi\query\mysql
+ * @package dwApi\query\drp7
  */
 class EntityType implements EntityTypeInterface {
   public $entity;
+  public $type;
+  public $bundle;
   private $properties = NULL;
   private $storage;
+
 
   /**
    * Entity constructor.
    */
   public function __construct()
   {
-    $this->storage = Mysql::load();
+    $this->storage = Drp7::load();
   }
 
 
@@ -31,10 +34,13 @@ class EntityType implements EntityTypeInterface {
   public function load($entity) {
 
     if ($entity == "") {
-      throw new ErrorException('Entity parameter is required', ErrorException::DW_ENTITY_REQUIRED);
+      throw new ErrorException('Entity key is required', ErrorException::DW_ENTITY_REQUIRED);
     }
 
     $this->entity = $entity;
+    $e = explode("-", $entity);
+    $this->type = $e[0];
+    $this->bundle = $e[1];
 
     if (!$this->getProperties()) {
       throw new ErrorException('Entity "' . $entity . '" not found', ErrorException::DW_ENTITY_NOT_FOUND);
@@ -43,70 +49,65 @@ class EntityType implements EntityTypeInterface {
   }
 
 
-
   /**
    * getProperties.
-   * @return array|null
+   * @return bool|mixed|null
+   * @throws ErrorException
    */
   public function getProperties() {
     if ($this->properties == NULL) {
-      $sqlQuery = "SHOW COLUMNS FROM `" . $this->entity . "`";
-
-      $stmt = $this->storage->prepare($sqlQuery);
-      $stmt->execute();
-
-      $items = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-      $properties = [];
-      foreach ($items as $item) {
-        $properties[$item["Field"]] = array(
-          "type" => $item["Type"],
-          "null" => $item["Null"],
-          "key" => $item["Key"],
-          "default" => $item["Default"],
-          "extra" => $item["Extra"],
-        );
-      }
-      $this->properties = $properties;
+      $this->storage->setPostValue("entity", $this->entity);
+      $this->properties = $this->storage->execute("EntityType", "getProperties");
     }
+
     return $this->properties;
   }
 
 
   /**
+   * getPrimaryKey.
    * @return int|string
    */
   public function getPrimaryKey() {
+    /*
     foreach ($this->getProperties() as $field => $property) {
       if ($property["key"] == "PRI") {
         return $field;
       }
     }
+    */
   }
 
 
   /**
+   * isPropertyRequired.
    * @param $property
    * @return bool
    */
   public function isPropertyRequired($property) {
-    //null = NO = required, null = YES = not required
-    if ($this->properties[$property]["default"] == "" && $this->properties[$property]["key"] != "PRI") {
-      if ($this->properties[$property]["null"] == "NO") {
-        return true;
-      }
+    if ($this->properties[$property]["required"] == 1) {
+      return true;
     }
-
     return false;
   }
 
 
   /**
-   * defaultValue
+   * getPropertyTargetType.
+   * @param $property
+   * @return mixed
+   */
+  public function getPropertyTargetType($property) {
+    return array_key_first($this->properties[$property]["field_info"]["columns"]);
+  }
+
+
+  /**
+   * getPropertyDefaultValue.
    * @param $property
    * @return mixed
    */
   public function getPropertyDefaultValue($property) {
-    return $this->properties[$property]["default"];
+    return $this->properties[$property]["default_value"][0][$this->getPropertyTargetType($property)];
   }
 }

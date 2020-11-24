@@ -1,5 +1,6 @@
 <?php
 namespace dwApi\storage;
+use dwApi\api\ErrorException;
 use dwApi\api\Project;
 
 /**
@@ -44,16 +45,19 @@ class Drp7
 
 
   /**
-   * @param $action
-   * @return bool|mixed
+   * execute.
+   * @param $class
+   * @param $method
+   * @return bool
+   * @throws ErrorException
    */
-  public function execute($action)
+  public function execute($class, $method)
   {
-    if ($action != "") {
+    if ($method != "") {
       $curl = curl_init();
 
       curl_setopt_array($curl, array(
-        CURLOPT_URL => $this->host . "/dwapi/" . $action,
+        CURLOPT_URL => $this->host . "/dwapi/" . $class . "/" . $method,
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
@@ -65,15 +69,22 @@ class Drp7
         CURLOPT_CUSTOMREQUEST => "POST",
       ));
 
-      $response = curl_exec($curl);
+      $response = json_decode(curl_exec($curl), true);
       $err = curl_error($curl);
 
       curl_close($curl);
 
+
+
       if ($err) {
         return false;
       } else {
-        return json_decode($response, true);
+        if ($response["success"] == false) {
+          throw new ErrorException( $class."::".$method." - ".$response["message"], $response["error_code"]);
+        }
+        else {
+          return $response["output"];
+        }
       }
     }
   }

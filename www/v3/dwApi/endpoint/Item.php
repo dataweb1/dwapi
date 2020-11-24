@@ -83,7 +83,7 @@ class Item extends Endpoint {
     $this->query->values = $this->request->getParameters("post", NULL, true, false, true);
     $this->request->processFiles($this->query->values);
 
-    if ($this->checkRequiredValues($this->query->values)) {
+    if ($this->checkRequiredFields($this->query->values)) {
       if ($this->query->create()) {
         $this->response->http_response_code = 201;
         $this->response->result = $this->query->getResult();

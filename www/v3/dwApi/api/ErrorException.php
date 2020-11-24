@@ -8,6 +8,7 @@ namespace dwApi\api;
  */
 class ErrorException extends \Exception {
 
+  const DW_EXTERNAL_ERROR = 9000;
   const DW_VALUE_REQUIRED = 9001;
   const DW_INVALID_HASH = 9002;
   const DW_PROJECT_REQUIRED = 9003;

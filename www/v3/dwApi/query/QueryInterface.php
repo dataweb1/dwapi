@@ -1,6 +1,9 @@
 <?php
 namespace dwApi\query;
 
+use dwApi\query\mysql\EntityType as MysqlEntityType;
+use dwApi\query\drp7\EntityType as Drp7EntityType;
+
 /**
  * Interface InterfaceQueryRepository
  */
@@ -77,6 +80,14 @@ interface QueryInterface {
    * @return mixed
    */
   public function getDebug();
+
+
+  /**
+   * getEntityType.
+
+   * @return MysqlEntityType|Drp7EntityType
+   */
+  public function getEntityType();
 
 
 }

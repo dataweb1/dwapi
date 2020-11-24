@@ -24,6 +24,7 @@ abstract class Endpoint
    */
   public $query;
 
+
   /**
    * Endpoint constructor.
    * @param dwApi $api
@@ -38,15 +39,39 @@ abstract class Endpoint
 
   /**
    * execute.
-   * @param $action
+   * @param $method
    * @throws ErrorException
    */
-  public function execute($action) {
-    if (!method_exists(get_class($this), $action)) {
+  public function execute($method) {
+    if (!method_exists(get_class($this), $method)) {
       throw new ErrorException('Action does not (yet) exists.', ErrorException::DW_INVALID_ACTION);
     }
 
-    $this->$action();
+    $this->$method();
+  }
+
+
+  /**
+   * checkRequiredFields.
+   * @param $values
+   * @return bool
+   * @throws ErrorException
+   */
+  public function checkRequiredFields(&$values) {
+    foreach($this->query->getEntityType()->getProperties() as $property_key => $property) {
+      if (!array_key_exists($property_key, $values)) {
+        $default = $this->query->getEntityType()->getPropertyDefaultValue($property_key);
+        if ($default != "") {
+          $values[$property_key] = $default;
+        }
+      }
+      if ($this->query->getEntityType()->isPropertyRequired($property_key)) {
+        if ((array_key_exists($property_key, $values) && $values[$property_key] == "")) {
+          throw new ErrorException('"' . $property_key . '" value is required', ErrorException::DW_VALUE_REQUIRED);
+        }
+      }
+    }
+    return true;
   }
 
 
@@ -58,19 +83,11 @@ abstract class Endpoint
    */
   public function checkRequiredValues($values)
   {
-    foreach ($values as $field => $value) {
-      $property = array("default" => "", "key" => "", "null" => "YES");
-      if (isset($this->query->getEntityType()->getProperties()[$field])) {
-        $property = $this->query->getEntityType()->getProperties()[$field];
-      }
-      //null = NO = required, null = YES = not required
-      if ($property["default"] == "" && $property["key"] != "PRI") {
-        if ($property["null"] == "NO") {
-          if (
-            (isset($values[$field]) && $values[$field] == "") ||
-            !isset($values[$field])) {
-            throw new ErrorException('"' . $field . '" value is required', ErrorException::DW_VALUE_REQUIRED);
-          }
+    foreach ($values as $property_key => $value) {
+      if ($this->query->getEntityType()->isPropertyRequired($property_key)) {
+        if ((isset($values[$property_key]) && $values[$property_key] == "") ||
+          !isset($values[$property_key])) {
+          throw new ErrorException('"' . $property_key . '" value is required', ErrorException::DW_VALUE_REQUIRED);
         }
       }
     }

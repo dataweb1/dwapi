@@ -18,7 +18,7 @@ class Query implements QueryInterface {
   protected $storage;
   protected $request;
 
-  public $entity_type;
+  private $entity_type;
 
   /* item parameters */
   public $values = NULL;
@@ -62,7 +62,7 @@ class Query implements QueryInterface {
   {
     $fields = self::prepareFields($this->property);
 
-    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->key . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
+    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->entity . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
     $binds = array(":id" => $this->id);
 
     $stmt = $this->storage->prepare($sqlQuery);
@@ -72,7 +72,7 @@ class Query implements QueryInterface {
 
     if ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
-      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->key);;
+      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->entity);;
       $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key;
 
       $this->debug["query"] = $sqlQuery;
@@ -92,7 +92,7 @@ class Query implements QueryInterface {
     /* build query */
     $fields = $this->prepareFields($this->property);
 
-    $sqlQuery = "SELECT SQL_CALC_FOUND_ROWS " . $fields . " FROM `" . $this->entity_type->key . "`";
+    $sqlQuery = "SELECT SQL_CALC_FOUND_ROWS " . $fields . " FROM `" . $this->entity_type->entity . "`";
     list($where, $binds) = $this->prepareWhere($this->filter, $this->entity_type);
     if ($where != "") {
       $sqlQuery .= "WHERE " . $where;
@@ -118,13 +118,13 @@ class Query implements QueryInterface {
     /* process result */
     $items = [];
     while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->key);
+      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->entity);
     }
 
     $this->result = array(
       "item_count" => $item_count,
       "items" => $items,
-      "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key);
+      "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->entity);
 
 
     $this->debug["query"] = $sqlQuery;
@@ -147,7 +147,7 @@ class Query implements QueryInterface {
   {
     list($setters, $binds) = $this->prepareSetters($this->values);
 
-    $sqlQuery = "INSERT INTO `" . $this->entity_type->key . "` SET " . $setters;
+    $sqlQuery = "INSERT INTO `" . $this->entity_type->entity . "` SET " . $setters;
 
     $stmt = $this->storage->prepare($sqlQuery);
 
@@ -189,7 +189,7 @@ class Query implements QueryInterface {
     list($where, $binds_where) = $this->prepareWhere($this->filter, $this->entity_type);
     list($setters, $binds_update) = $this->prepareSetters($this->values);
     $binds = array_merge($binds_where, $binds_update);
-    $sqlQuery = "UPDATE `" . $this->entity_type->key . "` SET " . $setters . " WHERE " . $where;
+    $sqlQuery = "UPDATE `" . $this->entity_type->entity . "` SET " . $setters . " WHERE " . $where;
     $stmt = $this->storage->prepare($sqlQuery);
 
 
@@ -215,7 +215,7 @@ class Query implements QueryInterface {
   {
     list($where, $binds) = $this->prepareWhere($this->filter, $this->entity_type);
 
-    $sqlQuery = "DELETE FROM `" . $this->entity_type->key . "` WHERE " . $where;
+    $sqlQuery = "DELETE FROM `" . $this->entity_type->entity . "` WHERE " . $where;
     $stmt = $this->storage->prepare($sqlQuery);
 
     $this->doBinds($binds, $stmt);
@@ -286,7 +286,7 @@ class Query implements QueryInterface {
 
   /**
    * Get EntityType object.
-   * @return EntityType
+   * @return \dwApi\query\mysql\EntityType
    */
   public function getEntityType() {
     return $this->entity_type;
