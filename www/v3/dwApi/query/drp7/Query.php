@@ -1,12 +1,10 @@
 <?php
 namespace dwApi\query\drp7;
 use dwApi\api\ErrorException;
-use dwApi\api\Helper;
 use dwApi\api\Request;
 use dwApi\query\QueryInterface;
 use dwApi\storage\Drp7;
-use Hashids\Hashids;
-use dwApi\query\drp7\EntityType;
+
 
 
 /**
@@ -59,8 +57,9 @@ class Query implements QueryInterface {
 
 
   /**
-   * Single read.
-   * @return bool
+   * single_read
+   * @return bool|mixed
+   * @throws ErrorException
    */
   public function single_read() {
     $this->storage->setPostValue("id", $this->id);
@@ -74,8 +73,9 @@ class Query implements QueryInterface {
 
 
   /**
-   * Read.
-   * @return bool
+   * read.
+   * @return bool|mixed
+   * @throws ErrorException
    */
   public function read() {
     $this->storage->setPostValue("filter", $this->filter);

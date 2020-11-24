@@ -1,7 +1,6 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
-use dwApi\api\Request;
 use dwApi\api\Token;
 use dwApi\dwApi;
 use dwApi\query\QueryFactory;

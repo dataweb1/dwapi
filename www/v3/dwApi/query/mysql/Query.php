@@ -6,7 +6,6 @@ use dwApi\api\Request;
 use dwApi\query\QueryInterface;
 use Hashids\Hashids;
 use dwApi\storage\Mysql;
-use dwApi\query\mysql\EntityType;
 
 
 /**
