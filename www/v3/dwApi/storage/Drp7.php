@@ -80,7 +80,7 @@ class Drp7
         return false;
       } else {
         if ($response["success"] == false) {
-          throw new ErrorException( $class."::".$method." - ".$response["message"], $response["error_code"]);
+          throw new ErrorException( $response["message"], $response["error_code"]);
         }
         else {
           return $response["output"];
