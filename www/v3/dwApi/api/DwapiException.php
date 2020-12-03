@@ -1,12 +1,14 @@
 <?php
 namespace dwApi\api;
-
+use Throwable;
 
 /**
- * Class ErrorException
+ * Class DwapiException
  * @package dwApi\api
  */
-class ErrorException extends \Exception {
+class DwapiException extends \Exception {
+
+  private $response_code = NULL;
 
   const DW_EXTERNAL_ERROR = 9000;
   const DW_VALUE_REQUIRED = 9001;
@@ -30,5 +32,17 @@ class ErrorException extends \Exception {
   const DW_INVALID_METHOD = 9019;
   const DW_INVALID_LINK = 9020;
   const DW_INVALID_PATH = 9021;
+  const DW_NOT_IMPLEMENTED = 9022;
+
+  public function __construct($message = "", $code = 0, Throwable $previous = null, $response_code = 400)
+  {
+    $this->response_code = $response_code;
+    parent::__construct($message, $code, $previous);
+  }
+
+
+  public function getResponseCode() {
+    return $this->response_code;
+  }
 
 }

@@ -1,13 +1,13 @@
 <?php
 namespace dwApi\storage;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\api\Project;
 
 /**
- * Class Drp7
+ * Class Drp
  * @package dwApi\storage
  */
-class Drp7
+class Drp
 {
   private static $instance = null;
   private $host;
@@ -19,15 +19,20 @@ class Drp7
       $credentials = Project::getInstance()->credentials;
       $this->host = $credentials["host"];
 
+      $this->setPostValue("remote_ip", $_SERVER['REMOTE_ADDR']);
+      $this->setPostValue("remote_host", $_SERVER['REMOTE_HOST']);
+
   }
 
-  // The object is created from within the class itself
-  // only if the class has no instance.
+  /**
+   * load.
+   * @return Drp|null
+   */
   public static function load()
   {
     if (self::$instance == null)
     {
-      self::$instance = new Drp7();
+      self::$instance = new Drp();
     }
 
     return self::$instance;
@@ -49,7 +54,7 @@ class Drp7
    * @param $class
    * @param $method
    * @return bool
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function execute($class, $method)
   {
@@ -79,8 +84,24 @@ class Drp7
       if ($err) {
         return false;
       } else {
+
+        /*
+        print_r("--> ".$class . "/" . $method);
+        echo "<pre>";
+        print_r($this->post_values);
+        echo "</pre>";
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
+        */
+
         if ($response["success"] == false) {
-          throw new ErrorException( $response["message"], $response["error_code"]);
+          if ($response["message"] != "") {
+            throw new DwapiException($response["message"], $response["error_code"]);
+          }
+          else {
+            return NULL;
+          }
         }
         else {
           return $response["output"];

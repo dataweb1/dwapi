@@ -1,6 +1,6 @@
 <?php
 namespace dwApi\endpoint;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 
 /**
  * Class Item
@@ -10,7 +10,7 @@ class Item extends Endpoint {
 
   /**
    * Read item.
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function get() {
 
@@ -36,10 +36,9 @@ class Item extends Endpoint {
     $this->response->debug = $this->query->getDebug();
   }
 
-
   /**
    * Put item.
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function put() {
 
@@ -50,21 +49,12 @@ class Item extends Endpoint {
 
     if (!is_null($this->query->hash)) {
       $this->query->id = $this->getIdFromHash($this->query->hash);
+      $this->query->single_update();
 
-
-      if ($this->checkRequiredValues($this->query->values)) {
-        if (!$this->query->single_update()) {
-          $this->response->http_response_code = 400;
-          throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
-        }
-      }
     }
     else {
       $this->query->filter = $this->request->getParameters("get", "filter", true, true, true);
-
-      if ($this->checkRequiredValues($this->query->values)) {
-        $this->query->update();
-      }
+      $this->query->update();
     }
 
     $this->response->result = $this->query->getResult();
@@ -73,45 +63,41 @@ class Item extends Endpoint {
     $this->response->debug = $this->query->getDebug();
   }
 
-
   /**
    * Post item.
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function post()
   {
     $this->query->values = $this->request->getParameters("post", NULL, true, false, true);
     $this->request->processFiles($this->query->values);
 
-    if ($this->checkRequiredFields($this->query->values)) {
-      if ($this->query->create()) {
-        $this->response->http_response_code = 201;
-        $this->response->result = $this->query->getResult();
-        $this->response->result["token"] = $this->current_token->extend_token();
 
-        $this->response->debug = $this->query->getDebug();
-        return;
-      }
-      else {
-        $this->response->result = array("id" => NULL);
-      }
+    if ($this->query->create()) {
+      $this->response->http_response_code = 201;
+      $this->response->result = $this->query->getResult();
+      $this->response->result["token"] = $this->current_token->extend_token();
+
+      $this->response->debug = $this->query->getDebug();
+      return;
     }
+    else {
+      $this->response->result = array("id" => NULL);
+    }
+
   }
 
-
   /**
-   * Delete item.
-   * @throws ErrorException
+   * delete item(s).
+   * @throws DwapiException
    */
   public function delete() {
     $this->query->hash = $this->request->getParameters("path", "hash");
     if (!is_null($this->query->hash)) {
       $this->query->id = $this->getIdFromHash($this->query->hash);
 
-      if (!$this->query->single_delete()) {
-        $this->response->http_response_code = 400;
-        throw new ErrorException('ID or hash is required', ErrorException::DW_ID_REQUIRED);
-      }
+      $this->query->single_delete();
+
     }
     else {
       $this->query->filter = $this->request->getParameters("delete", "filter", true, false, true);

@@ -13,6 +13,10 @@ class Response {
   public $http_response_code = 200;
   public $result;
   public $debug;
+
+  /**
+   * @var \Exception|DwapiException
+   */
   public $error;
 
   private static $instance = null;
@@ -38,9 +42,10 @@ class Response {
     return self::$instance;
   }
 
-
   /**
+   * getTwigVariables.
    * @return mixed
+   * @throws DwapiException
    */
   public function getTwigVariables() {
     $variables = [];
@@ -62,9 +67,10 @@ class Response {
     return Helper::maskValue($variables);
   }
 
-
   /**
+   * getJsonVariables.
    * @return mixed
+   * @throws DwapiException
    */
   public function getJsonVariables() {
     $variables = [];
