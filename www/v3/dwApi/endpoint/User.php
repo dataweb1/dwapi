@@ -1,11 +1,9 @@
 <?php
 namespace dwApi\endpoint;
 use dwApi\api\ErrorException;
-use dwApi\api\Request;
 use dwApi\api\Token;
 use dwApi\dwApi;
 use dwApi\query\QueryFactory;
-use Hashids\Hashids;
 
 
 /**
@@ -84,8 +82,7 @@ class User extends Endpoint {
       $this->request->redirect["enabled"] = true;
     }
 
-    $hashids = new Hashids('dwApi', 50);
-    $this->query->id = $hashids->decode($this->request->hash)[0];
+    $this->query->id = $this->getIdFromHash($this->query->hash);
     if (intval($this->query->id) > 0) {
       if ($this->query->single_read()) {
         if ($this->query->getResult("item")["active"] == 0) {
@@ -163,8 +160,7 @@ class User extends Endpoint {
     $token = $this->request->getParameters("get", "temp_token");
     $temp_token = new Token($this->request->project, $token);
     if ($temp_token->validate_token()) {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->request->hash)[0];
+      $this->query->id = $this->getIdFromHash($this->query->hash);
       if ($this->query->single_read()) {
         $this->query->values = array("active" => 0, "force_login" => 1);
         if ($this->query->single_update()) {
@@ -190,8 +186,7 @@ class User extends Endpoint {
     $token = $this->request->getParameters("get", "temp_token");
     $temp_token = new Token($this->request->project, $token);
     if ($temp_token->validate_token()) {
-      $hashids = new Hashids('dwApi', 50);
-      $this->query->id = $hashids->decode($this->request->hash)[0];
+      $this->query->id = $this->getIdFromHash($this->query->hash);
       if ($this->query->single_read()) {
         $email = $this->request->getParameters("get", "email");
         $new_password = $this->request->getParameters("post", "new_password");
