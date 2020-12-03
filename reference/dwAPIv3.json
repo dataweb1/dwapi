@@ -767,10 +767,10 @@
                 "id": {
                   "type": "integer"
                 },
-                "restrict_hostname": {
+                "restrict_host": {
                   "type": "string"
                 },
-                "restrict_up": {
+                "restrict_ip": {
                   "type": "string"
                 }
               },
