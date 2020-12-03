@@ -14,9 +14,13 @@ class Template {
   const TEMPLATE_PATH = __DIR__ . '/../../../templates';
 
   /**
+   * renderTwigString.
    * @param $string
    * @param $variables
-   * @return mixed
+   * @return string
+   * @throws \Twig\Error\LoaderError
+   * @throws \Twig\Error\RuntimeError
+   * @throws \Twig\Error\SyntaxError
    */
   public static function renderTwigString($string, $variables) {
     $loader = new \Twig\Loader\ArrayLoader();
@@ -29,9 +33,13 @@ class Template {
 
 
   /**
+   * renderTwigFile.
    * @param $template
    * @param $variables
-   * @return mixed
+   * @return string
+   * @throws \Twig\Error\LoaderError
+   * @throws \Twig\Error\RuntimeError
+   * @throws \Twig\Error\SyntaxError
    */
   public static function renderTwigFile($template, $variables) {
     $loader = new FilesystemLoader(self::TEMPLATE_PATH);
@@ -44,8 +52,8 @@ class Template {
       $variables);
   }
 
-
   /**
+   * templateArray.
    * @param $element
    * @param $project
    * @param $action
@@ -62,8 +70,8 @@ class Template {
       URLify::filter($element));
   }
 
-
   /**
+   * pickTemplate.
    * @param $element
    * @param $project
    * @param $action

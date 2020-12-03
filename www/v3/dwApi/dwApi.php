@@ -1,10 +1,12 @@
 <?php
 namespace dwApi;
+use dwApi\api\DwapiException;
 use dwApi\api\Mail;
 use dwApi\api\Project;
 use dwApi\api\Request;
-use dwApi\api\Token;
+use dwApi\api\JwtToken;
 use dwApi\api\Route;
+use dwApi\endpoint\Endpoint;
 use dwApi\query\QueryFactory;
 use dwApi\endpoint\EndpointFactory;
 use dwApi\api\Response;
@@ -22,8 +24,15 @@ class dwApi
 
   private $request;
   private $project;
-  private $route;
+
+  /**
+   * @var JwtToken
+   */
   private $current_token;
+
+  /**
+   * @var Endpoint;
+   */
   private $endpoint;
 
   private $response = NULL;
@@ -46,24 +55,27 @@ class dwApi
       $this->project = Project::getInstance();
 
       if ($this->request->initPath()) {
-        $this->route = new Route($this->request);
-        //if ($this->route->validPath()) {
-        $this->current_token = new Token($this->request->project, $this->request->token);
-        if ($this->route->tokenValidIfRequired($this->current_token)) {
-          if ($this->current_token->valid) {
-            $this->logged_in_user = QueryFactory::create("user");
-            $this->logged_in_user->id = $this->current_token->data["user_id"];
-            $this->logged_in_user->single_read();
-          }
 
-          /* create Endpoint instance according to the endpoint parameter in the Request */
-          $this->endpoint = EndpointFactory::create($this);
-
-          /* create Query instance according to the endpoint parameter in the Request */
-          $this->endpoint->query = QueryFactory::create($this->request->entity);
-          $this->endpoint->execute($this->request->action);
+        $this->current_token = new JwtToken($this->request->project, $this->request->token_type, $this->request->token);
+        if ($this->current_token->valid) {
+          $this->logged_in_user = array(
+            "id" => $this->current_token->data["user_id"],
+            "item" => $this->current_token->token_user);
         }
-        //}
+
+        if ($this->request->isTokenRequired()) {
+          if ($this->current_token->valid == false) {
+            throw new DwapiException('Valid token is required', DwapiException::DW_VALID_TOKEN_REQUIRED);
+          }
+        }
+
+        /* create Endpoint instance according to the endpoint parameter in the Request */
+        $this->endpoint = EndpointFactory::create($this);
+
+        /* create Query instance according to the endpoint parameter in the Request */
+        $this->endpoint->query = QueryFactory::create($this->request->entity, $this->logged_in_user);
+        $this->endpoint->execute($this->request->action);
+
       }
 
 

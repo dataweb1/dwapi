@@ -10,7 +10,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Helper {
 
-  static $elements_to_mask = ["password", "new_password"];
+  static $elements_to_mask = ["password", "new_password", "pass"];
 
   /**
    * @param $string

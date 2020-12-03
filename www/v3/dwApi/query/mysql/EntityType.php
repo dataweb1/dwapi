@@ -1,6 +1,6 @@
 <?php
 namespace dwApi\query\mysql;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\query\EntityTypeInterface;
 use dwApi\storage\Mysql;
 
@@ -26,18 +26,18 @@ class EntityType implements EntityTypeInterface {
   /**
    * load.
    * @param $entity
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function load($entity) {
 
-    if ($entity == "") {
-      throw new ErrorException('Entity parameter is required', ErrorException::DW_ENTITY_REQUIRED);
+    if ($entity == "" || $entity == "item") {
+      throw new DwapiException('Entity parameter is required', DwapiException::DW_ENTITY_REQUIRED);
     }
 
     $this->entity = $entity;
 
     if (!$this->getProperties()) {
-      throw new ErrorException('Entity "' . $entity . '" not found', ErrorException::DW_ENTITY_NOT_FOUND);
+      throw new DwapiException('Entity "' . $entity . '" not found', DwapiException::DW_ENTITY_NOT_FOUND);
     }
 
   }
