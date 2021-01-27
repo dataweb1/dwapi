@@ -24,10 +24,17 @@ interface UserQueryInterface extends QueryInterface {
 
 
   /**
+   * login_by_id.
    * @return mixed
    */
   public function login_by_id();
 
+
+  /**
+   * login_by_access_token.
+   * @return mixed
+   */
+  public function login_by_access_token();
 
   /**
    * confirm.
@@ -64,9 +71,4 @@ interface UserQueryInterface extends QueryInterface {
   public function reset_password_link();
 
 
-  /**
-   * generate_access_token.
-   * @return mixed
-   */
-  public function generate_access_token();
 }

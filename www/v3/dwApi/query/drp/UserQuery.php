@@ -53,6 +53,16 @@ class UserQuery extends Query implements UserQueryInterface {
     return $this->result;
   }
 
+  /**
+   * login_by_access_token.
+   * @return mixed|void
+   */
+  public function login_by_access_token() {
+    $this->storage->setPostValue("id", $this->id);
+    $this->result = $this->storage->execute("UserQuery", "login_by_access_token");
+
+    return $this->result;
+  }
 
   /**
    * confirm_password.
@@ -111,12 +121,4 @@ class UserQuery extends Query implements UserQueryInterface {
     throw new DwapiException('Method not yet implemented.', DwapiException::DW_NOT_IMPLEMENTED);
   }
 
-  /**
-   * generate_access_token.
-   * @return mixed
-   */
-  public function generate_access_token()
-  {
-    // TODO: Implement generate_access_token() method.
-  }
 }

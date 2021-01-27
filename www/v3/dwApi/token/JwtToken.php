@@ -14,7 +14,7 @@ class JwtToken
   const SECRET = 'sec!ReT423*&';
   const HOURS_VALID = 10;
 
-  public $token_type = "";
+  public $token_type = "jwt";
   public $token = "";
   public $data = NULL;
   public $valid = false;
@@ -31,7 +31,7 @@ class JwtToken
     $this->project = $project;
 
     if ($token != NULL) {
-      $this->load($token_type, $token);
+      $this->load($token);
     }
 
   }
@@ -52,7 +52,7 @@ class JwtToken
    * @param $token
    * @throws DwapiException
    */
-  public function load($token_type, $token) {
+  public function load($token) {
     if ($payload = SimpleJWTToken::getPayload($token, self::SECRET)) {
       if ($payload["iss"] == $this->project) {
         if ($this->token_user == NULL) {
@@ -74,9 +74,6 @@ class JwtToken
       }
     }
 
-    if ($token_type == "access") {
-
-    }
   }
 
   /**

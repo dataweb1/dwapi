@@ -1,17 +1,27 @@
 <?php
-try {
-  $request_token = "ABC";
-  $request_token_secret = "DEF";
 
-  $oauth = new OAuth(OAUTH_CONSUMER_KEY,OAUTH_CONSUMER_SECRET);
-  $oauth->setToken($request_token,$request_token_secret);
-  $access_token_info = $oauth->getAccessToken("https://example.com/oauth/access_token");
-  if(!empty($access_token_info)) {
-    print_r($access_token_info);
-  } else {
-    print "Failed fetching access token, response was: " . $oauth->getLastResponse();
-  }
-} catch(OAuthException $E) {
-  echo "Response: ". $E->lastResponse . "\n";
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "http://localhost/v3/item?project=LluG3gwZKPzC&entity=user",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "GET",
+  CURLOPT_HTTPHEADER => array(
+    "authorization: Basic cFk5a3ZEQXdkQkd4ZU5vNUVPTGw0Mlc3UEthbnptZ1pwak1icThQeVI2cjMxSktRMDB8VEd4MVJ6Tm5kMXBMVUhwRHx8TVRJM0xqQXVNQzR4"
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
 }
-?>

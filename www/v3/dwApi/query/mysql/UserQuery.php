@@ -63,6 +63,16 @@ class UserQuery extends Query implements UserQueryInterface {
   }
 
   /**
+   * login_by_access_token.
+   * @return bool|mixed
+   * @throws DwapiException
+   */
+  public function login_by_access_token() {
+    $this->single_read();
+    return true;
+  }
+
+  /**
    * confirm_password.
    * @return bool|mixed|null
    * @throws DwapiException
@@ -225,15 +235,5 @@ class UserQuery extends Query implements UserQueryInterface {
     }
   }
 
-  /**
-   * generate_access_token.
-   * @return mixed
-   */
-  public function generate_access_token()
-  {
-    $access_token = new AccessToken($this->request->project);
-    $this->result["access_token"] =
-      $access_token->create(
-        $this->values["id"], $this->values["restrict_host"], $this->values["restrict_ip"]);
-  }
+
 }

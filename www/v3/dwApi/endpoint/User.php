@@ -3,6 +3,7 @@ namespace dwApi\endpoint;
 use dwApi\api\DwapiException;
 use dwApi\api\JwtToken;
 use dwApi\dwApi;
+use dwApi\token\AccessToken;
 
 
 /**
@@ -182,10 +183,13 @@ class User extends Endpoint {
    * generate_access_token.
    */
   public function generate_access_token() {
-    $this->query->id = $this->request->getParameters("post", "id");
-    $this->query->restrict_host = $this->request->getParameters("post", "restrict_host");
-    $this->query->restrict_ip  = $this->request->getParameters("post", "restrict_ip");
-    $this->response->result["access_token"] = $this->query->generate_access_token();
+    $id = $this->request->getParameters("post", "id");
+    $restrict_host = $this->request->getParameters("post", "restrict_host");
+    $restrict_ip  = $this->request->getParameters("post", "restrict_ip");
+
+    $access_token = new AccessToken($this->request->project);
+    $this->response->result["access_token"] = $access_token->create($id, $restrict_host, $restrict_ip);
+
     return;
   }
 }

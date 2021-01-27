@@ -4,12 +4,12 @@ use dwApi\api\DwapiException;
 use dwApi\api\Mail;
 use dwApi\api\Project;
 use dwApi\api\Request;
-use dwApi\api\JwtToken;
-use dwApi\api\Route;
+use dwApi\token\JwtToken;
 use dwApi\endpoint\Endpoint;
 use dwApi\query\QueryFactory;
 use dwApi\endpoint\EndpointFactory;
 use dwApi\api\Response;
+use dwApi\token\TokenFactory;
 
 
 /**
@@ -56,7 +56,7 @@ class dwApi
 
       if ($this->request->initPath()) {
 
-        $this->current_token = new JwtToken($this->request->project, $this->request->token_type, $this->request->token);
+        $this->current_token = TokenFactory::create($this->request->token_type, $this->request->token);
         if ($this->current_token->valid) {
           $this->logged_in_user = array(
             "id" => $this->current_token->data["user_id"],
@@ -65,7 +65,12 @@ class dwApi
 
         if ($this->request->isTokenRequired()) {
           if ($this->current_token->valid == false) {
-            throw new DwapiException('Valid token is required', DwapiException::DW_VALID_TOKEN_REQUIRED);
+            if ($this->request->entity == "user") {
+              throw new DwapiException('For a user query a valid token is always required', DwapiException::DW_VALID_TOKEN_REQUIRED);
+            }
+            else {
+              throw new DwapiException('Valid token is required', DwapiException::DW_VALID_TOKEN_REQUIRED);
+            }
           }
         }
 
@@ -75,10 +80,7 @@ class dwApi
         /* create Query instance according to the endpoint parameter in the Request */
         $this->endpoint->query = QueryFactory::create($this->request->entity, $this->logged_in_user);
         $this->endpoint->execute($this->request->action);
-
       }
-
-
 
       if (!is_null($this->request->mail) && $this->request->mail["enabled"] == true) {
         $mail = new Mail();

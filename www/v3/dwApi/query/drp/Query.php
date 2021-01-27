@@ -33,7 +33,6 @@ class Query extends BaseQuery implements QueryInterface {
     parent::__construct($logged_in_user);
 
     $this->storage = Drp::load();
-
     $this->storage->setPostValue("api_host", $_SERVER["HTTP_HOST"]);
     $this->storage->setPostValue("project", $this->request->project);
     $this->storage->setPostValue("entity", $entity);
@@ -49,7 +48,6 @@ class Query extends BaseQuery implements QueryInterface {
     $this->storage->setPostValue("id", $this->id);
     $this->storage->setPostValue("relation", $this->relation);
     $this->storage->setPostValue("property", $this->property);
-
     $this->result = $this->storage->execute("Query", "single_read");
 
     return true;
@@ -69,7 +67,6 @@ class Query extends BaseQuery implements QueryInterface {
     $this->storage->setPostValue("property", $this->property);
     $this->result = $this->storage->execute("Query", "read");
 
-
     return true;
   }
 
@@ -86,7 +83,6 @@ class Query extends BaseQuery implements QueryInterface {
     $this->result = $this->storage->execute("Query", "create");
 
     return true;
-
   }
 
 
@@ -103,6 +99,7 @@ class Query extends BaseQuery implements QueryInterface {
     return true;
   }
 
+
   /**
    * update.
    * @return bool|mixed
@@ -111,7 +108,6 @@ class Query extends BaseQuery implements QueryInterface {
   public function update() {
     $this->storage->setPostValue("filter", $this->filter);
     $this->storage->setPostValue("values", $this->values);
-
     $this->result = $this->storage->execute("Query", "update");
 
     return true;
@@ -140,10 +136,8 @@ class Query extends BaseQuery implements QueryInterface {
   public function delete()
   {
     $this->storage->setPostValue("filter", $this->filter);
-
     $this->result = $this->storage->execute("Query", "delete");
 
     return true;
-
   }
 }

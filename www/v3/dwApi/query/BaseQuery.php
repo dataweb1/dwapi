@@ -26,7 +26,6 @@ class BaseQuery implements BaseQueryInterface
    */
   public function __construct($logged_in_user = NULL) {
     $this->request = Request::getInstance();
-
     $this->logged_in_user = $logged_in_user;
   }
 

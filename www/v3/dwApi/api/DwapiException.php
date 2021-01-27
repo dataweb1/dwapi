@@ -33,6 +33,7 @@ class DwapiException extends \Exception {
   const DW_INVALID_LINK = 9020;
   const DW_INVALID_PATH = 9021;
   const DW_NOT_IMPLEMENTED = 9022;
+  const DW_TOKEN_TYPE_UNKNOWN = 9023;
 
   public function __construct($message = "", $code = 0, Throwable $previous = null, $response_code = 400)
   {

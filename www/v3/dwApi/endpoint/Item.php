@@ -31,7 +31,9 @@ class Item extends Endpoint {
     }
 
     $this->response->result = $this->query->getResult();
-    $this->response->result["token"] = $this->current_token->extend_token();
+    if ($this->current_token && $this->current_token->token_type == "jwt") {
+      $this->response->result["extended_token"] = $this->current_token->extend_token();
+    }
 
     $this->response->debug = $this->query->getDebug();
   }
@@ -58,7 +60,9 @@ class Item extends Endpoint {
     }
 
     $this->response->result = $this->query->getResult();
-    $this->response->result["token"] = $this->current_token->extend_token();
+    if ($this->current_token && $this->current_token->token_type == "jwt") {
+      $this->response->result["extended_token"] = $this->current_token->extend_token();
+    }
 
     $this->response->debug = $this->query->getDebug();
   }
@@ -76,7 +80,10 @@ class Item extends Endpoint {
     if ($this->query->create()) {
       $this->response->http_response_code = 201;
       $this->response->result = $this->query->getResult();
-      $this->response->result["token"] = $this->current_token->extend_token();
+      if ($this->current_token && $this->current_token->token_type == "jwt") {
+        $this->response->result["extended_token"] = $this->current_token->extend_token();
+      }
+
 
       $this->response->debug = $this->query->getDebug();
       return;
@@ -105,7 +112,9 @@ class Item extends Endpoint {
     }
 
     $this->response->result = $this->query->getResult();
-    $this->response->result["token"] = $this->current_token->extend_token();
+    if ($this->current_token && $this->current_token->token_type == "jwt") {
+      $this->response->result["extended_token"] = $this->current_token->extend_token();
+    }
 
     $this->response->debug = $this->query->getDebug();
   }

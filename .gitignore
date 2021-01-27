@@ -9,3 +9,5 @@
 /composer.json
 /composer.lock
 /www/test.php
+/www/htdocs/
+/www/html/

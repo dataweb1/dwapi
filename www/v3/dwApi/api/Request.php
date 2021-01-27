@@ -455,6 +455,10 @@ class Request
       }
     }
 
+    if (Request::getInstance()->entity == "user") {
+      $token_required = true;
+    }
+
     return $token_required;
 
   }
