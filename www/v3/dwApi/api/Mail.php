@@ -22,8 +22,10 @@ class Mail{
   }
 
   /**
+   * getElement.
    * @param $element
-   * @return bool
+   * @return bool|mixed
+   * @throws DwapiException
    */
   private function getElement($element) {
     if ($this->mail_parameters[$element] != "") {
@@ -44,7 +46,9 @@ class Mail{
   }
 
   /**
-   * @throws ErrorException
+   * send.
+   * @throws DwapiException
+   * @throws \PHPMailer\PHPMailer\Exception
    */
   public function send() {
     $mail = new PHPMailer(true); //Argument true in constructor enables exceptions
@@ -76,8 +80,8 @@ class Mail{
     try {
       $mail->send();
       //echo "Message has been sent successfully";
-    } catch (ErrorException $e) {
-      throw new ErrorException($mail->ErrorInfo, ErrorException::DW_MAIL_ERROR);
+    } catch (DwapiException $e) {
+      throw new DwapiException($mail->ErrorInfo, DwapiException::DW_MAIL_ERROR);
     }
   }
 }

@@ -1,6 +1,6 @@
 <?php
 namespace dwApi\api;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\dwApi;
 use dwApi\reference\PathDefinition;
 use dwApi\reference\Reference;
@@ -27,11 +27,12 @@ class Request
   public $hash;
   public $parameters = [];
   public $debug = false;
-  public $token;
+  public $token = NULL;
+  public $token_type = NULL;
   public $mail;
   public $redirect;
-  private static $instance = null;
 
+  private static $instance = null;
 
   /**
    * Request constructor.
@@ -46,12 +47,12 @@ class Request
     $this->debug = boolval($this->getParameters("get", "debug"));
     $this->redirect = $this->getParameters("get", "redirect");
     $this->mail = $this->getParameters("get", "mail");
-    $this->token = $this->getBearerToken();
+    list($this->token_type, $this->token) = $this->getToken();
   }
 
   /**
    * @return bool
-   * @throws \dwApi\api\ErrorException
+   * @throws \dwApi\api\DwapiException
    */
   public function initPath() {
     if ($this->path_definition = Reference::getInstance()->getPathDefinition($this->path, $this->method)) {
@@ -63,12 +64,17 @@ class Request
       return true;
     }
     else {
-      throw new ErrorException('Path/method not valid.', ErrorException::DW_INVALID_PATH);
+      throw new DwapiException('Path/method not valid.', DwapiException::DW_INVALID_PATH);
     }
   }
 
-  // The object is created from within the class itself
-  // only if the class has no instance.
+  /**
+   * getInstance.
+   * The object is created from within the class itself
+   * only if the class has no instance.
+   * @return Request|null
+   */
+
   public static function getInstance()
   {
     if (self::$instance == null)
@@ -80,7 +86,7 @@ class Request
   }
 
   /**
-   *
+   * Read body from request (data and file part)
    */
   private function _parsePut() {
     global $_PUT;
@@ -182,6 +188,7 @@ class Request
   }
 
   /**
+   * getAuthorizationHeader.
    * @return string|null
    */
   private function getAuthorizationHeader(){
@@ -195,7 +202,6 @@ class Request
       $requestHeaders = apache_request_headers();
       // Server-side fix for bug in old Android versions (a nice side-effect of this fix means we don't care about capitalization for Authorization)
       $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
-      //print_r($requestHeaders);
       if (isset($requestHeaders['Authorization'])) {
         $headers = trim($requestHeaders['Authorization']);
       }
@@ -204,6 +210,7 @@ class Request
   }
 
   /**
+   * processParameters.
    * @param $items
    * @return array
    */
@@ -221,8 +228,8 @@ class Request
     return $parameters;
   }
 
-
   /**
+   * processPostPutParameters
    * @param $body
    * @return mixed
    */
@@ -237,7 +244,8 @@ class Request
 
 
   /**
-   *
+   * processPathParameters.
+   * @return array
    */
   private function processPathParameters() {
     $parameters = [];
@@ -252,14 +260,23 @@ class Request
   }
 
   /**
+   * getJWTToken.
    * @return mixed|null
    */
-  public function getBearerToken() {
+  public function getToken() {
     $headers = $this->getAuthorizationHeader();
     // HEADER: Get the access token from the header
     if (!empty($headers)) {
       if (preg_match('/Bearer\s(\S+)/', $headers, $matches)) {
-        return $matches[1];
+        $this->token_type = "jwt";
+        $this->token = $matches[1];
+        return array("jwt", $matches[1]);
+      }
+
+      if (preg_match('/Basic\s(\S+)/', $headers, $matches)) {
+        $this->token_type = "access";
+        $this->token = $matches[1];
+        return array("access", $matches[1]);
       }
     }
     return NULL;
@@ -273,7 +290,7 @@ class Request
    * @param bool $multi_array_expected
    * @param bool $required
    * @return array|bool|mixed|null
-   * @throws \dwApi\api\ErrorException
+   * @throws \dwApi\api\DwapiException
    */
   public function getParameters($type = NULL, $key = NULL, $array_expected = false, $multi_array_expected = false, $required = false) {
     if ($type != NULL) {
@@ -341,7 +358,7 @@ class Request
   /**
    * processFiles.
    * @param $values
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function processFiles(&$values) {
 
@@ -360,7 +377,7 @@ class Request
 
         if (!copy($file["tmp_name"],$target_file)) {
         //if (!move_uploaded_file($file["tmp_name"], $target_file)) {
-          throw new ErrorException('Error uploading file(s)', ErrorException::DW_UPLOAD_ERROR);
+          throw new DwapiException('Error uploading file(s)', DwapiException::DW_UPLOAD_ERROR);
         } else { 
           //$processed_files[$field] = $file;
           $values[$field] = json_encode(array("type" => explode("/", $file["type"]), "name" => $file["name"], "size" => $file["size"]));
@@ -368,8 +385,6 @@ class Request
       }
     }
   }
-
-
 
   /**
    * sanitizeParameterArray.
@@ -394,33 +409,57 @@ class Request
     }
   }
 
-
   /**
    * @param $verb
    * @param $parameter
    * @param bool $required
    * @return bool
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function isParameterSyntaxCorrect($verb, $parameter, $required = true) {
     if ($required) {
       if (!$parameter) {
-        throw new ErrorException(ucfirst($verb) . " is missing. At least one is needed.", ErrorException::DW_SYNTAX_ERROR);
+        throw new DwapiException(ucfirst($verb) . " is missing. At least one is needed.", DwapiException::DW_SYNTAX_ERROR);
       }
       else {
         if (!is_array($parameter)) {
-          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
+          throw new DwapiException(ucfirst($verb) . " syntax not correct.", DwapiException::DW_SYNTAX_ERROR);
         }
       }
     }
     else {
       if ($parameter != "") {
         if (!is_array($parameter)) {
-          throw new ErrorException(ucfirst($verb) . " syntax not correct.", ErrorException::DW_SYNTAX_ERROR);
+          throw new DwapiException(ucfirst($verb) . " syntax not correct.", DwapiException::DW_SYNTAX_ERROR);
         }
       }
     }
 
     return true;
+  }
+
+  /**
+   * isTokenRequired.
+   * @return bool
+   */
+  public function isTokenRequired() {
+
+    $token_required = $this->token_required;
+
+    if (is_null($token_required)) {
+
+      if ($this->path_definition->isParameterRequired("header_authorization")) {
+        $token_required = true;
+      } else {
+        $token_required = false;
+      }
+    }
+
+    if (Request::getInstance()->entity == "user") {
+      $token_required = true;
+    }
+
+    return $token_required;
+
   }
 }

@@ -1,0 +1,30 @@
+{
+  "name": "dataweb/dwapi",
+  "type": "library",
+  "description": "dwAPI",
+  "keywords": ["rest","api","mysql","drupal", "stoplight"],
+  "homepage": "https://www.dwapi.dev",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Bert Jansen",
+      "email": "bert@data-web.be",
+      "homepage": "https://www.data-web.be",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=7.2.0",
+    "twig/twig": "3.*",
+    "voku/urlify": "5.*",
+    "hashids/hashids": "4.*",
+    "symphony/yaml": "5.*",
+    "phpmailer/phpmailer": "6.*",
+    "rbdwllr/reallysimplejwt": "4.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "dwapi\\": "v3/"
+    }
+  }
+}

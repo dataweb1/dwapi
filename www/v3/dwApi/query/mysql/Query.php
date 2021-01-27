@@ -1,24 +1,20 @@
 <?php
 namespace dwApi\query\mysql;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\api\Helper;
 use dwApi\api\Request;
+use dwApi\query\BaseQuery;
 use dwApi\query\QueryInterface;
+use dwApi\query\UserQueryInterface;
 use Hashids\Hashids;
 use dwApi\storage\Mysql;
-use dwApi\query\mysql\EntityType;
 
 
 /**
  * Class ItemRepository
  * @package dwApi\query\mysql
  */
-class Query implements QueryInterface {
-
-  protected $storage;
-  protected $request;
-
-  public $entity_type;
+class Query extends BaseQuery implements QueryInterface {
 
   /* item parameters */
   public $values = NULL;
@@ -30,24 +26,17 @@ class Query implements QueryInterface {
   public $paging = NULL;
   public $relation = NULL;
 
-  /* user parameters */
-  public $email = NULL;
-  public $password = NULL;
-
-  /* response */
-  protected $result;
-  protected $debug;
-
 
   /**
    * Query constructor.
    * @param string $entity_type
-   * @throws ErrorException
+   * @param UserQueryInterface|null $logged_in_user
+   * @throws DwapiException
    */
-  public function __construct($entity_type = "") {
-    $this->storage = Mysql::load();
+  public function __construct($entity_type = "", $logged_in_user = NULL) {
+    parent::__construct($logged_in_user);
 
-    $this->request = Request::getInstance();
+    $this->storage = Mysql::load();
 
     $this->entity_type = new EntityType();
     $this->entity_type->load($entity_type);
@@ -55,14 +44,15 @@ class Query implements QueryInterface {
 
 
   /**
-   * Single read.
-   * @return bool
+   * single_read.
+   * @return bool|mixed
+   * @throws DwapiException
    */
   public function single_read()
   {
     $fields = self::prepareFields($this->property);
 
-    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->key . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
+    $sqlQuery = "SELECT " . $fields . " FROM `" . $this->entity_type->entity . "` WHERE `" . $this->entity_type->getPrimaryKey() . "` = :id  LIMIT 1";
     $binds = array(":id" => $this->id);
 
     $stmt = $this->storage->prepare($sqlQuery);
@@ -72,14 +62,15 @@ class Query implements QueryInterface {
 
     if ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 
-      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->key);;
-      $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key;
+      $this->result["id"] = $this->id;
+      $this->result["item"] = $this->processFetchedItem($fetched_item, $this->entity_type->entity);;
+      $this->result["assets_path"] = "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->entity;
 
       $this->debug["query"] = $sqlQuery;
       return true;
     }
     else {
-      return false;
+      throw new DwapiException(ucfirst($this->getEntityType()->entity).' does not exist.', DwapiException::DW_USER_NOT_FOUND);
     }
   }
 
@@ -92,7 +83,7 @@ class Query implements QueryInterface {
     /* build query */
     $fields = $this->prepareFields($this->property);
 
-    $sqlQuery = "SELECT SQL_CALC_FOUND_ROWS " . $fields . " FROM `" . $this->entity_type->key . "`";
+    $sqlQuery = "SELECT SQL_CALC_FOUND_ROWS " . $fields . " FROM `" . $this->entity_type->entity . "`";
     list($where, $binds) = $this->prepareWhere($this->filter, $this->entity_type);
     if ($where != "") {
       $sqlQuery .= "WHERE " . $where;
@@ -118,13 +109,13 @@ class Query implements QueryInterface {
     /* process result */
     $items = [];
     while ($fetched_item = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->key);
+      $items[] = $this->processFetchedItem($fetched_item, $this->entity_type->entity);
     }
 
     $this->result = array(
       "item_count" => $item_count,
       "items" => $items,
-      "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->key);
+      "assets_path" => "//" . $_SERVER["HTTP_HOST"] . "/files/" . $this->request->project . "/" . $this->entity_type->entity);
 
 
     $this->debug["query"] = $sqlQuery;
@@ -140,69 +131,75 @@ class Query implements QueryInterface {
 
 
   /**
-   * Create.
-   * @return bool
+   * create.
+   * @return bool|mixed
+   * @throws DwapiException
    */
   public function create()
   {
-    list($setters, $binds) = $this->prepareSetters($this->values);
+    if ($this->checkRequiredFields($this->values)) {
+      list($setters, $binds) = $this->prepareSetters($this->values);
 
-    $sqlQuery = "INSERT INTO `" . $this->entity_type->key . "` SET " . $setters;
+      $sqlQuery = "INSERT INTO `" . $this->entity_type->entity . "` SET " . $setters;
 
-    $stmt = $this->storage->prepare($sqlQuery);
+      $stmt = $this->storage->prepare($sqlQuery);
 
-    $this->doBinds($binds, $stmt);
+      $this->doBinds($binds, $stmt);
 
-    if ($stmt->execute()) {
-      $this->debug["query"] = $sqlQuery;
-      $this->id = $this->storage->lastInsertId();
-      $this->single_read();
-      return true;
-    } else {
-      return false;
+      if ($stmt->execute()) {
+        $this->debug["query"] = $sqlQuery;
+        $this->id = $this->storage->lastInsertId();
+        $this->single_read();
+        return true;
+      } else {
+        return false;
+      }
     }
   }
 
 
   /**
-   * Single update.
-   * @return bool
+   * single_update.
+   * @return bool|mixed
+   * @throws DwapiException
    */
   public function single_update()
   {
-    if ($this->id) {
+    if (intval($this->id) > 0) {
       $this->filter = [[$this->entity_type->getPrimaryKey(), "=", $this->id]];
       $this->update();
-
-
       return true;
     }
-
-    return false;
+    else {
+      throw new DwapiException('ID or hash is required', DwapiException::DW_ID_REQUIRED);
+    }
   }
 
   /**
-   * Update.
-   * @return bool
+   * update.
+   * @return bool|mixed
+   * @throws DwapiException
    */
   public function update() {
-    list($where, $binds_where) = $this->prepareWhere($this->filter, $this->entity_type);
-    list($setters, $binds_update) = $this->prepareSetters($this->values);
-    $binds = array_merge($binds_where, $binds_update);
-    $sqlQuery = "UPDATE `" . $this->entity_type->key . "` SET " . $setters . " WHERE " . $where;
-    $stmt = $this->storage->prepare($sqlQuery);
+    if ($this->checkRequiredValues($this->values)) {
+      list($where, $binds_where) = $this->prepareWhere($this->filter, $this->entity_type);
+      list($setters, $binds_update) = $this->prepareSetters($this->values);
+      $binds = array_merge($binds_where, $binds_update);
+      $sqlQuery = "UPDATE `" . $this->entity_type->entity . "` SET " . $setters . " WHERE " . $where;
+      $stmt = $this->storage->prepare($sqlQuery);
 
 
-    $this->doBinds($binds, $stmt);
+      $this->doBinds($binds, $stmt);
 
-    if ($stmt->execute()) {
-      $this->debug["query"] = $sqlQuery;
-      $this->result["affected_items"] = $stmt->rowCount();
+      if ($stmt->execute()) {
+        $this->debug["query"] = $sqlQuery;
+        $this->result["affected_items"] = $stmt->rowCount();
 
-      return true;
-    } else {
-      return false;
+        return true;
+      } else {
+        return false;
 
+      }
     }
   }
 
@@ -215,7 +212,7 @@ class Query implements QueryInterface {
   {
     list($where, $binds) = $this->prepareWhere($this->filter, $this->entity_type);
 
-    $sqlQuery = "DELETE FROM `" . $this->entity_type->key . "` WHERE " . $where;
+    $sqlQuery = "DELETE FROM `" . $this->entity_type->entity . "` WHERE " . $where;
     $stmt = $this->storage->prepare($sqlQuery);
 
     $this->doBinds($binds, $stmt);
@@ -237,59 +234,15 @@ class Query implements QueryInterface {
    */
   public function single_delete()
   {
-    if ($this->id) {
+    if (intval($this->id) > 0) {
       $this->filter = [[$this->entity_type->getPrimaryKey(), "=", $this->id]];
       $this->delete();
-
-
       return true;
     }
-
-    return false;
-  }
-
-
-  /**
-   * Set result (by element)
-   * @param $element
-   * @param $value
-   */
-  public function setResult($element, $value) {
-    $this->result[$element] = $value;
-  }
-
-  /**
-   * Get result (by element).
-   * @param null $element
-   * @return mixed|null
-   */
-  public function getResult($element = NULL) {
-
-    /* return element */
-    if ($element == NULL) {
-      return $this->result;
-    }
     else {
-      return $this->result[$element];
+      throw new DwapiException('ID or hash is required', DwapiException::DW_ID_REQUIRED);
     }
-  }
 
-
-  /**
-   * Get debug information.
-   * @return mixed
-   */
-  public function getDebug() {
-    return $this->debug;
-  }
-
-
-  /**
-   * Get EntityType object.
-   * @return EntityType
-   */
-  public function getEntityType() {
-    return $this->entity_type;
   }
 
 
@@ -516,6 +469,48 @@ class Query implements QueryInterface {
     return $item;
   }
 
+  /**
+   * checkRequiredFields.
+   * @param $values
+   * @return bool
+   * @throws DwapiException
+   */
+  protected function checkRequiredFields(&$values) {
+    foreach($this->getEntityType()->getProperties() as $property_key => $property) {
+      if (!array_key_exists($property_key, $values)) {
+        $default = $this->getEntityType()->getPropertyDefaultValue($property_key);
+        if ($default != "") {
+          $values[$property_key] = $default;
+        }
+      }
+      if ($this->getEntityType()->isPropertyRequired($property_key)) {
+        if (($values[$property_key] == "")) {
+          throw new DwapiException('"' . $property_key . '" value is required', DwapiException::DW_VALUE_REQUIRED);
+        }
+      }
+    }
+    return true;
+  }
 
+
+  /**
+   * checkRequiredValues.
+   * @param $values
+   * @return bool
+   * @throws DwapiException
+   */
+  protected function checkRequiredValues($values)
+  {
+    foreach ($values as $property_key => $value) {
+      if ($this->getEntityType()->isPropertyRequired($property_key)) {
+        if ((array_key_exists($property_key, $values) && $values[$property_key] == "") ||
+          !array_key_exists($property_key, $values)) {
+          throw new DwapiException('"' . $property_key . '" value is required', DwapiException::DW_VALUE_REQUIRED);
+        }
+      }
+    }
+
+    return true;
+  }
 
 }

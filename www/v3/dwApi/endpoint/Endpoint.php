@@ -1,10 +1,12 @@
 <?php
 namespace dwApi\endpoint;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\api\Request;
 use dwApi\api\Response;
+use dwApi\api\JwtToken;
 use dwApi\dwApi;
 use dwApi\query\QueryInterface;
+use dwApi\query\UserQueryInterface;
 use Hashids\Hashids;
 
 
@@ -17,10 +19,14 @@ abstract class Endpoint
   protected $request;
   protected $response;
 
+  /**
+   * @var JwtToken
+   */
   protected $current_token;
+  protected $logged_in_user;
 
   /**
-   * @var QueryInterface;
+   * @var QueryInterface|UserQueryInterface;
    */
   public $query;
 
@@ -33,51 +39,21 @@ abstract class Endpoint
     $this->response = Response::getInstance();
 
     $this->current_token = $api->getCurrentToken();
+    $this->logged_in_user = $api->getLoggedInUser();
   }
-
 
   /**
    * execute.
-   * @param $action
-   * @throws ErrorException
+   * @param $method
+   * @throws DwapiException
    */
-  public function execute($action) {
-    if (!method_exists(get_class($this), $action)) {
-      throw new ErrorException('Action does not (yet) exists.', ErrorException::DW_INVALID_ACTION);
+  public function execute($method) {
+    if (!method_exists(get_class($this), $method)) {
+      throw new DwapiException('Method does not (yet) exist.', DwapiException::DW_INVALID_ACTION);
     }
 
-    $this->$action();
+    $this->$method();
   }
-
-
-  /**
-   * checkRequiredValues.
-   * @param $values
-   * @return bool
-   * @throws ErrorException
-   */
-  public function checkRequiredValues($values)
-  {
-    foreach ($values as $field => $value) {
-      $property = array("default" => "", "key" => "", "null" => "YES");
-      if (isset($this->query->getEntityType()->getProperties()[$field])) {
-        $property = $this->query->getEntityType()->getProperties()[$field];
-      }
-      //null = NO = required, null = YES = not required
-      if ($property["default"] == "" && $property["key"] != "PRI") {
-        if ($property["null"] == "NO") {
-          if (
-            (isset($values[$field]) && $values[$field] == "") ||
-            !isset($values[$field])) {
-            throw new ErrorException('"' . $field . '" value is required', ErrorException::DW_VALUE_REQUIRED);
-          }
-        }
-      }
-    }
-
-    return true;
-  }
-
 
   /**
    * getIdFromHash.

@@ -1,6 +1,7 @@
 <?php
 namespace dwApi\query\mysql;
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
+use dwApi\query\EntityTypeInterface;
 use dwApi\storage\Mysql;
 
 
@@ -8,8 +9,8 @@ use dwApi\storage\Mysql;
  * Class EntityType
  * @package dwApi\query\mysql
  */
-class EntityType {
-  public $key;
+class EntityType implements EntityTypeInterface {
+  public $entity;
   private $properties = NULL;
   private $storage;
 
@@ -24,25 +25,23 @@ class EntityType {
 
   /**
    * load.
-   * @param $entity_type
-   * @throws ErrorException
+   * @param $entity
+   * @throws DwapiException
    */
-  public function load($entity_type) {
+  public function load($entity) {
 
-    if ($entity_type == "") {
-      throw new ErrorException('Entity key is required', ErrorException::DW_ENTITY_REQUIRED);
+    if ($entity == "" || $entity == "item") {
+      throw new DwapiException('Entity parameter is required', DwapiException::DW_ENTITY_REQUIRED);
     }
 
-    if ($this->entityTypeExists($entity_type)) {
+    $this->entity = $entity;
 
-      $this->key = $entity_type;
-
-    }
-    else {
-      throw new ErrorException('Entity "' . $entity_type . '" not found', ErrorException::DW_ENTITY_NOT_FOUND);
+    if (!$this->getProperties()) {
+      throw new DwapiException('Entity "' . $entity . '" not found', DwapiException::DW_ENTITY_NOT_FOUND);
     }
 
   }
+
 
 
   /**
@@ -51,7 +50,7 @@ class EntityType {
    */
   public function getProperties() {
     if ($this->properties == NULL) {
-      $sqlQuery = "SHOW COLUMNS FROM `" . $this->key . "`";
+      $sqlQuery = "SHOW COLUMNS FROM `" . $this->entity . "`";
 
       $stmt = $this->storage->prepare($sqlQuery);
       $stmt->execute();
@@ -75,22 +74,6 @@ class EntityType {
 
 
   /**
-   * entityTypeExists.
-   * @param $entity_type
-   * @return bool
-   */
-  public function entityTypeExists($entity_type) {
-    $sqlQuery = "SHOW TABLES LIKE '" . $entity_type . "'";
-    $stmt = $this->storage->prepare($sqlQuery);
-    if ($stmt->execute()) {
-      return $stmt->rowCount();
-    }
-    else {
-      return false;
-    }
-  }
-
-  /**
    * @return int|string
    */
   public function getPrimaryKey() {
@@ -102,4 +85,28 @@ class EntityType {
   }
 
 
+  /**
+   * @param $property
+   * @return bool
+   */
+  public function isPropertyRequired($property) {
+    //null = NO = required, null = YES = not required
+    if ($this->properties[$property]["default"] == "" && $this->properties[$property]["key"] != "PRI") {
+      if ($this->properties[$property]["null"] == "NO") {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
+  /**
+   * defaultValue
+   * @param $property
+   * @return mixed
+   */
+  public function getPropertyDefaultValue($property) {
+    return $this->properties[$property]["default"];
+  }
 }

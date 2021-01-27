@@ -2,7 +2,7 @@
 namespace dwApi\reference;
 
 
-use dwApi\api\ErrorException;
+use dwApi\api\DwapiException;
 use dwApi\dwApi;
 use dwApi\api\Helper;
 use dwApi\reference\PathDefinition;
@@ -18,14 +18,14 @@ class Reference {
 
   /**
    * Reference constructor.
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function __construct()
   {
     $reference_filename = __DIR__.'/../../../../reference/dwAPI'.dwApi::API_VERSION.'.json';
 
     if (!$this->reference = Helper::readJson($reference_filename)) {
-      throw new ErrorException('OpenAPI '.dwApi::API_VERSION.' reference not found.', ErrorException::DW_PROJECT_NOT_FOUND);
+      throw new DwapiException('OpenAPI '.dwApi::API_VERSION.' reference not found.', DwapiException::DW_PROJECT_NOT_FOUND);
     }
   }
 

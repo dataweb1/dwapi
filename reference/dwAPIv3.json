@@ -748,6 +748,51 @@
           "required": true
         }
       ]
+    },
+    "/user/generate_access_token": {
+      "post": {
+        "summary": "Generate access token",
+        "tags": [
+          "user"
+        ],
+        "responses": {},
+        "operationId": "post-user-generate_access_token",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "restrict_host": {
+                  "type": "string"
+                },
+                "restrict_ip": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id"
+              ]
+            }
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "default": "application/json"
+          },
+          {
+            "type": "string",
+            "in": "query",
+            "name": "project",
+            "required": true
+          }
+        ]
+      }
     }
   },
   "definitions": {},

@@ -7,7 +7,7 @@ namespace dwApi\api;
  * @package dwApi\api
  */
 class Project {
-  public $key;
+  public $project;
   public $type;
   public $credentials;
   public $site;
@@ -17,30 +17,35 @@ class Project {
 
   /**
    * Project constructor.
-   * @throws ErrorException
+   * @throws DwapiException
    */
   public function __construct()
   {
-    $key = Request::getInstance()->project;
+    $this->project = Request::getInstance()->project;
 
-    if ($key == "") {
-      throw new ErrorException('Project key is required', ErrorException::DW_PROJECT_REQUIRED);
+    if ($this->project == "") {
+      throw new DwapiException('Project key is required', DwapiException::DW_PROJECT_REQUIRED);
     }
 
     // read project from project.yml
-    if ($project = Helper::readYaml($_SERVER["DOCUMENT_ROOT"].'/settings/projects.yml', $key)) {
-      $this->key = $key;
+    if ($project = Helper::readYaml($_SERVER["DOCUMENT_ROOT"].'/settings/projects.yml', $this->project)) {
       $this->type = $project["type"];
       $this->credentials = $project["credentials"];
       $this->site = $project["site"];
     } else {
-      throw new ErrorException('Project "' . $key . '" not found', ErrorException::DW_PROJECT_NOT_FOUND);
+      throw new DwapiException('Project "' . $this->project . '" not found', DwapiException::DW_PROJECT_NOT_FOUND);
     }
   }
 
 
-  // The object is created from within the class itself
-  // only if the class has no instance.
+  /**
+   * getInstance.
+   * The object is created from within the class itself
+   * only if the class has no instance.
+   * @return Project|null
+   * @throws DwapiException
+   */
+
   public static function getInstance()
   {
     if (self::$instance == null)
