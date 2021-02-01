@@ -24,7 +24,7 @@
   },
   "autoload": {
     "psr-4": {
-      "dwapi\\": "v3/"
+      "dwapi\\": "www/v3/"
     }
   }
 }
