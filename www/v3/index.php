@@ -8,6 +8,7 @@ require 'autoload.php';
 use dwApi\dwApi;
 use dwApi\output\OutputFactory;
 
+
 $api = new dwApi();
 $api->processCall();
 

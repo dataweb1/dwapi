@@ -1,43 +1,42 @@
 [
     {
         "name": "cebe/php-openapi",
-        "version": "1.4.2",
-        "version_normalized": "1.4.2.0",
+        "version": "1.5.0",
+        "version_normalized": "1.5.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/cebe/php-openapi.git",
-            "reference": "672aea69aaeb0c8305ff64b6d6034d9eaadbebf4"
+            "reference": "310de0290cfa9597f8bd3444cb7f8e1682bbbeeb"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/cebe/php-openapi/zipball/672aea69aaeb0c8305ff64b6d6034d9eaadbebf4",
-            "reference": "672aea69aaeb0c8305ff64b6d6034d9eaadbebf4",
+            "url": "https://api.github.com/repos/cebe/php-openapi/zipball/310de0290cfa9597f8bd3444cb7f8e1682bbbeeb",
+            "reference": "310de0290cfa9597f8bd3444cb7f8e1682bbbeeb",
             "shasum": ""
         },
         "require": {
             "ext-json": "*",
             "justinrainbow/json-schema": "^5.0",
             "php": ">=7.1.0",
-            "symfony/yaml": "^3.0 | ^4.0 | ^5.0"
+            "symfony/yaml": "^3.4 | ^4.0 | ^5.0"
         },
         "require-dev": {
             "apis-guru/openapi-directory": "1.0.0",
             "cebe/indent": "*",
-            "friendsofphp/php-cs-fixer": "~2.16.1",
             "mermade/openapi3-examples": "1.0.0",
             "nexmo/api-specification": "1.0.0",
-            "oai/openapi-specification": "3.0.2",
+            "oai/openapi-specification": "3.0.3",
             "phpstan/phpstan": "^0.12.0",
-            "phpunit/phpunit": "^6.5"
+            "phpunit/phpunit": "^6.5 || ^7.5 || ^8.5 || ^9.4"
         },
-        "time": "2020-05-27T15:32:36+00:00",
+        "time": "2020-12-31T00:41:54+00:00",
         "bin": [
             "bin/php-openapi"
         ],
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "1.4.x-dev"
+                "dev-master": "1.5.x-dev"
             }
         },
         "installation-source": "dist",
@@ -58,7 +57,7 @@
                 "role": "Creator"
             }
         ],
-        "description": "READ OpenAPI yaml files and make the content accessable in PHP objects.",
+        "description": "Read and write OpenAPI yaml/json files and make the content accessable in PHP objects.",
         "homepage": "https://github.com/cebe/php-openapi#readme",
         "keywords": [
             "openapi"
@@ -625,17 +624,17 @@
     },
     {
         "name": "symfony/polyfill-ctype",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-ctype.git",
-            "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41"
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f4ba089a5b6366e453971d3aad5fe8e897b37f41",
-            "reference": "f4ba089a5b6366e453971d3aad5fe8e897b37f41",
+            "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/c6c942b1ac76c82448322025e084cadc56048b4e",
+            "reference": "c6c942b1ac76c82448322025e084cadc56048b4e",
             "shasum": ""
         },
         "require": {
@@ -644,11 +643,11 @@
         "suggest": {
             "ext-ctype": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -689,17 +688,17 @@
     },
     {
         "name": "symfony/polyfill-mbstring",
-        "version": "v1.20.0",
-        "version_normalized": "1.20.0.0",
+        "version": "v1.22.0",
+        "version_normalized": "1.22.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/polyfill-mbstring.git",
-            "reference": "39d483bdf39be819deabf04ec872eb0b2410b531"
+            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/39d483bdf39be819deabf04ec872eb0b2410b531",
-            "reference": "39d483bdf39be819deabf04ec872eb0b2410b531",
+            "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
+            "reference": "f377a3dd1fde44d37b9831d68dc8dea3ffd28e13",
             "shasum": ""
         },
         "require": {
@@ -708,11 +707,11 @@
         "suggest": {
             "ext-mbstring": "For best performance"
         },
-        "time": "2020-10-23T14:02:19+00:00",
+        "time": "2021-01-07T16:49:33+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-main": "1.20-dev"
+                "dev-main": "1.22-dev"
             },
             "thanks": {
                 "name": "symfony/polyfill",
@@ -754,17 +753,17 @@
     },
     {
         "name": "symfony/yaml",
-        "version": "v5.2.0",
-        "version_normalized": "5.2.0.0",
+        "version": "v5.2.2",
+        "version_normalized": "5.2.2.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/yaml.git",
-            "reference": "bb73619b2ae5121bbbcd9f191dfd53ded17ae598"
+            "reference": "6bb8b36c6dea8100268512bf46e858c8eb5c545e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/yaml/zipball/bb73619b2ae5121bbbcd9f191dfd53ded17ae598",
-            "reference": "bb73619b2ae5121bbbcd9f191dfd53ded17ae598",
+            "url": "https://api.github.com/repos/symfony/yaml/zipball/6bb8b36c6dea8100268512bf46e858c8eb5c545e",
+            "reference": "6bb8b36c6dea8100268512bf46e858c8eb5c545e",
             "shasum": ""
         },
         "require": {
@@ -781,7 +780,7 @@
         "suggest": {
             "symfony/console": "For validating YAML files using the lint command"
         },
-        "time": "2020-11-28T10:57:20+00:00",
+        "time": "2021-01-27T10:01:46+00:00",
         "bin": [
             "Resources/bin/yaml-lint"
         ],
@@ -809,7 +808,7 @@
                 "homepage": "https://symfony.com/contributors"
             }
         ],
-        "description": "Symfony Yaml Component",
+        "description": "Loads and dumps YAML files",
         "homepage": "https://symfony.com"
     },
     {
@@ -818,12 +817,12 @@
         "version_normalized": "1.9.1.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/webmozart/assert.git",
+            "url": "https://github.com/webmozarts/assert.git",
             "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/webmozart/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
+            "url": "https://api.github.com/repos/webmozarts/assert/zipball/bafc69caeb4d49c39fd0779086c03a3738cbb389",
             "reference": "bafc69caeb4d49c39fd0779086c03a3738cbb389",
             "shasum": ""
         },

@@ -4,7 +4,7 @@ namespace dwApi\token;
 use dwApi\api\DwapiException;
 use dwApi\query\QueryFactory;
 use Hashids\Hashids;
-use ReallySimpleJWT\Token as SimpleJWTToken;
+//use ReallySimpleJWT\Token as SimpleJWTToken;
 
 /**
  * Class AccessToken
