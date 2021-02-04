@@ -815,5 +815,5 @@
       "name": "user"
     }
   ],
-  "basePath": "/v3"
+  "basePath": "/"
 }
