@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dataweb1/dwapi-lib.git",
-                "reference": "13b7c7fee7bd3a7fba80b63c6ce84e4aa3f87269"
+                "reference": "fb8acadd3649648a03f8472060a518677384fe20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dataweb1/dwapi-lib/zipball/13b7c7fee7bd3a7fba80b63c6ce84e4aa3f87269",
-                "reference": "13b7c7fee7bd3a7fba80b63c6ce84e4aa3f87269",
+                "url": "https://api.github.com/repos/dataweb1/dwapi-lib/zipball/fb8acadd3649648a03f8472060a518677384fe20",
+                "reference": "fb8acadd3649648a03f8472060a518677384fe20",
                 "shasum": ""
             },
             "require": {
@@ -60,7 +60,7 @@
                 "issues": "https://github.com/dataweb1/dwapi-lib/issues",
                 "source": "https://github.com/dataweb1/dwapi-lib/tree/master"
             },
-            "time": "2021-02-04T18:45:58+00:00"
+            "time": "2021-02-04T19:24:34+00:00"
         },
         {
             "name": "hashids/hashids",
