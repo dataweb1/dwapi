@@ -722,13 +722,18 @@
             "name": "project",
             "required": true
           }
+        ],
+        "tags": [
+          "user"
         ]
       }
     },
     "/user/reset_password_link/{hash}": {
       "get": {
         "summary": "Reset user",
-        "tags": [],
+        "tags": [
+          "user"
+        ],
         "responses": {},
         "operationId": "get-user-reset",
         "parameters": [
