@@ -1,2 +1,5 @@
 {
+    "require": {
+        "dataweb1/dwapi-lib": "dev-master"
+    }
 }
