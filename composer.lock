@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/dataweb1/dwapi-lib.git",
-                "reference": "fb8acadd3649648a03f8472060a518677384fe20"
+                "reference": "9b4ddce5a475651c20fb1651cf282231cdd0eca0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dataweb1/dwapi-lib/zipball/fb8acadd3649648a03f8472060a518677384fe20",
-                "reference": "fb8acadd3649648a03f8472060a518677384fe20",
+                "url": "https://api.github.com/repos/dataweb1/dwapi-lib/zipball/9b4ddce5a475651c20fb1651cf282231cdd0eca0",
+                "reference": "9b4ddce5a475651c20fb1651cf282231cdd0eca0",
                 "shasum": ""
             },
             "require": {
@@ -33,7 +33,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "dwApi\\": "src/"
+                    "dwApiLib\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -48,7 +48,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "dwAPI",
+            "description": "dwAPI library",
             "homepage": "https://dwapi.dev",
             "keywords": [
                 "drupal",
@@ -60,7 +60,7 @@
                 "issues": "https://github.com/dataweb1/dwapi-lib/issues",
                 "source": "https://github.com/dataweb1/dwapi-lib/tree/master"
             },
-            "time": "2021-02-04T19:24:34+00:00"
+            "time": "2021-02-06T06:31:49+00:00"
         },
         {
             "name": "hashids/hashids",

@@ -23,6 +23,11 @@
     "application/x-www-form-urlencoded"
   ],
   "paths": {
+    "/test": {
+      "get": {
+
+      }
+    },
     "/item": {
       "get": {
         "summary": "Get items",
