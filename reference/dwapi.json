@@ -93,6 +93,12 @@
             "type": "string",
             "name": "test",
             "required": true
+          },
+          {
+            "in": "formData",
+            "type": "integer",
+            "name": "test1",
+            "required": true
           }
         ],
         "description": "Get items of an entity"
