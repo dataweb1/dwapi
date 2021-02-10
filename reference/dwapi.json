@@ -92,7 +92,8 @@
             "in": "formData",
             "type": "string",
             "name": "test",
-            "required": true
+            "required": true,
+            "default": "123"
           },
           {
             "in": "formData",
