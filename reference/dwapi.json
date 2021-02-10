@@ -87,6 +87,21 @@
             "in": "header",
             "name": "Authorization",
             "description": "Bearer <i>jwt_token</i>\n"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "test"
+              ]
+            }
           }
         ],
         "description": "Get items of an entity"
