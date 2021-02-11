@@ -80,7 +80,8 @@
             "type": "object",
             "in": "query",
             "name": "paging",
-            "description": "If you want to receive a subset of the data based on page and items_per_page.\n\nSyntax: {\"page\": <i>page_number</i>, \"items_per_page\": <i>items_per_page</i>}\n\nExample: {\"page\": 2, \"items_per_page\": 10}"
+            "description": "If you want to receive a subset of the data based on page and items_per_page.\n\nSyntax: {\"page\": <i>page_number</i>, \"items_per_page\": <i>items_per_page</i>}\n\nExample: {\"page\": 2, \"items_per_page\": 10}",
+            "required": true
           },
           {
             "type": "string",
