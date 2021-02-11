@@ -44,8 +44,7 @@
             "type": "string",
             "in": "query",
             "name": "project",
-            "required": true,
-            "default": "xy"
+            "required": true
           },
           {
             "type": "string",
