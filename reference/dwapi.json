@@ -101,6 +101,20 @@
                 "test1": {
                   "type": "string",
                   "default": "test1_def"
+                },
+                "test2": {
+                  "type": "object",
+                  "properties": {
+                    "test2_1": {
+                      "type": "string"
+                    },
+                    "test2_2": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "test2_2"
+                  ]
                 }
               },
               "required": [
