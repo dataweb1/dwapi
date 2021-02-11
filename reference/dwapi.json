@@ -89,17 +89,25 @@
             "description": "Bearer <i>jwt_token</i>\n"
           },
           {
-            "in": "formData",
-            "type": "string",
-            "name": "test",
-            "required": true,
-            "default": "123"
-          },
-          {
-            "in": "formData",
-            "type": "integer",
-            "name": "test1",
-            "required": true
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "string",
+                  "default": "test_def"
+                },
+                "test1": {
+                  "type": "string",
+                  "default": "test1_def"
+                }
+              },
+              "required": [
+                "test",
+                "test1"
+              ]
+            }
           }
         ],
         "description": "Get items of an entity"
