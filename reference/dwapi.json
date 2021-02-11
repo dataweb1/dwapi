@@ -44,7 +44,8 @@
             "type": "string",
             "in": "query",
             "name": "project",
-            "required": true
+            "required": true,
+            "default": "xy"
           },
           {
             "type": "string",
@@ -305,8 +306,7 @@
           "type": "string",
           "name": "hash",
           "in": "path",
-          "required": true,
-          "default": "aaa"
+          "required": true
         }
       ],
       "get": {
