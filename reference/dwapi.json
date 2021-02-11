@@ -107,7 +107,8 @@
                 "test",
                 "test1"
               ]
-            }
+            },
+            "description": "Test"
           }
         ],
         "description": "Get items of an entity"
