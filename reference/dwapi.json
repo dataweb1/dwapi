@@ -123,6 +123,13 @@
               ]
             },
             "description": "Test"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "description": "Get items of an entity"
@@ -193,7 +200,8 @@
             "in": "header",
             "name": "Content-Type",
             "default": "application/json",
-            "required": true
+            "required": true,
+            "description": "application/json"
           }
         ],
         "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
@@ -273,7 +281,8 @@
             "in": "header",
             "name": "Content-Type",
             "default": "application/json",
-            "required": true
+            "required": true,
+            "description": "application/json"
           }
         ],
         "tags": [
@@ -314,6 +323,13 @@
             "type": "string",
             "name": "filter",
             "description": "The filter to apply the delete on.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
             "required": true
           }
         ],
@@ -377,6 +393,17 @@
             "in": "query",
             "name": "property",
             "description": "If you want to limit the fields that are being outputed.\n\nExample: \\[{\"entity\": \"product\", \"field\": \"naam\"}\\]"
+          },
+          {
+            "in": "formData",
+            "type": "string"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "description": "Get a single item of an entity by ID"
@@ -426,7 +453,8 @@
             "in": "header",
             "name": "Content-Type",
             "required": true,
-            "default": "application/json"
+            "default": "application/json",
+            "description": "application/json"
           },
           {
             "in": "body",
@@ -478,6 +506,13 @@
             "in": "query",
             "name": "entity",
             "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "tags": [
@@ -510,7 +545,7 @@
             "type": "string",
             "in": "header",
             "name": "Content-Type",
-            "description": "",
+            "description": "application/json",
             "default": "application/json"
           },
           {
@@ -566,7 +601,9 @@
             "type": "string",
             "in": "header",
             "name": "Content-Type",
-            "default": "application/json"
+            "default": "application/json",
+            "description": "application/json",
+            "required": true
           }
         ],
         "security": [
@@ -600,6 +637,13 @@
             "in": "query",
             "name": "project",
             "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "tags": [
@@ -628,6 +672,13 @@
             "name": "Authorization",
             "description": "Bearer <i>jwt_token</i>",
             "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ]
       }
@@ -652,6 +703,13 @@
             "in": "header",
             "name": "Authorization",
             "description": "Bearer <i>jwt_token</i>",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
             "required": true
           }
         ]
@@ -684,6 +742,13 @@
             "in": "query",
             "name": "redirect_after_reset",
             "description": "{\"enabled\": true/false, \"redirect_url\": url}"
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "description": "A reset password mail is send.\n\nWhen the reset link in the mail is clicked the user is redirected to the websites homepage with these parameters:\n- from: \"dwapi_user_reset_mail\"\n- status: \"true\" or \"false\" (depending on the users exists or not)\n- hash: the hashed user_id\n\nThe default behaviour can be overridden by adding the \"redirect_after_reset_link\" parameter."
@@ -733,6 +798,13 @@
             "name": "email",
             "required": true,
             "description": "The existing email."
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ]
       }
@@ -757,6 +829,13 @@
             "in": "query",
             "name": "project",
             "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
+            "required": true
           }
         ],
         "tags": [
@@ -777,6 +856,13 @@
             "type": "string",
             "in": "query",
             "name": "project",
+            "required": true
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Content-Type",
+            "description": "application/json",
             "required": true
           }
         ]
@@ -824,7 +910,9 @@
             "type": "string",
             "in": "header",
             "name": "Content-Type",
-            "default": "application/json"
+            "default": "application/json",
+            "description": "application/json",
+            "required": true
           },
           {
             "type": "string",
