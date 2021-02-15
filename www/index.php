@@ -8,10 +8,15 @@ require __DIR__.'/dwapi/autoload.php';
 use dwApi\dwApi;
 use dwApiLib\output\OutputFactory;
 
-$api_path = "http://localhost/";
-$reference_path = "https://dataweb.stoplight.io/api/v1/projects/dataweb/dwapi/nodes/reference/dwapi.json";
+$settings = new stdClass();
+//$settings->project = "CFNIOuwTJGyR";
+$settings->api_path = "http://localhost/";
+$settings->reference_path = "https://dataweb.stoplight.io/api/v1/projects/dataweb/dwapi/nodes/reference/dwapi.json";
+$settings->template_path = $_SERVER["DOCUMENT_ROOT"]."/templates";
 
-$api = new dwApi($api_path, $reference_path);
+$api = new dwApi($settings);
+$api->allowPath("/test1/*");
+$api->allowPath("/test1");
 $api->processCall();
 
 $output = OutputFactory::create();

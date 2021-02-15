@@ -2,18 +2,19 @@
 
 $curl = curl_init();
 
-curl_setopt_array($curl, array(
-  CURLOPT_URL => "http://localhost/v3/item?project=LluG3gwZKPzC&entity=user",
+curl_setopt_array($curl, [
+  CURLOPT_URL => "http://localhost/item?project=CFNIOuwTJGyR&entity=Categorieen",
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => "",
   CURLOPT_MAXREDIRS => 10,
   CURLOPT_TIMEOUT => 30,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => "GET",
-  CURLOPT_HTTPHEADER => array(
-    "authorization: Basic cFk5a3ZEQXdkQkd4ZU5vNUVPTGw0Mlc3UEthbnptZ1pwak1icThQeVI2cjMxSktRMDB8VEd4MVJ6Tm5kMXBMVUhwRHx8TVRJM0xqQXVNQzR4"
-  ),
-));
+  CURLOPT_POSTFIELDS => "{\"test1\":\"string\",\"test2\":\"string\"}",
+  CURLOPT_HTTPHEADER => [
+    "Content-Type: application/json"
+  ],
+]);
 
 $response = curl_exec($curl);
 $err = curl_error($curl);
