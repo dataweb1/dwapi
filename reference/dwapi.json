@@ -89,14 +89,6 @@
             "description": "Bearer <i>jwt_token</i>\n"
           },
           {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "type": "object"
-            },
-            "description": "Test"
-          },
-          {
             "type": "string",
             "in": "header",
             "name": "Content-Type",
