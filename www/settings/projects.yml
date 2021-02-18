@@ -7,6 +7,15 @@ AbcDefGhiJkl:
     url: https://eeed.eu
     owner_email: info@eeeu.eu
     owner_name: EEED
+staging_AbcDefGhiJkl:
+  type: drp7
+  credentials:
+    host: https://staging-feani.eeed.bomodule.com
+  site:
+    name: EEED
+    url: https://staging-feani.eeed.bomodule.com
+    owner_email: info@eeeu.eu
+    owner_name: EEED
 LluG3gwZKPzC:
   type: mysql
   credentials:
