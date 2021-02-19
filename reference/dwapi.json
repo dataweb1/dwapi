@@ -12,7 +12,7 @@
   },
   "host": "dwapi.dev",
   "schemes": [
-    "http"
+    "https"
   ],
   "produces": [
     "application/json"
