@@ -1,10 +1,10 @@
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
 
-echo $_SERVER["DOCUMENT_ROOT"];
+//echo $_SERVER["DOCUMENT_ROOT"];
 
-require __DIR__."/../vendor/autoload.php";
-require __DIR__.'/dwapi/autoload.php';
+require $_SERVER["DOCUMENT_ROOT"]."/../vendor/autoload.php";
+require $_SERVER["DOCUMENT_ROOT"].'/dwapi/autoload.php';
 
 use dwApi\dwApi;
 use dwApiLib\output\OutputFactory;
