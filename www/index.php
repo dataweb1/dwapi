@@ -4,7 +4,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 require __DIR__."/../../../../vendor/autoload.php";
 require __DIR__.'/dwapi/autoload.php';
 
-use dwApi\dwApi;
+use dwApi\DwApi;
 use dwApiLib\output\OutputFactory;
 
 $settings = new stdClass();
@@ -14,7 +14,7 @@ $settings->reference_path = "https://dataweb.stoplight.io/api/v1/projects/datawe
 //$settings->reference_path = "https://api.eeed.eu/reference/eeed_api.v1.yaml";
 $settings->template_path = $_SERVER["DOCUMENT_ROOT"]."/templates";
 
-$api = new dwApi($settings);
+$api = new DwApi($settings);
 $api->allowPath("/test1/*");
 $api->allowPath("/test1");
 $api->processCall();
