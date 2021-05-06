@@ -93,7 +93,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "description": "Get items of an entity"
@@ -294,7 +295,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "tags": [
@@ -367,7 +369,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "description": "Get a single item of an entity by ID"
@@ -476,7 +479,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "tags": [
@@ -608,7 +612,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "tags": [
@@ -643,7 +648,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ]
       }
@@ -675,7 +681,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ]
       }
@@ -713,7 +720,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "description": "A reset password mail is send.\n\nWhen the reset link in the mail is clicked the user is redirected to the websites homepage with these parameters:\n- from: \"dwapi_user_reset_mail\"\n- status: \"true\" or \"false\" (depending on the users exists or not)\n- hash: the hashed user_id\n\nThe default behaviour can be overridden by adding the \"redirect_after_reset_link\" parameter."
@@ -769,7 +777,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ]
       }
@@ -800,7 +809,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ],
         "tags": [
@@ -828,7 +838,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "required": true
+            "required": true,
+            "default": "application/json"
           }
         ]
       },
