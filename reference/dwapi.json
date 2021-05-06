@@ -510,7 +510,8 @@
             "in": "header",
             "name": "Content-Type",
             "description": "application/json",
-            "default": "application/json"
+            "default": "application/json",
+            "required": true
           },
           {
             "in": "body",
