@@ -169,7 +169,7 @@
             "description": "application/json"
           }
         ],
-        "description": "Create an item of an entity\n\nTo test the \"values\" parameter use \"body\" > \"Form Data\"",
+        "description": "Create an item of an entity",
         "tags": [
           "item"
         ]
@@ -182,7 +182,7 @@
             "description": "OK"
           }
         },
-        "description": "Update an item of an entity\n\nTo set the \"filter\" and \"values\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "description": "Update an item of an entity",
         "parameters": [
           {
             "type": "string",
@@ -262,7 +262,7 @@
             "description": "OK"
           }
         },
-        "description": "To test the \"filter\" parameter use \"body\" > \"x-www-form-urlencoded\"",
+        "description": "",
         "parameters": [
           {
             "type": "string",
