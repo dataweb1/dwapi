@@ -574,11 +574,6 @@
             "description": "application/json",
             "required": true
           }
-        ],
-        "security": [
-          {
-            "My HTTP Basic": []
-          }
         ]
       }
     },
