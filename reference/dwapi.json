@@ -518,19 +518,16 @@
             "required": true
           },
           {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                }
-              }
-            }
+            "in": "formData",
+            "type": "string",
+            "name": "email",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "type": "string",
+            "name": "password",
+            "required": true
           }
         ],
         "description": "The user is registered in the system. A mail with an activation link is send.\n\nWhen the activation link in the mail is clicked the user is redirected to the websites homepage with these parameters:\n- from: \"dwapi_user_activate\"\n- status: \"true\" or \"false\" (depending on the success of the activation)\n- hash: the hashed user_id\n\nThe default behaviour can be overridden by adding the \"redirect_after_reset_link\" parameter."
@@ -552,26 +549,15 @@
             "required": true
           },
           {
-            "in": "body",
-            "name": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "email": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                }
-              }
-            }
+            "in": "formData",
+            "type": "string",
+            "name": "email",
+            "required": true
           },
           {
+            "in": "formData",
             "type": "string",
-            "in": "header",
-            "name": "Content-Type",
-            "default": "application/json",
-            "description": "application/json",
+            "name": "password",
             "required": true
           }
         ]
