@@ -1,10 +1,12 @@
 var filter = [];
 //var property = [{"entity": "product", "field": "*"}];
 var property = [];
-var sort = [{"field": $("#sort_select").val(), "direction": "ASC"}];
+//var sort = [{"field": $("#sort_select").val(), "direction": "ASC"}];
+var sort = [{"field": "naam", "direction": "ASC"}];
 var relation = [];
 var producten = [];
 var paging = {"page": 2, "items_per_page": 10};
+var project = "LluG3gwZKPzC";
 var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE1OTk3NTY0NzYsImlzcyI6IkxsdUczZ3daS1B6QyIsImlhdCI6MTU5OTcyMDQ3Nn0.tBVfPYWrvbCOQLgfSijiiflci8YwDY1Ol3TjWQigkVM";
 
 function doAjaxRequest(endpoint, method, data, token, done_callback) {
@@ -18,13 +20,13 @@ function doAjaxRequest(endpoint, method, data, token, done_callback) {
     };
 
     if (token != "") {
-        ajax_parameters.headers = {"Authorization" : "Bearer " + token};
+        //ajax_parameters.headers = {"Authorization" : "Bearer " + token};
     }
 
     if (method == "POST" || method == "PUT") {
         ajax_parameters.processData = false;
     }
-
+    console.log(ajax_parameters);
     $.ajax(ajax_parameters).done(function(response) {
         console.log("DONE")
         console.log(response);
@@ -39,13 +41,13 @@ function doAjaxRequest(endpoint, method, data, token, done_callback) {
 
 function toonProducten() {
     var data = {"filter": filter, "property": property, "sort": sort, "relation": relation};
-    doAjaxRequest("/item/read?project=LluG3gwZKPzC&entity=product", "GET", data, token,function(response) {
-        producten = response.data.items;
+    doAjaxRequest("/item?project="+project+"&entity=product", "GET", data, token,function(response) {
+        producten = response.result.items;
         $("#producten_table tbody").html("");
         producten.forEach(function(product) {
             var image = "";
             if (product.image != null) {
-                image = '<img src="' +  response.data.assets_path + "/" +  product.image.name + '" />';
+                image = '<img src="' +  response.result.assets_path + "/" +  product.image.name + '" />';
             }
             var row = "<tr>" +
                 "<td>" + product.naam + "</td>" +
@@ -90,8 +92,8 @@ function doFilter() {
 
 function doDelete() {
     var id = $('#delete_id').val();
-    var data = {"filter": [{"field": "id", "operator": "=", "value": id}]};
-    doAjaxRequest("/item/delete?project=LluG3gwZKPzC&entity=product", "DELETE", data, token,function(response) {
+    var data = {"filter": [["id", "=", id]]};
+    doAjaxRequest("/item?project=LluG3gwZKPzC&entity=product", "DELETE", data, token,function(response) {
         toonProducten();
         $('#delete_modal').modal('hide');
     });
@@ -117,12 +119,12 @@ function doProductActie() {
         var post_filter = ["id", "=", $("#product_id").val()];
         formData.set("filter", JSON.stringify(post_filter));
 
-        var endpoint = "/item/update?project=LluG3gwZKPzC&entity=product";
+        var endpoint = "/item?project=LluG3gwZKPzC&entity=product";
         var method = "PUT";
     }
 
     if (product_actie == "insert") {
-        var endpoint = "/item/create?project=LluG3gwZKPzC&entity=product";
+        var endpoint = "/item?project=LluG3gwZKPzC&entity=product";
         var method = "POST";
     }
 
@@ -151,11 +153,11 @@ function toonProductPopup(actie, id) {
     if (actie == "update") {
         $("#product_modal_titel").html("Product wijzigen");
         doAjaxRequest("/item/single_read?project=LluG3gwZKPzC&entity=product&id=" + id, "GET", null, token,function(response) {
-            $('#product_id').val(response.data.item.id);
-            $('#product_naam').val(response.data.item.naam);
-            $('#product_omschrijving').val(response.data.item.omschrijving);
-            $('#product_prijs').val(response.data.item.prijs);
-            $('#product_beeld_origineel').val(JSON.stringify(response.data.item.image));
+            $('#product_id').val(response.result.item.id);
+            $('#product_naam').val(response.result.item.naam);
+            $('#product_omschrijving').val(response.result.item.omschrijving);
+            $('#product_prijs').val(response.result.item.prijs);
+            $('#product_beeld_origineel').val(JSON.stringify(response.result.item.image));
             $('#product_beeld').val("");
             $('#product_beeld_label').html("Kies (nieuw) beeld");
         });

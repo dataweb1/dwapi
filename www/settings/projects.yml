@@ -1,3 +1,12 @@
+Go3dG3kn0t:
+  type: drp7
+  credentials:
+    host: https://www.goedgeknot.be
+  site:
+    name: Goed Geknot
+    url: https://www.goedgeknot.be
+    owner_email: bert@data-web.be
+    owner_name: Bert Jansen
 AbcDefGhiJkl:
   type: drp7
   credentials:
@@ -134,3 +143,69 @@ fjgub4eD3ddg:
     url: https://vdab.data-web.be/broodjes
     owner_email: hbk@hbkbroodjeszaak.be
     owner_name: HB & H
+spynghYfjPhC:
+  type: mysql
+  credentials:
+    host: ID130696_vsatanya.db.webhosting.be
+    dbname: ID130696_vsatanya
+    username: ID130696_vsatanya
+    password: vsaTanya01
+ZTUtzcAzLoRS:
+  type: mysql
+  credentials:
+    host: ID130696_vsaibrahim.db.webhosting.be
+    dbname: ID130696_vsaibrahim
+    username: ID130696_vsaibrahim
+    password: vsaIbrahim01
+EMaAnCmCtxbG:
+  type: mysql
+  credentials:
+    host: ID130696_vsadelphine.db.webhosting.be
+    dbname: ID130696_vsadelphine
+    username: ID130696_vsadelphine
+    password: vsaDelphine01
+tCfHqDDXmtxT:
+  type: mysql
+  credentials:
+    host: ID130696_vsathomas.db.webhosting.be
+    dbname: ID130696_vsathomas
+    username: ID130696_vsathomas
+    password: vsaThomas01
+SbTBWlkcrChp:
+  type: mysql
+  credentials:
+    host: ID130696_vsanick.db.webhosting.be
+    dbname: ID130696_vsanick
+    username: ID130696_vsanick
+    password: vsaNick01
+gfzmdRowddcJ:
+  type: mysql
+  credentials:
+    host: ID130696_vsasayali.db.webhosting.be
+    dbname: ID130696_vssayali
+    username: ID130696_vsasayali
+    password: vsaSayali01
+4nqmlRAiE5cG:
+  type: mysql
+  credentials:
+    host: ID130696_vsacursus.db.webhosting.be
+    dbname: ID130696_vsacursus
+    username: ID130696_vsacursus
+    password: vsaCursus01
+  site:
+    name: DIT
+    url: https://vdab.data-web.be/dit
+    owner_email: dit@dit.be
+    owner_name: DIT
+9q56DqFn56H6:
+  type: mysql
+  credentials:
+    host: ID130696_vsaticket.db.webhosting.be
+    dbname: ID130696_vsaticket
+    username: ID130696_vsaticket
+    password: vsaTicket01
+  site:
+    name: Nita
+    url: https://vdab.data-web.be/nita
+    owner_email: nita@nita.be
+    owner_name: NITA

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig connectionConfig="{&quot;serverAliveInterval&quot;:300}" host="ssh041.webhosting.be" id="8486392b-dbc8-45e7-940f-d1b4416712ca" keyPath="$USER_HOME$/.ssh/id_rsa" port="22" customName="api.data-web.be" nameFormat="CUSTOM" username="dwapidev">
+        <option name="customName" value="api.data-web.be" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

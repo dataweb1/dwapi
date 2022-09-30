@@ -1,8 +1,8 @@
 <p>Thank you.</p>
 <p>
-You are a registered user at "{{ settings.site.name }}" with e-mail {{ parameters.post.values.email }}.
+You are a registered user at "{{ settings.name }}" with e-mail {{ parameters.body.values.email }}.
 </p>
 <p>
-{% set redirect = {"redirect": parameters.get.redirect_after_activate} %}
-Activate your profile via {{ settings.api_path }}/user/activate_link/{{ result.item.hash }}?project={{ parameters.get.project }}&{{ redirect|url_encode }}
+{% set redirect = {"redirect": parameters.query.redirect_after_activate} %}
+Activate your profile via {{ settings.api_path }}user/activate_link/{{ result.item.hash }}?project={{ parameters.query.project }}&{{ redirect|url_encode }}
 </p>

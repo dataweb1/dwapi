@@ -1,5 +1,7 @@
-{% if status.success == true %}
-{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=true&error_code=&hash={{ parameters.get.hash }}
-{% else %}
-{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.get.hash }}
+{% if settings.url != "" %}
+    {% if status.success == true %}
+        {{ settings.url }}?project={{ parameters.query.project }}&from=dwapi_{{ parameters.path.endpoint }}_{{ parameters.path.action }}&status=true&error_code=&hash={{ parameters.query.hash }}
+    {% else %}
+        {{ settings.url }}?project={{ parameters.query.project }}&from=dwapi_{{ parameters.path.endpoint }}_{{ parameters.path.action }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.query.hash }}
+    {% endif %}
 {% endif %}

@@ -1,5 +1,7 @@
-{% if status.success == true %}
-{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&entity={{ parameters.get.entity }}&status=true&error_code=&hash={{ parameters.get.hash }}
-{% else %}
-{{ settings.site.url }}?from=dwapi_{{ parameters.get.endpoint }}_{{ parameters.get.action }}&entity={{ parameters.get.entity }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.get.hash }}
+{% if settings.url != "" %}
+    {% if status.success == true %}
+    {{ settings.url }}?from=dwapi_{{ parameters.path.endpoint }}_{{ parameters.query.action }}&entity={{ parameters.query.entity }}&status=true&error_code=&hash={{ parameters.query.hash }}
+    {% else %}
+    {{ settings.url }}?from=dwapi_{{ parameters.path.endpoint }}_{{ parameters.query.action }}&entity={{ parameters.query.entity }}&status=false&error_code={{ status.error_code }}&hash={{ parameters.query.hash }}
+    {% endif %}
 {% endif %}
