@@ -15,7 +15,7 @@ $settings->reference_path = "https://dataweb.stoplight.io/api/v1/projects/datawe
 //$settings->reference_path = "https://api.eeed.eu/reference/eeed_api.v1.yaml";
 $settings->template_path = $_SERVER["DOCUMENT_ROOT"]."/templates";
 $settings->smtp = ["username" => "no-reply@dwapi.dev",
-  "password" => "0E1F5600E988521F5B9173C9C592AEACDBF8",
+  "password" => "xxx",
   "host" => "smtp.elasticemail.com",
   "port" => 587];
 
