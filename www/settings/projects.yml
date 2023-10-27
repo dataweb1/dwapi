@@ -16,6 +16,24 @@ AbcDefGhiJkl:
     url: https://eeed.eu
     owner_email: info@eeeu.eu
     owner_name: EEED
+f4dcf5hg7ja33:
+  type: drp7
+  credentials:
+    host: https://prima-lux.be
+  site:
+    name: PrimaLux
+    url: https://prima-lux.be
+    owner_email: info@primalux.be
+    owner_name: PrimaLux
+d3gh6jkj77xA12fd:
+  type: drp7
+  credentials:
+    host: https://autofans.be
+  site:
+    name: Autofans
+    url: https://autofans.be
+    owner_email: info@autofans.be
+    owner_name: AutoFans
 staging_AbcDefGhiJkl:
   type: drp7
   credentials:
