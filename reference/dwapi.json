@@ -55,8 +55,7 @@
           {
             "in": "query",
             "name": "filter",
-            "description": "If no filter is available then all items will be returned.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]",
-            "type": "array"
+            "description": "If no filter is available then all items will be returned.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]"
           },
           {
             "type": "array",
@@ -65,7 +64,7 @@
             "description": "If you want to limit the fields that are being outputed.\n\nExample: \\[{\"entity\": \"product\", \"field\": \"naam\"}\\]"
           },
           {
-            "type": "array",
+            "type": "object",
             "in": "query",
             "name": "sort",
             "description": "If you want to sort the items give one or more fieldname and the direction (ASC of DESC).\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>direction</i>\"\\],...\\]\n\nExample: \\[\\[\"name\", \"ASC\"\\]\\]"
