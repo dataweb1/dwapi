@@ -53,6 +53,7 @@
             "required": true
           },
           {
+            "type": "object",
             "in": "query",
             "name": "filter",
             "description": "If no filter is available then all items will be returned.\n\nSyntax: \\[\\[\"<i>fieldname</i>\", \"<i>operator</i>\", \"<i>value</i>\"\\],...\\]\n\nExample: \\[\"naam\", \"LIKE\", \"%Bert%\"\\]"
